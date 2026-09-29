@@ -46,6 +46,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
     companion object {
         const val REQ_PERMS = 7
         const val REQ_AUTH = 42
+        const val REQ_BANKKEY = 43
         const val BG = "#040b16"
     }
 
@@ -216,6 +217,14 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
 
     /** Muss von der Activity aus onActivityResult aufgerufen werden. */
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQ_BANKKEY) {
+            val uri = data?.data
+            if (resultCode != Activity.RESULT_OK || uri == null) { emit("__zgBank", JSONObject().put("type", "key").put("ok", false).put("msg", "Keine Datei gewählt")); return }
+            val pem = try { act.contentResolver.openInputStream(uri)?.bufferedReader()?.readText() ?: "" } catch (_: Throwable) { "" }
+            val e = BankApi.setKey(act, pem)
+            emit("__zgBank", JSONObject().put("type", "key").put("ok", e == null).put("msg", e ?: "Schlüssel gespeichert"))
+            return
+        }
         if (requestCode != REQ_AUTH) return
         try {
             val res = Identity.getAuthorizationClient(act).getAuthorizationResultFromIntent(data)
@@ -369,6 +378,40 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                 }
             }
             return WhatsApp.installedPackage(act) != null
+        }
+        // Bankkonto (Enable Banking, nur lesen)
+        @JavascriptInterface fun bankState(): String = JSONObject()
+            .put("appId", BankApi.appId(act)).put("hasKey", BankApi.hasKey(act)).put("bank", BankApi.bankName(act))
+            .put("connected", BankApi.connected(act)).put("validUntil", BankApi.validUntil(act)).put("redirect", BankApi.REDIRECT).toString()
+        @JavascriptInterface fun bankSetAppId(id: String) { BankApi.setAppId(act, id) }
+        @JavascriptInterface fun bankPickKey() {
+            main.post {
+                val i = Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*")
+                try { act.startActivityForResult(i, REQ_BANKKEY) } catch (_: Throwable) {}
+            }
+        }
+        @JavascriptInterface fun bankSearch(q: String) {
+            Thread { emit("__zgBank", BankApi.searchBanks(act, q).put("type", "banks")) }.start()
+        }
+        @JavascriptInterface fun bankConnect(name: String) {
+            Thread {
+                val e = try { BankApi.startAuth(act, name) } catch (x: Throwable) { x.message ?: "Fehler" }
+                emit("__zgBank", JSONObject().put("type", "auth").put("ok", e == null).put("msg", e ?: "Browser geht auf – bei der Sparkasse anmelden und freigeben."))
+            }.start()
+        }
+        @JavascriptInterface fun bankFetch() {
+            Thread {
+                val r = try { BankApi.fetch(act) } catch (x: Throwable) { JSONObject().put("ok", false).put("error", x.message ?: "Fehler") }
+                emit("__zgBank", JSONObject().put("type", "data").put("data", r))
+            }.start()
+        }
+        @JavascriptInterface fun bankCached(): String = BankApi.cached(act)
+        @JavascriptInterface fun bankDisconnect() { BankApi.disconnect(act) }
+        fun bankRedirect(uri: android.net.Uri) {
+            Thread {
+                val (ok, msg) = try { BankApi.handleRedirect(act, uri) } catch (e: Throwable) { false to (e.message ?: "Fehler") }
+                main.post { web.loadUrl("file:///android_asset/setup.html#bank=" + (if (ok) "ok" else "fehler") + "&msg=" + android.net.Uri.encode(msg)) }
+            }.start()
         }
         /** Protokoll des letzten Abspielversuchs (für die Einstellungsseite) */
         @JavascriptInterface fun musicLog(): String = Music.lastLog

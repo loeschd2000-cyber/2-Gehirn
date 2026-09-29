@@ -57,6 +57,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="zweitesgehirn" android:host="spotify-callback" />
+                <data android:scheme="zweitesgehirn" android:host="bank-callback" />
             </intent-filter>
         </activity>
 

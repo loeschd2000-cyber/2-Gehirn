@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Konto verbunden</title>
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #02060d; color: #e6f6ff; font: 16px/1.5 system-ui, sans-serif; text-align: center; padding: 24px; box-sizing: border-box; }
+  a { display: inline-block; margin-top: 18px; background: #3fd6ff; color: #021019; font-weight: 700; text-decoration: none; padding: 14px 22px; border-radius: 14px; }
+  p { color: #7896ad; }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="h">Fast geschafft …</h1>
+  <p id="p">Deine Bank hat geantwortet. Tippe auf den Knopf, um zurück in Zweites Gehirn zu gehen.</p>
+  <a id="back" href="#">Zurück zur App</a>
+</main>
+<script>
+  // Diese Seite bekommt nur den einmaligen Anmelde-Code von deiner Bank und gibt ihn an die Android-App weiter.
+  // Der Code allein nützt niemandem: Die App hat den passenden Schlüssel (PKCE) und tauscht ihn selbst ein.
+  const q = location.search.slice(1);
+  const target = "intent://bank-callback?" + q + "#Intent;scheme=zweitesgehirn;package=de.damian.zweitesgehirn;end";
+  document.getElementById("back").href = target;
+  if (/error=/.test(q)) { document.getElementById("h").textContent = "Bank hat abgelehnt"; }
+  setTimeout(() => { location.href = target; }, 300);
+</script>
+</body>
+</html>

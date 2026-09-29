@@ -73,6 +73,11 @@ class MainActivity : Activity() {
 
     private fun handleIntent(i: Intent?) {
         val d = i?.data
+        if (d != null && d.scheme == "zweitesgehirn" && d.host == "bank-callback") {
+            i.data = null
+            bridge.js.bankRedirect(d)
+            return
+        }
         if (d != null && d.scheme == "zweitesgehirn" && d.host == "spotify-callback") {
             i.data = null
             bridge.js.spotifyRedirect(d)

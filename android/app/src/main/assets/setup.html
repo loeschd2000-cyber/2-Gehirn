@@ -105,6 +105,23 @@
     <small>In der Liste auf „Installierte Apps“ bzw. „Zweites Gehirn – WhatsApp senden“ tippen und einschalten. Ohne das öffnet Jarvis den Chat mit fertigem Text und du tippst selbst auf Senden. Ist der Schalter grau: Handy-Einstellungen → Apps → Zweites Gehirn → ⋮ → „Eingeschränkte Einstellungen zulassen“.</small>
   </section>
 
+  <section id="bankSec">
+    <h2><i>6</i>Bankkonto (Finanzen)</h2>
+    <p>Jarvis liest deine Umsätze (nur lesen, nie überweisen) über Enable Banking. Anleitung: „Konto verbinden.md“. Deine Bank-PIN gibst du nur auf der Seite deiner Sparkasse ein – nie hier.</p>
+    <div class="row"><span>Konto verbunden</span><span class="state" id="sBank"></span></div>
+    <small>Bei Enable Banking als Redirect URL eintragen:</small>
+    <pre id="bkRedirect"></pre>
+    <label for="bkApp">Application ID von Enable Banking</label>
+    <input id="bkApp" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="z. B. 1a2b3c4d-…">
+    <button id="bkKey" type="button">Schlüssel-Datei (.pem) wählen</button>
+    <label for="bkQ">Deine Bank suchen (z. B. „Sparkasse Köln“)</label>
+    <div class="two"><input id="bkQ" type="text" autocomplete="off" placeholder="Sparkasse …"><button id="bkFind" type="button" style="flex:none">Suchen</button></div>
+    <select id="bkList" hidden style="width:100%;background:rgba(2,10,20,.7);color:var(--ink);border:1px solid var(--line2);border-radius:12px;padding:12px;font:inherit"></select>
+    <div class="two"><button class="primary" id="bkConnect" type="button">Konto verbinden</button><button id="bkOff" type="button">Trennen</button></div>
+    <button id="bkTest" type="button">Umsätze testen</button>
+    <small id="bkMsg"></small>
+  </section>
+
   <small id="ver"></small>
 </main>
 <script>
@@ -118,6 +135,7 @@
     if (A.alexaReady) set("sAlexa", A.alexaReady());
     if (A.musicAccess) set("sMusic", A.musicAccess());
     if (A.whatsappAuto) set("sWa", A.whatsappAuto());
+    if (A.bankState) { try { set("sBank", JSON.parse(A.bankState()).connected); } catch {} }
   }
   if (A) {
     $("url").value = A.getAppUrl();
@@ -149,6 +167,42 @@
         setTimeout(() => $("spMsg").scrollIntoView({ block: "center" }), 200);
       }
     } else { $("spRedirect").textContent = "Neue App-Version nötig"; }
+    if (A.bankState) {
+      const bs = JSON.parse(A.bankState());
+      $("bkRedirect").textContent = bs.redirect; $("bkApp").value = bs.appId || "";
+      if (bs.bank) $("bkQ").value = bs.bank;
+      const msg = t => { $("bkMsg").textContent = t; };
+      const saveApp = () => { const v = $("bkApp").value.trim(); if (v) A.bankSetAppId(v); return v; };
+      $("bkApp").onchange = saveApp;
+      $("bkKey").onclick = () => { saveApp(); A.bankPickKey(); };
+      $("bkFind").onclick = () => { if (!saveApp()) { msg("Bitte zuerst die Application ID eintragen."); return; } msg("Suche …"); A.bankSearch($("bkQ").value.trim()); };
+      $("bkConnect").onclick = () => {
+        const name = !$("bkList").hidden && $("bkList").value ? $("bkList").value : "";
+        if (!name) { msg("Bitte erst deine Bank suchen und in der Liste auswählen."); return; }
+        msg("Verbinde …"); A.bankConnect(name);
+      };
+      $("bkOff").onclick = () => { A.bankDisconnect(); msg("Konto getrennt."); refresh(); };
+      $("bkTest").onclick = () => { msg("Hole Umsätze … (kann ein paar Sekunden dauern)"); A.bankFetch(); };
+      window.__zgBank = { emit: r => {
+        if (r.type === "key") { msg((r.ok ? "✓ " : "✗ ") + r.msg); }
+        else if (r.type === "banks") {
+          if (r.error) { msg("✗ " + r.error); return; }
+          const l = $("bkList"); l.textContent = "";
+          for (const b of r.banks) { const o = document.createElement("option"); o.value = o.textContent = b.name; l.append(o); }
+          l.hidden = !r.banks.length; msg(r.banks.length ? r.banks.length + " gefunden – wähle deine Bank aus und tippe auf „Konto verbinden“." : "Nichts gefunden. Versuch einen kürzeren Namen, z. B. nur den Ort.");
+        }
+        else if (r.type === "auth") { msg((r.ok ? "" : "✗ ") + r.msg); }
+        else if (r.type === "data") {
+          const d = r.data;
+          if (!d.ok) { msg("✗ " + d.error); return; }
+          const t = d.transactions || [];
+          const inn = t.filter(x => x.amount > 0).reduce((a, x) => a + x.amount, 0), out = t.filter(x => x.amount < 0).reduce((a, x) => a + x.amount, 0);
+          msg(`✓ Kontostand ${d.balance.toFixed(2)} ${d.currency}. ${t.length} Umsätze geladen (Eingänge ${inn.toFixed(2)} €, Ausgänge ${out.toFixed(2)} €).`);
+        }
+      } };
+      const h = new URLSearchParams(location.hash.slice(1));
+      if (h.get("bank")) { msg((h.get("bank") === "ok" ? "✓ " : "✗ ") + (h.get("msg") || "")); setTimeout(() => $("bankSec").scrollIntoView(), 200); }
+    }
     if (A.alexaDevice) $("vmDevice").value = A.alexaDevice();
     $("vmSave").onclick = () => {
       const tok = $("vmToken").value.trim(), dev = $("vmDevice").value.trim();

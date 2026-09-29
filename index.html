@@ -1409,7 +1409,8 @@ Nachricht: "${text}"`;
   const MONTHS = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
   const monthName = k => MONTHS[+k.slice(5, 7) - 1];
   function finAnalyze(d) {
-    const tx = (d.transactions || []).filter(t => t.date && isFinite(t.amount));
+    const tx = (d.transactions || []).filter(t => t.date && isFinite(t.amount))
+      .map(t => ({ ...t, name: t.name === "null" ? "" : (t.name || ""), text: t.text === "null" ? "" : (t.text || "") }));
     const now = new Date(), cur = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
     const prevD = new Date(now.getFullYear(), now.getMonth() - 1, 1), prev = `${prevD.getFullYear()}-${pad(prevD.getMonth() + 1)}`;
     const months = {};
@@ -1453,7 +1454,7 @@ Nachricht: "${text}"`;
     const body = document.createElement("div"); body.className = "body"; body.textContent = lines.join("\n"); card.append(body);
     log.append(card); log.scrollTop = log.scrollHeight;
   }
-  const FIN_Q = /\b(finanz\w*|konto\w*|kontostand|ausgaben|ausgegeben|einnahmen|eingegangen|eingang|reingekommen|rausgegangen|fixkosten|fixe kosten|abos?|abonnements?|gehalt|lohn|ausbildungsverg\w*|budget|sparkasse|übrig|ausgeben|verbraucht)\b|wie\s*viel\s+geld\s+hab/i;
+  const FIN_Q = /\b(finanz\w*|konto\w*|kontostand|guthaben|ausgaben|ausgegeben|einnahmen|eingegangen|eingang|reingekommen|rausgegangen|fixkosten|fixe kosten|abos?|abonnements?|gehalt|lohn|ausbildungsverg\w*|budget|sparkasse|übrig|ausgeben|verbraucht)\b|wie\s*viel\s+geld\s+hab/i;
   async function handleFinance(text) {
     if (!FIN_Q.test(text)) return false;
     const t = text.toLowerCase();
@@ -1497,7 +1498,7 @@ Nachricht: "${text}"`;
       return true;
     }
     // Nur Kontostand
-    if (/kontostand|wie\s*viel\s+geld\s+hab|was\s+ist\s+auf\s+(meinem|dem)\s+konto/.test(t) && !/monat|ausgab|einnahm/.test(t)) {
+    if (/kontostand|guthaben|wie\s*viel\s+geld\s+hab|was\s+ist\s+auf\s+(meinem|dem)\s+konto/.test(t) && !/monat|ausgab|einnahm/.test(t)) {
       assistantSay(`Auf deinem Konto sind gerade ${eur(a.balance)}${a.balance < 0 ? " im Minus" : ""}.`);
       return true;
     }

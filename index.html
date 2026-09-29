@@ -987,7 +987,7 @@
       const flash = sortV(ms.filter(n => /flash/.test(n) && !/lite/.test(n) && !bad.test(n)));
       const lite = sortV(ms.filter(n => /flash-lite/.test(n) && !bad.test(n)));
       geminiCandidates = [...flash, ...lite];
-      if (!geminiCandidates.length) geminiCandidates = ["models/gemini-2.5-flash"];
+      if (!geminiCandidates.length) geminiCandidates = ["models/gemini-flash-latest"];
       const remembered = lsGet("zg_gem_model");
       geminiModel = geminiCandidates.includes(remembered) ? remembered : geminiCandidates[0];
       return true;
@@ -1071,14 +1071,23 @@
   async function gemFetch(path, body, signal) {
     const order = [geminiModel, ...geminiCandidates.filter(m => m !== geminiModel)];
     let lastStatus = 0, lastText = "";
-    for (let i = 0; i < order.length && i < 5; i++) {
+    for (let i = 0; i < order.length && i < 8; i++) {
       const m = order[i];
       const r = await gemFetchOne(m, path, body, signal);
       if (r.ok) {
-        if (m !== geminiModel) { geminiModel = m; lsSet("zg_gem_model", m); if (backend === "gemini") $("aiV").textContent = "Gemini (immer an) · " + m.replace("models/", ""); }
+        if (m !== geminiModel || lsGet("zg_gem_model") !== m) { geminiModel = m; lsSet("zg_gem_model", m); if (backend === "gemini") $("aiV").textContent = "Gemini (immer an) · " + m.replace("models/", ""); }
         return r;
       }
       lastStatus = r.status; lastText = await r.text();
+      // Modell abgeschaltet („no longer available“ …)? Aus der Liste streichen und ein neueres nehmen
+      if (/no longer available|not found|deprecated|not supported|update your code|is not available/i.test(lastText)) {
+        geminiCandidates = geminiCandidates.filter(x => x !== m);
+        if (lsGet("zg_gem_model") === m) lsSet("zg_gem_model", "");
+        const hint = /models\/(gemini-[\w.-]+)/.exec(lastText.replace(m, ""));
+        if (hint && !order.includes("models/" + hint[1])) order.splice(i + 1, 0, "models/" + hint[1]);
+        if (geminiModel === m) geminiModel = order[i + 1] || null;
+        continue;
+      }
       const overloaded = r.status === 503 || r.status === 500 || r.status === 429 || r.status === 404 || /high demand|overloaded|unavailable/i.test(lastText);
       if (!overloaded) break;
     }
@@ -1464,7 +1473,7 @@ Nachricht: "${text}"`;
   const euro = v => v.toLocaleString("de-DE", { maximumFractionDigits: v < 10 ? 2 : 0, minimumFractionDigits: v < 10 ? 2 : 0 }) + " Euro";
   const signed = v => (v >= 0 ? "plus " : "minus ") + euro(Math.abs(v));
   // großzügig, weil die Spracherkennung „Phantom Wallet“ oft anders schreibt (Fantom, Wollet, Walled …)
-  const WALLET_Q = /\b(ph|f)antom\w*|\b(w|v)all?e[td]t?\b|\bwollet\b|\bportfolio\b|\bkrypto\w*|\bcrypto\w*|\bmeine[nrm]?\s+(coins|solana)\b|\bkontostand\b/i;
+  const WALLET_Q = /\b(ph|f)antom\w*|\b(w|v)all?e[td]t?\b|\bwollet\b|\bwie\s*viel\s+geld\s+hab|\bportfolio\b|\bkrypto\w*|\bcrypto\w*|\bmeine[nrm]?\s+(coins|solana)\b|\bkontostand\b/i;
   const WALLET_ASK = /\b(wie|was|stand|steht|sieht|plus|minus|gewinn|verlust|wert|viel|zeig\w*|check\w*|status|abrufen|hab|habe|drauf)\b/i;
   const WALLET_INV = /(?:ich\s+)?(?:habe|hab)\s+(?:insgesamt\s+)?(\d+(?:[.,]\d+)?)\s*(?:euro|€)\s+.*?(?:rein\w*|investiert|eingezahlt|gesteckt|eingesetzt)/i;
   async function handleWallet(text) {
@@ -1484,11 +1493,11 @@ Nachricht: "${text}"`;
       busy = false; refreshUi();
       if (!r.rows.length) { assistantSay("In deiner Wallet finde ich gerade nichts mit einem Wert."); return true; }
       let say = `Deine Phantom Wallet ist gerade etwa ${euro(r.total)} wert. Seit gestern ${signed(r.change)}`;
-      const base = r.total - r.change; if (base > 0) say += `, das sind ${(r.change / base * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} Prozent`;
+      const base = r.total - r.change; if (base > 0) say += `, das sind ${Math.abs(r.change / base * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} Prozent`;
       say += ".";
       if (w.invested) {
         const diff = r.total - w.invested;
-        say += ` Gegenüber deinen eingezahlten ${euro(w.invested)} bist du insgesamt ${signed(diff)}, also ${(diff / w.invested * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} Prozent.`;
+        say += ` Gegenüber deinen eingezahlten ${euro(w.invested)} bist du insgesamt ${signed(diff)}, also ${Math.abs(diff / w.invested * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} Prozent.`;
       }
       const top = r.rows.slice(0, 3).map(x => `${x.sym} ${euro(x.val)}`).join(", ");
       say += ` Größte Posten: ${top}.`;

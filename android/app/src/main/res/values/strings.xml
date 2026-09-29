@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wa_desc">Drückt in WhatsApp auf „Senden“ – aber nur direkt nachdem du Jarvis gesagt hast, dass er jemandem schreiben soll, und du „Ja“ gesagt hast. Liest sonst nichts mit.</string>
+    <string name="wa_label">Zweites Gehirn – WhatsApp senden</string>
+</resources>

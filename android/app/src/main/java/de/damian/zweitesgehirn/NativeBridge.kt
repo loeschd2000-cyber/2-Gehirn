@@ -355,6 +355,21 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                 main.post { web.loadUrl("file:///android_asset/setup.html#spotify=" + (if (ok) "ok" else "fehler") + "&msg=" + android.net.Uri.encode(msg)) }
             }.start()
         }
+        // WhatsApp: Chat mit fertigem Text öffnen, mit Bedienungshilfe automatisch senden
+        @JavascriptInterface fun whatsappReady(): Boolean = WhatsApp.installedPackage(act) != null
+        @JavascriptInterface fun whatsappAuto(): Boolean = WhatsApp.autoSendEnabled(act)
+        @JavascriptInterface fun openWhatsappAuto() { main.post { WhatsApp.openAutoSendSettings(act) } }
+        @JavascriptInterface fun whatsappSend(number: String, text: String): Boolean {
+            val app = act.applicationContext; val big = !mini
+            var r = false
+            main.post {
+                WakeService.setMicBusy(false); speech?.cancel()
+                r = WhatsApp.send(app, number, text, big) { ok, msg ->
+                    emit("__zgWa", JSONObject().put("ok", ok).put("msg", msg).put("auto", WhatsApp.autoSendEnabled(app)))
+                }
+            }
+            return WhatsApp.installedPackage(act) != null
+        }
         /** Protokoll des letzten Abspielversuchs (für die Einstellungsseite) */
         @JavascriptInterface fun musicLog(): String = Music.lastLog
         /** Steuert die gerade laufende Musik (Spotify oder jede andere App), ohne sie zu öffnen. */

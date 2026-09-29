@@ -97,6 +97,14 @@
     <small id="vmMsg"></small>
   </section>
 
+  <section>
+    <h2><i>5</i>WhatsApp</h2>
+    <p>Sag „Schreib Papa auf WhatsApp hallo“. Jarvis liest dir die Nachricht vor und fragt, ob er sie senden soll.</p>
+    <div class="row"><span>Automatisch senden</span><span class="state" id="sWa"></span></div>
+    <button id="bWa" type="button">Einschalten (Bedienungshilfe)</button>
+    <small>In der Liste auf „Installierte Apps“ bzw. „Zweites Gehirn – WhatsApp senden“ tippen und einschalten. Ohne das öffnet Jarvis den Chat mit fertigem Text und du tippst selbst auf Senden. Ist der Schalter grau: Handy-Einstellungen → Apps → Zweites Gehirn → ⋮ → „Eingeschränkte Einstellungen zulassen“.</small>
+  </section>
+
   <small id="ver"></small>
 </main>
 <script>
@@ -109,6 +117,7 @@
     set("sMic", A.micGranted()); set("sOver", A.overlayGranted()); set("sBat", A.batteryOk());
     if (A.alexaReady) set("sAlexa", A.alexaReady());
     if (A.musicAccess) set("sMusic", A.musicAccess());
+    if (A.whatsappAuto) set("sWa", A.whatsappAuto());
   }
   if (A) {
     $("url").value = A.getAppUrl();
@@ -117,6 +126,7 @@
     $("bOver").onclick = () => A.openOverlaySettings();
     $("bBat").onclick = () => A.openBatterySettings();
     $("bMusic").onclick = () => A.openMusicAccess();
+    if (A.openWhatsappAuto) $("bWa").onclick = () => A.openWhatsappAuto();
     if (A.musicLog) { const l = A.musicLog(); if (l && !/^Noch nichts/.test(l)) $("mLog").textContent = "Letzter Versuch:\n" + l; }
     window.__zgMusic = { emit: r => { $("mLog").textContent = (r.ok ? "✓ Hat geklappt" : "✗ Hat nicht geklappt") + " (" + (r.how === "hintergrund" ? "im Hintergrund" : r.how === "app" ? "über Spotify" : "Fehler") + ")\n\n" + r.log; } };
     $("mTest").onclick = () => {

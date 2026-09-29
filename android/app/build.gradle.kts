@@ -15,6 +15,8 @@ android {
         targetSdk = 35
         versionCode = buildNumber
         versionName = "1.$buildNumber"
+        // nur für moderne 64-Bit-Handys (z. B. Galaxy S26) -> viel kleinere Datei
+        ndk { abiFilters += listOf("arm64-v8a") }
     }
 
     // Immer derselbe Schlüssel, damit sich neue Versionen einfach drüber installieren lassen

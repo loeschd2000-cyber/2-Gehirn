@@ -493,7 +493,7 @@
 
   function RULES() {
     const n = new Date();
-    return `Du bist die KI in Damians App 'Zweites Gehirn'. Damian macht eine Ausbildung zum Elektroniker für Automatisierungstechnik. Er ruft dich manchmal mit „Hey Jarvis“. Heute ist ${WD[n.getDay()]}, der ${n.toLocaleDateString("de-DE")}, ${pad(n.getHours())}:${pad(n.getMinutes())} Uhr. Deine Antworten werden laut vorgelesen: Antworte immer auf Deutsch, natürlich wie im Gespräch, kurz und klar (meist 1 bis 3 Sätze), außer er will mehr Details. Keine Markdown-Formatierung, keine Sternchen, keine Aufzählungszeichen, keine Emojis. Die App kann auf dem Handy Kontakte anrufen, WhatsApp-Nachrichten schreiben, den Stand der Phantom Wallet ansagen, Musik auf Spotify abspielen und steuern, Wecker stellen (auch auf der Alexa), Termine eintragen und anzeigen, Mails prüfen, zusammenfassen und als Entwurf schreiben und Kontakte nachschlagen. Behaupte nie, du hättest so etwas selbst erledigt.`;
+    return `Du bist die KI in Damians App 'Zweites Gehirn'. Damian macht eine Ausbildung zum Elektroniker für Automatisierungstechnik. Er ruft dich manchmal mit „Hey Jarvis“. Heute ist ${WD[n.getDay()]}, der ${n.toLocaleDateString("de-DE")}, ${pad(n.getHours())}:${pad(n.getMinutes())} Uhr. Deine Antworten werden laut vorgelesen: Antworte immer auf Deutsch, natürlich wie im Gespräch, kurz und klar (meist 1 bis 3 Sätze), außer er will mehr Details. Keine Markdown-Formatierung, keine Sternchen, keine Aufzählungszeichen, keine Emojis. Die App kann auf dem Handy Kontakte anrufen, WhatsApp-Nachrichten schreiben, den Stand der Phantom Wallet ansagen, Musik auf Spotify abspielen und steuern, Wecker stellen (auch auf der Alexa), Termine eintragen und anzeigen, Mails prüfen, zusammenfassen und als Entwurf schreiben und Kontakte nachschlagen. Behaupte nie, du hättest so etwas selbst erledigt. Du selbst hast KEINEN Zugriff auf Wallet-, Konto- oder Kursdaten: Erfinde niemals Beträge, Kontostände oder Kurse. Fragt Damian nach seiner Wallet, sag ihm, er soll genau so fragen: „Wie sieht's aus in meiner Phantom Wallet?“`;
   }
 
   let chats = [], currentId = null, messages = [];
@@ -1463,8 +1463,9 @@ Nachricht: "${text}"`;
   }
   const euro = v => v.toLocaleString("de-DE", { maximumFractionDigits: v < 10 ? 2 : 0, minimumFractionDigits: v < 10 ? 2 : 0 }) + " Euro";
   const signed = v => (v >= 0 ? "plus " : "minus ") + euro(Math.abs(v));
-  const WALLET_Q = /\b(phantom|wallet|portfolio)\b|\bmeine[nrm]?\s+(coins|kryptos?|cryptos?|solana)\b/i;
-  const WALLET_ASK = /\b(wie|was|stand|steht|sieht|plus|minus|gewinn|verlust|wert|viel|zeig|check|status)\b/i;
+  // großzügig, weil die Spracherkennung „Phantom Wallet“ oft anders schreibt (Fantom, Wollet, Walled …)
+  const WALLET_Q = /\b(ph|f)antom\w*|\b(w|v)all?e[td]t?\b|\bwollet\b|\bportfolio\b|\bkrypto\w*|\bcrypto\w*|\bmeine[nrm]?\s+(coins|solana)\b|\bkontostand\b/i;
+  const WALLET_ASK = /\b(wie|was|stand|steht|sieht|plus|minus|gewinn|verlust|wert|viel|zeig\w*|check\w*|status|abrufen|hab|habe|drauf)\b/i;
   const WALLET_INV = /(?:ich\s+)?(?:habe|hab)\s+(?:insgesamt\s+)?(\d+(?:[.,]\d+)?)\s*(?:euro|€)\s+.*?(?:rein\w*|investiert|eingezahlt|gesteckt|eingesetzt)/i;
   async function handleWallet(text) {
     const inv = WALLET_INV.exec(text);

@@ -60,7 +60,7 @@ class WakeService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == ACTION_STOP) {
             Prefs.setWake(this, false)
-            MainActivity.current?.onWakeStoppedFromNotification()
+            MainActivity.current?.bridge?.onWakeStopped()
             stopSelf()
             return START_NOT_STICKY
         }
@@ -150,15 +150,21 @@ class WakeService : Service() {
 
     private fun onWake() {
         micBusy = true   // Mikrofon für die App freihalten, bis sie selbst meldet, dass sie fertig ist
-        main.postDelayed({ if (MainActivity.current?.isListeningNative() != true) micBusy = false }, 12000)
+        main.postDelayed({
+            val listening = (MainActivity.current?.bridge?.isListening() == true) || (MiniActivity.current?.bridge?.isListening() == true)
+            if (!listening) micBusy = false
+        }, 12000)
         try {
             val v = getSystemService(Vibrator::class.java)
             v?.vibrate(VibrationEffect.createOneShot(60, VibrationEffect.DEFAULT_AMPLITUDE))
         } catch (_: Throwable) {}
-        val i = Intent(this, MainActivity::class.java)
+        // Ist die große App gerade offen, hört sie direkt zu. Sonst erscheint nur der kleine Kreis.
+        val big = MainActivity.current
+        if (big != null && big.inForeground) { big.bridge.deliverWake(); return }
+        val i = Intent(this, MiniActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             .putExtra("wake", true)
-        try { startActivity(i) } catch (e: Throwable) { Log.e(TAG, "App konnte nicht geöffnet werden", e) }
+        try { startActivity(i) } catch (e: Throwable) { Log.e(TAG, "Kreis konnte nicht geöffnet werden", e) }
     }
 
     override fun onDestroy() {

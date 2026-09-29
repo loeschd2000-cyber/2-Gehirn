@@ -163,6 +163,22 @@
     .core { min-height: calc(100vh - 110px); }
     .talk { position: sticky; bottom: 0; z-index: 2; padding-block: 10px calc(4px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(transparent, var(--bg) 22%); }
   }
+  /* ---------- Kleiner Kreis (Android, nach „Hey Jarvis“): nur Kern + letzte Antwort, Hintergrund durchsichtig ---------- */
+  body.mini { background: transparent !important; }
+  body.mini::before, body.mini .top, body.mini .side, body.mini form, body.mini .mic, body.mini .state { display: none !important; }
+  body.mini .app { padding: 0 10px 10px; min-height: 100%; height: 100%; justify-content: flex-end; }
+  body.mini .grid { display: block; flex: none; }
+  body.mini .core { flex: none; background: rgba(4, 11, 22, .9); border-color: var(--line-hi); border-radius: 26px; padding: 10px 12px; gap: 4px; box-shadow: 0 0 34px rgba(63, 214, 255, .28); }
+  body.mini .orbwrap { height: 100px; order: 3; cursor: pointer; }
+  body.mini .orblabel { display: none; }
+  body.mini .log { order: 1; min-height: 0; max-height: 160px; flex: none; padding: 2px; }
+  body.mini .log > * { display: none; }
+  body.mini .log > .msg:nth-last-child(-n+2), body.mini .log > .note:last-child { display: block; }
+  body.mini .log > .card:nth-last-child(-n+2) { display: flex; }
+  body.mini .talk { order: 2; }
+  body.mini .msg { font-size: 15px; padding: 8px 12px; }
+  .mini-full { display: none; }
+  body.mini .mini-full { display: block; position: absolute; bottom: 14px; left: 14px; z-index: 2; font: inherit; font-size: 12px; color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; cursor: pointer; }
 </style>
 
 <div class="app">
@@ -222,6 +238,7 @@
 
     <div class="col core-col">
       <section class="panel core">
+        <button class="mini-full" type="button" id="miniFull">App öffnen</button>
         <div class="orbwrap">
           <canvas id="orb" aria-hidden="true"></canvas>
           <div class="orblabel"><b>KERN</b><small>Zweites Gehirn</small></div>
@@ -263,6 +280,8 @@
   /* ================= Android-App: Brücke zu Mikrofon, Stimme, Google und „Hey Jarvis“ ================= */
   // Läuft die Seite in der Zweites-Gehirn-Android-App, übernimmt die App Mikrofon und Stimme (Webseiten dürfen das dort nicht).
   const AND = window.ZGAndroid || null;
+  const MINI = !!(AND && AND.isMini && AND.isMini());
+  if (MINI) document.body.classList.add("mini");
   if (AND) (function installAndroid() {
     const active = {};
     window.__zgSR = {
@@ -614,7 +633,7 @@
   const note = t => { const l = log.lastElementChild; if (l && l.className === "note" && l.textContent === t) return l; return add("note", t); };
   function renderChat() {
     log.textContent = "";
-    add("msg ai", GREETING);
+    if (!MINI) add("msg ai", GREETING);
     for (const m of messages) add(m.role === "user" ? "msg me" : "msg ai", m.content);
   }
   const fmt = ts => ts ? new Date(ts).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";
@@ -746,8 +765,29 @@
   }
   window.__zgWake = () => nativeWake();
   window.__zgWakeState = on => { wakeOn = !!on; lsSet("zg_wake", on ? "1" : "0"); updateWakeUi(); };
-  window.__zgResume = () => { syncFromServer(); };
+  window.__zgResume = () => {
+    try { mergeInto(JSON.parse(lsGet(STORE_KEY) || "[]"), JSON.parse(lsGet("zg_deleted") || "[]")); renderAll(); } catch {}
+    syncFromServer();
+  };
   if (AND) { $("cApp").hidden = false; $("cApp").onclick = () => AND.openSetup(); }
+
+
+  /* ---------- Kleiner Kreis: schließt sich von selbst, wenn nichts mehr passiert ---------- */
+  function startMiniWatch() {
+    let lastActive = Date.now(), hadTalk = false;
+    const opened = Date.now();
+    setInterval(() => {
+      const active = busy || speaking || listening;
+      if (active) { lastActive = Date.now(); hadTalk = true; return; }
+      const idle = Date.now() - lastActive;
+      if (pending) { if (idle > 20000) AND.miniClose(); return; }              // Rückfrage offen: etwas länger warten
+      if (hadTalk && idle > 2500) AND.miniClose();                             // fertig
+      else if (!hadTalk && Date.now() - opened > 9000) AND.miniClose();        // nie etwas gehört
+    }, 500);
+    const close = () => { hush(); stopListening(true); if (ctl) ctl.abort(); AND.miniClose(); };
+    $("orb").parentElement.addEventListener("click", close);
+    $("miniFull").onclick = () => { hush(); stopListening(true); AND.openFullApp(); };
+  }
 
   /* ================= Befehle ================= */
   function updateLoopUi() { $("cLoopState").textContent = loopOn ? "AN" : "AUS"; }
@@ -1047,16 +1087,17 @@
   }
   function tokenReceived(tok, seconds) {
     gToken = tok; gTokenExp = Date.now() + seconds * 1000;
+    lsSet("zg_g_ok", "1");
     try { sessionStorage.setItem("zg_g_token", JSON.stringify({ token: gToken, exp: gTokenExp })); } catch {}
     updateGoogleUi();
     driveSync(true).then(() => { const c = chats.find(x => x.id === currentId); if (c && c.messages.length !== messages.length && !busy && !speaking) openChat(c); });
   }
-  async function getToken() {
+  async function getToken(silent) {
     if (gToken && Date.now() < gTokenExp - 60000) return gToken;
     if (AND) {   // in der Android-App meldet die App selbst bei Google an
       return new Promise((res, rej) => {
         window.__zgGoogle = { emit(ev) { if (ev.token) { tokenReceived(ev.token, 50 * 60); res(gToken); } else rej(new Error(ev.error || "Google-Anmeldung fehlgeschlagen")); } };
-        AND.googleToken(G_SCOPES.join(" "));
+        if (silent && AND.googleTokenSilent) AND.googleTokenSilent(G_SCOPES.join(" ")); else AND.googleToken(G_SCOPES.join(" "));
       });
     }
     if (!gClientId) throw new Error("Google ist noch nicht eingerichtet");
@@ -1454,7 +1495,12 @@ Nachricht: "${text}"`;
     renderAll();   // beim Öffnen immer mit einem neuen Gespräch starten, alte stehen rechts unter „Gespräche“
     await checkAi();
     warmUp();
-    if (AND) { wakeOn = AND.wakeOn(); if (AND.consumeWake()) nativeWake(); }
+    if (AND) {
+      wakeOn = AND.wakeOn();
+      if (lsGet("zg_g_ok") === "1") getToken(true).catch(() => {});   // Drive-Abgleich ohne Nachfrage, falls schon erlaubt
+      if (AND.consumeWake()) nativeWake();
+    }
+    if (MINI) startMiniWatch();
     $("cWakeState").textContent = wakeOn ? "AN" : "AUS";
     if (wakeOn && !AND) { lockScreen(); scheduleWake(800); }
   })();

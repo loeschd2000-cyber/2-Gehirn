@@ -42,6 +42,18 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".MiniActivity"
+            android:exported="false"
+            android:theme="@style/ZG.Mini"
+            android:launchMode="singleInstance"
+            android:taskAffinity="de.damian.zweitesgehirn.mini"
+            android:excludeFromRecents="true"
+            android:noHistory="false"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|keyboard|uiMode|density" />
+
         <service
             android:name=".WakeService"
             android:exported="false"

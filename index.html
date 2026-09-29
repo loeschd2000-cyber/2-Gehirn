@@ -342,7 +342,7 @@
 
   function RULES() {
     const n = new Date();
-    return `Du bist die KI in Damians App 'Zweites Gehirn'. Damian macht eine Ausbildung zum Elektroniker für Automatisierungstechnik. Er ruft dich manchmal mit „Hey Jarvis“. Heute ist ${WD[n.getDay()]}, der ${n.toLocaleDateString("de-DE")}, ${pad(n.getHours())}:${pad(n.getMinutes())} Uhr. Deine Antworten werden laut vorgelesen: Antworte immer auf Deutsch, natürlich wie im Gespräch, kurz und klar (meist 1 bis 3 Sätze), außer er will mehr Details. Keine Markdown-Formatierung, keine Sternchen, keine Aufzählungszeichen, keine Emojis. Die App kann auf dem Handy Kontakte anrufen, Termine eintragen und anzeigen, Mails prüfen, zusammenfassen und als Entwurf schreiben und Kontakte nachschlagen. Behaupte nie, du hättest so etwas selbst erledigt.`;
+    return `Du bist die KI in Damians App 'Zweites Gehirn'. Damian macht eine Ausbildung zum Elektroniker für Automatisierungstechnik. Er ruft dich manchmal mit „Hey Jarvis“. Heute ist ${WD[n.getDay()]}, der ${n.toLocaleDateString("de-DE")}, ${pad(n.getHours())}:${pad(n.getMinutes())} Uhr. Deine Antworten werden laut vorgelesen: Antworte immer auf Deutsch, natürlich wie im Gespräch, kurz und klar (meist 1 bis 3 Sätze), außer er will mehr Details. Keine Markdown-Formatierung, keine Sternchen, keine Aufzählungszeichen, keine Emojis. Die App kann auf dem Handy Kontakte anrufen, Musik auf Spotify abspielen und steuern, Termine eintragen und anzeigen, Mails prüfen, zusammenfassen und als Entwurf schreiben und Kontakte nachschlagen. Behaupte nie, du hättest so etwas selbst erledigt.`;
   }
 
   let chats = [], currentId = null, messages = [];
@@ -1028,10 +1028,10 @@
   }
 
   // Eine feste Antwort (ohne KI) sprechen, anzeigen und speichern
-  function assistantSay(text) {
+  function assistantSay(text, silent) {
     const b = add("msg ai wait", "…");
     bubbleEl = b; shown = ""; fullAnswer = text; spokenUpTo = 0; genDone = true;
-    if (voiceActive()) pump(); else revealAll();
+    if (voiceActive() && !silent) pump(); else revealAll();
     messages.push({ role: "assistant", content: text, ts: Date.now() });
     persist();
   }
@@ -1267,12 +1267,43 @@ Nachricht: "${text}"`;
     return true;
   }
 
+
+  /* ---------- Musik (nur Android-App): „Spiel Gzuz auf Spotify“, „nächstes Lied“ ---------- */
+  function handleMedia(text) {
+    const t = text.trim().replace(/[.!?]+$/, "");
+    const quiet = msg => { lastViaVoice = false; assistantSay(msg, true); return true; };   // leise, damit die Musik nicht übertönt wird
+    let cmd = null, msg = "";
+    if (/^(?:(?:spiel|spiele|mach)\s+)?(?:das\s+)?(?:nächste[sn]?|nächster)\s*(?:lied|song|titel|track)?(?:\s+ab)?$|^(?:überspring\w*|skip)(?:\s+(?:das\s+)?(?:lied|song))?$|^(?:lied|song)\s+(?:weiter|überspringen)$/i.test(t)) { cmd = "next"; msg = "Nächstes Lied."; }
+    else if (/^(?:(?:spiel|spiele|mach)\s+)?(?:das\s+)?(?:vorherige[sn]?|letzte[sn]?)\s+(?:lied|song|titel|track)(?:\s+nochmal)?$/i.test(t)) { cmd = "previous"; msg = "Vorheriges Lied."; }
+    else if (/^(?:pause|stopp?|halt)(?:\s+(?:die\s+)?musik)?$|^musik\s+(?:aus|stopp?|stoppen|anhalten|pausieren)$|^(?:mach\s+)?(?:die\s+)?musik\s+aus$/i.test(t)) { cmd = "pause"; msg = "Musik pausiert."; }
+    else if (/^(?:weiterspielen|fortsetzen|musik\s+(?:an|weiter)|(?:spiel|mach)\s+(?:die\s+)?musik\s+weiter)$/i.test(t)) { cmd = "play"; msg = "Weiter geht's."; }
+    else if (/^(?:mach\s+)?(?:die\s+musik\s+)?(?:etwas\s+|noch\s+)?lauter(?:\s+bitte)?$/i.test(t)) { cmd = "louder"; msg = "Lauter."; }
+    else if (/^(?:mach\s+)?(?:die\s+musik\s+)?(?:etwas\s+|noch\s+)?leiser(?:\s+bitte)?$/i.test(t)) { cmd = "quieter"; msg = "Leiser."; }
+    if (cmd) {
+      if (!AND) return quiet("Musik steuern geht nur in der Android-App.");
+      AND.media(cmd);
+      return quiet(msg);
+    }
+    // „Spiel Gzuz (auf Spotify)“, „Spiele Musik von Gzuz“, „Spiel das Lied Bonez auf Spotify“
+    const m = /^(?:bitte\s+)?(?:spiel|spiele|play|hör|höre)\s+(?:mal\s+)?(.+?)(?:\s+(?:auf|bei|in|über|mit)\s+spotify)?$/i.exec(t);
+    if (!m || /^(?:ein\s+)?spiel\b/i.test(m[1])) return false;
+    let q = m[1].replace(/^(?:bitte\s+)?(?:etwas|was|musik|songs?|lieder|das\s+lied|den\s+song|die\s+playlist)\s+/i, "").trim();
+    let artist = "";
+    const von = /^(?:(?:etwas|was|musik|songs?|lieder)\s+)?von\s+(.+)$/i.exec(q);
+    if (von) { q = von[1].trim(); artist = q; }
+    if (!q || q.length < 2) return false;
+    if (!AND) return quiet("Musik abspielen geht nur in der Android-App.");
+    const ok = AND.spotifyPlay(q, artist);
+    return quiet(ok ? `Ich spiele ${q} auf Spotify.` : "Spotify ist nicht installiert, ich öffne es im Browser.");
+  }
+
   async function handleActions(text) {
     if (pending) {
       if (YES.test(text)) { await resolvePending(true, false); return true; }
       if (NO.test(text)) { await resolvePending(false, false); return true; }
       closeCard(pending); pending = null;
     }
+    if (handleMedia(text)) return true;
     if (handleCall(text)) return true;
     if (!ACTION_RE.test(text)) return false;
     const bubble = add("msg ai wait", "Schaut nach …");

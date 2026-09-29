@@ -10,7 +10,11 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
+import android.app.SearchManager
+import android.media.AudioManager
 import android.provider.ContactsContract
+import android.provider.MediaStore
+import android.view.KeyEvent
 import android.provider.Settings
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -316,6 +320,48 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                 catch (_: Throwable) { try { act.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)) } catch (_: Throwable) {} }
             }
         }
+        // Musik: Spotify starten und steuern
+        /** Startet Spotify mit einer Suche (Künstler, Lied, Playlist). false = Spotify nicht installiert. */
+        @JavascriptInterface fun spotifyPlay(query: String, artist: String): Boolean {
+            val installed = try { act.packageManager.getPackageInfo("com.spotify.music", 0); true } catch (_: Throwable) { false }
+            main.post {
+                WakeService.setMicBusy(false)
+                speech?.cancel()
+                val i = if (installed) {
+                    Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH).setPackage("com.spotify.music").apply {
+                        putExtra(SearchManager.QUERY, query)
+                        if (artist.isNotBlank()) {
+                            putExtra(MediaStore.EXTRA_MEDIA_FOCUS, MediaStore.Audio.Artists.ENTRY_CONTENT_TYPE)
+                            putExtra(MediaStore.EXTRA_MEDIA_ARTIST, artist)
+                        } else putExtra(MediaStore.EXTRA_MEDIA_FOCUS, "vnd.android.cursor.item/*")
+                    }
+                } else Intent(Intent.ACTION_VIEW, Uri.parse("https://open.spotify.com/search/" + Uri.encode(query)))
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                try { act.startActivity(i) } catch (_: Throwable) {}
+                if (mini) main.postDelayed({ act.finish() }, 400)
+            }
+            return installed
+        }
+        /** Steuert die gerade laufende Musik (Spotify oder jede andere App). */
+        @JavascriptInterface fun media(cmd: String) {
+            main.post {
+                val am = act.getSystemService(AudioManager::class.java)
+                val code = when (cmd) {
+                    "next" -> KeyEvent.KEYCODE_MEDIA_NEXT
+                    "previous" -> KeyEvent.KEYCODE_MEDIA_PREVIOUS
+                    "pause" -> KeyEvent.KEYCODE_MEDIA_PAUSE
+                    "play" -> KeyEvent.KEYCODE_MEDIA_PLAY
+                    "louder" -> { am.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI)
+                                  am.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, 0); return@post }
+                    "quieter" -> { am.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI)
+                                   am.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, 0); return@post }
+                    else -> return@post
+                }
+                am.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, code))
+                am.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, code))
+            }
+        }
+
         // Anrufen
         @JavascriptInterface fun phoneReady(): Boolean =
             act.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED &&

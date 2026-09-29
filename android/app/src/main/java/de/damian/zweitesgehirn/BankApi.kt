@@ -198,6 +198,7 @@ object BankApi {
                 val (tc, tr) = http(ctx, "GET", q)
                 if (tc != 200) {
                     if (pages == 0 && days > 89) return fetch(ctx, 89)   // manche Sparkassen geben ohne neue TAN nur 90 Tage
+                    if (pages > 0) break                                  // Folgeseite kaputt: mit dem bisher Geladenen weitermachen
                     return JSONObject().put("ok", false).put("error", err(tc, tr))
                 }
                 val tj = JSONObject(tr)
@@ -216,7 +217,8 @@ object BankApi {
                         .put("text", info.trim().take(140))
                         .put("code", t.optJSONObject("bank_transaction_code")?.optString("description") ?: ""))
                 }
-                cont = tj.optString("continuation_key").ifBlank { null }
+                // Achtung: JSON-null liefert bei optString den Text "null" – das ist KEIN Schlüssel
+                cont = if (tj.isNull("continuation_key")) null else tj.optString("continuation_key").takeIf { it.isNotBlank() && it != "null" }
                 pages++
             } while (cont != null && pages < 30)
         }

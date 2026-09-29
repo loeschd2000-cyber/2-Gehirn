@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.media.AudioFormat
+import android.media.AudioManager
 import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.os.Build
@@ -102,11 +103,14 @@ class WakeService : Service() {
             Log.e(TAG, "Modelle konnten nicht geladen werden", e); stopSelf(); return
         }
         val chunk = ShortArray(1280)
+        val audio = getSystemService(AudioManager::class.java)
         var rec: AudioRecord? = null
         var wasPaused = true
         try {
             while (!stopFlag) {
-                val paused = micBusy || speaking || System.currentTimeMillis() - lastTrigger < 3000
+                // Pause, solange die App selbst zuhört/spricht oder du telefonierst
+                val inCall = audio.mode == AudioManager.MODE_IN_CALL || audio.mode == AudioManager.MODE_IN_COMMUNICATION || audio.mode == AudioManager.MODE_RINGTONE
+                val paused = micBusy || speaking || inCall || System.currentTimeMillis() - lastTrigger < 3000
                 if (paused) {
                     rec?.let { try { it.stop() } catch (_: Throwable) {}; it.release() }
                     rec = null

@@ -342,7 +342,7 @@
 
   function RULES() {
     const n = new Date();
-    return `Du bist die KI in Damians App 'Zweites Gehirn'. Damian macht eine Ausbildung zum Elektroniker für Automatisierungstechnik. Er ruft dich manchmal mit „Hey Jarvis“. Heute ist ${WD[n.getDay()]}, der ${n.toLocaleDateString("de-DE")}, ${pad(n.getHours())}:${pad(n.getMinutes())} Uhr. Deine Antworten werden laut vorgelesen: Antworte immer auf Deutsch, natürlich wie im Gespräch, kurz und klar (meist 1 bis 3 Sätze), außer er will mehr Details. Keine Markdown-Formatierung, keine Sternchen, keine Aufzählungszeichen, keine Emojis. Die App kann Termine eintragen und anzeigen, Mails prüfen, zusammenfassen und als Entwurf schreiben und Kontakte nachschlagen. Behaupte nie, du hättest so etwas selbst erledigt.`;
+    return `Du bist die KI in Damians App 'Zweites Gehirn'. Damian macht eine Ausbildung zum Elektroniker für Automatisierungstechnik. Er ruft dich manchmal mit „Hey Jarvis“. Heute ist ${WD[n.getDay()]}, der ${n.toLocaleDateString("de-DE")}, ${pad(n.getHours())}:${pad(n.getMinutes())} Uhr. Deine Antworten werden laut vorgelesen: Antworte immer auf Deutsch, natürlich wie im Gespräch, kurz und klar (meist 1 bis 3 Sätze), außer er will mehr Details. Keine Markdown-Formatierung, keine Sternchen, keine Aufzählungszeichen, keine Emojis. Die App kann auf dem Handy Kontakte anrufen, Termine eintragen und anzeigen, Mails prüfen, zusammenfassen und als Entwurf schreiben und Kontakte nachschlagen. Behaupte nie, du hättest so etwas selbst erledigt.`;
   }
 
   let chats = [], currentId = null, messages = [];
@@ -1220,12 +1220,60 @@ Nachricht: "${text}"`;
   const YES = /^\s*(ja|jo|jep|jawohl|genau|klar|okay|ok|passt|mach( das)?|bitte|speicher|trag( es)? ein)\b/i;
   const NO = /^\s*(nein|nee|ne|nö|abbrechen|stopp|lass( es)?|verwerfen)\b/i;
 
+
+  /* ---------- Anrufen (nur Android-App): „Ruf Papa an“ ---------- */
+  const CALL_RES = [
+    /^(?:bitte\s+)?(?:ruf|rufe)\s+(?:bitte\s+)?(?:mal\s+)?(.+?)\s+an\b/i,
+    /^(?:bitte\s+)?(?:kannst du\s+)?(.+?)\s+anrufen\b/i,
+    /^(?:bitte\s+)?(?:anruf|anrufen)\s+(?:bei\s+)?(.+?)$/i,
+    /^(?:bitte\s+)?telefonier\w*\s+(?:mit\s+)?(.+?)$/i,
+  ];
+  function callTarget(text) {
+    const t = text.trim().replace(/[.!?]+$/, "");
+    for (const re of CALL_RES) {
+      const m = re.exec(t);
+      if (m) return m[1].replace(/^(?:meine[nmrs]?|mein|den|die|der|dem)\s+/i, "").trim();
+    }
+    return null;
+  }
+  const norm = x => (x || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " ").trim();
+  function handleCall(text) {
+    const who = callTarget(text);
+    if (!who) return false;
+    if (!AND) { assistantSay("Anrufen geht nur in der Android-App auf deinem Handy."); return true; }
+    if (!AND.phoneReady()) {
+      AND.requestPhone();
+      assistantSay("Ich brauche einmal die Erlaubnis für Kontakte und Telefon. Erlaube sie bitte und sag es dann nochmal.");
+      return true;
+    }
+    let list = [];
+    try { list = JSON.parse(AND.findContacts(who)); } catch {}
+    if (!list.length) { assistantSay(`Ich finde „${who}“ nicht in deinen Kontakten.`); return true; }
+    const q = norm(who);
+    const names = [...new Set(list.map(c => c.name))];
+    let name = names.find(n => norm(n) === q) || (names.length === 1 ? names[0] : null) || names.find(n => norm(n).startsWith(q + " ") || norm(n).split(" ").includes(q));
+    if (!name) { assistantSay(`Ich habe mehrere gefunden: ${names.slice(0, 3).join(", ")}. Sag bitte den genauen Namen, zum Beispiel: ruf ${names[0]} an.`); return true; }
+    const nums = list.filter(c => c.name === name);
+    const pick = nums.find(c => c.primary) || nums.find(c => c.mobile) || nums[0];
+    lastViaVoice = false;                 // nach dem Anruf nicht weiter zuhören
+    assistantSay(`Ich rufe ${name} an.`);
+    const ep = ttsEpoch;                  // Tipp auf den Kreis (Stopp) bricht den Anruf ab
+    const waitThenCall = () => {
+      if (ep !== ttsEpoch) return;
+      if (speaking) { setTimeout(waitThenCall, 200); return; }
+      setTimeout(() => { if (ep === ttsEpoch) AND.call(pick.number); }, 1500);
+    };
+    setTimeout(waitThenCall, 400);
+    return true;
+  }
+
   async function handleActions(text) {
     if (pending) {
       if (YES.test(text)) { await resolvePending(true, false); return true; }
       if (NO.test(text)) { await resolvePending(false, false); return true; }
       closeCard(pending); pending = null;
     }
+    if (handleCall(text)) return true;
     if (!ACTION_RE.test(text)) return false;
     const bubble = add("msg ai wait", "Schaut nach …");
     busy = true; refreshUi();

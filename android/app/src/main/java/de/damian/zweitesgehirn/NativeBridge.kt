@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
+import android.provider.ContactsContract
 import android.provider.Settings
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -315,6 +316,52 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                 catch (_: Throwable) { try { act.startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)) } catch (_: Throwable) {} }
             }
         }
+        // Anrufen
+        @JavascriptInterface fun phoneReady(): Boolean =
+            act.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED &&
+            act.checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
+        @JavascriptInterface fun requestPhone() {
+            main.post { act.requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE), REQ_PERMS) }
+        }
+        /** Sucht Kontakte mit Telefonnummer, deren Name den Suchbegriff enthält. */
+        @JavascriptInterface fun findContacts(query: String): String {
+            val out = JSONArray()
+            if (act.checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) return out.toString()
+            val cols = arrayOf(
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.CommonDataKinds.Phone.TYPE,
+                ContactsContract.CommonDataKinds.Phone.IS_SUPER_PRIMARY,
+            )
+            try {
+                act.contentResolver.query(
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI, cols,
+                    "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?", arrayOf("%$query%"),
+                    "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} ASC"
+                )?.use { c ->
+                    while (c.moveToNext() && out.length() < 20) {
+                        out.put(JSONObject()
+                            .put("name", c.getString(0) ?: "")
+                            .put("number", c.getString(1) ?: "")
+                            .put("mobile", c.getInt(2) == ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
+                            .put("primary", c.getInt(3) == 1))
+                    }
+                }
+            } catch (_: Throwable) {}
+            return out.toString()
+        }
+        @JavascriptInterface fun call(number: String) {
+            main.post {
+                val uri = Uri.fromParts("tel", number, null)
+                val canCall = act.checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
+                val i = Intent(if (canCall) Intent.ACTION_CALL else Intent.ACTION_DIAL, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                WakeService.setMicBusy(false)
+                speech?.cancel()
+                try { act.startActivity(i) } catch (_: Throwable) {}
+                if (mini) main.postDelayed({ act.finish() }, 300)
+            }
+        }
+
         @JavascriptInterface fun micGranted(): Boolean = act.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
         @JavascriptInterface fun requestMic() { main.post { askPermissions() } }
     }

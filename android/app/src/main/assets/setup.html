@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zweites Gehirn einrichten</title>
+<style>
+  :root { --bg:#040b16; --panel:rgba(10,28,48,.8); --line:rgba(64,180,230,.25); --ink:#d9f1ff; --muted:#7ea3bd; --cyan:#3fd6ff; --ok:#3ee89a; --warn:#ffb547; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, "Segoe UI", sans-serif; }
+  main { max-width: 560px; margin: 0 auto; padding: 20px 16px 40px; display: flex; flex-direction: column; gap: 16px; }
+  h1 { font-size: 20px; letter-spacing: .2em; margin: 8px 0 0; color: var(--cyan); }
+  p { margin: 0; color: var(--muted); }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  h2 { margin: 0; font-size: 13px; letter-spacing: .18em; text-transform: uppercase; }
+  label { font-size: 13px; color: var(--muted); }
+  input { width: 100%; background: #071526; color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; font: inherit; }
+  button { font: inherit; font-weight: 600; border-radius: 999px; padding: 11px 16px; cursor: pointer; border: 1px solid var(--line); background: #0e2640; color: var(--ink); }
+  button.primary { background: var(--cyan); color: #03121f; border-color: var(--cyan); }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .state { font-size: 13px; font-weight: 600; }
+  .ok { color: var(--ok); } .warn { color: var(--warn); }
+  small { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>ZWEITES GEHIRN</h1>
+  <p>Einmal einrichten, danach startet die App direkt.</p>
+
+  <section>
+    <h2>1. Adresse deiner App</h2>
+    <label for="url">Deine GitHub-Adresse (oder die Tailscale-Adresse)</label>
+    <input id="url" type="url" inputmode="url" autocomplete="off" placeholder="https://DEINNAME.github.io/zweites-gehirn/">
+    <button class="primary" id="save" type="button">Speichern und öffnen</button>
+    <small id="msg"></small>
+  </section>
+
+  <section>
+    <h2>2. „Hey Jarvis“ im Hintergrund</h2>
+    <p>Damit die App aufgeht, wenn du „Hey Jarvis“ sagst, braucht sie diese Rechte:</p>
+    <div class="row"><span>Mikrofon</span><span class="state" id="sMic"></span></div>
+    <button id="bMic" type="button">Mikrofon erlauben</button>
+    <div class="row"><span>Über anderen Apps anzeigen</span><span class="state" id="sOver"></span></div>
+    <button id="bOver" type="button">Erlauben (in den Einstellungen einschalten)</button>
+    <div class="row"><span>Akku nicht einschränken</span><span class="state" id="sBat"></span></div>
+    <button id="bBat" type="button">Nicht einschränken</button>
+    <small>Samsung beendet sonst Apps im Hintergrund. Einschalten kannst du „Hey Jarvis“ danach in der App bei den Schnellbefehlen.</small>
+  </section>
+
+  <small id="ver"></small>
+</main>
+<script>
+  const A = window.ZGAndroid;
+  const $ = id => document.getElementById(id);
+  function refresh() {
+    if (!A) return;
+    const set = (id, ok) => { const e = $(id); e.textContent = ok ? "erledigt" : "fehlt"; e.className = "state " + (ok ? "ok" : "warn"); };
+    set("sMic", A.micGranted()); set("sOver", A.overlayGranted()); set("sBat", A.batteryOk());
+  }
+  if (A) {
+    $("url").value = A.getAppUrl();
+    $("ver").textContent = "App-Version " + A.version();
+    $("bMic").onclick = () => A.requestMic();
+    $("bOver").onclick = () => A.openOverlaySettings();
+    $("bBat").onclick = () => A.openBatterySettings();
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); });
+    setInterval(refresh, 2000);
+    refresh();
+  }
+  $("save").onclick = () => {
+    let u = $("url").value.trim();
+    if (!/^https?:\/\//i.test(u)) u = "https://" + u;
+    try { new URL(u); } catch { $("msg").textContent = "Das ist keine gültige Adresse."; return; }
+    if (A) A.setAppUrl(u);
+  };
+</script>
+</body>
+</html>

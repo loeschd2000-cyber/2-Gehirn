@@ -1495,7 +1495,7 @@ Nachricht: "${text}"`;
       return quiet("Weiter geht's.");
     }
     if (!AND) return quiet("Musik abspielen geht nur in der Android-App.");
-    musicHold = Date.now() + 12000;          // kleinen Kreis offen lassen, bis Spotify spielt
+    musicHold = Date.now() + 25000;          // kleinen Kreis offen lassen, bis Spotify spielt
     const ok = AND.spotifyPlay(q, artist);
     return quiet(ok ? `Ich spiele ${q}.` : "Spotify ist nicht installiert, ich öffne es im Browser.");
   }

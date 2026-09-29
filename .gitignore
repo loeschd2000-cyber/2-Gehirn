@@ -1,0 +1,3 @@
+# Signatur-Schlüssel nie ins Repository
+*.keystore
+*.jks

@@ -19,22 +19,27 @@ android {
         ndk { abiFilters += listOf("arm64-v8a") }
     }
 
-    // Immer derselbe Schlüssel, damit sich neue Versionen einfach drüber installieren lassen
+    // Immer derselbe Schlüssel, damit sich neue Versionen einfach drüber installieren lassen.
+    // Der Schlüssel liegt NICHT im Repository, sondern als verschlüsseltes GitHub-Secret
+    // (ZG_KEYSTORE / ZG_KEYSTORE_PASSWORD) und wird nur beim Bauen kurz hergestellt.
+    val keyFile = rootProject.file("zg.keystore")
+    val keyPass = System.getenv("ZG_KEYSTORE_PASSWORD") ?: ""
+    val hasKey = keyFile.exists() && keyPass.isNotEmpty()
     signingConfigs {
         create("zg") {
-            storeFile = rootProject.file("zg.keystore")
-            storePassword = "zweitesgehirn"
+            storeFile = keyFile
+            storePassword = keyPass
             keyAlias = "zg"
-            keyPassword = "zweitesgehirn"
+            keyPassword = keyPass
         }
     }
     buildTypes {
         getByName("debug") {
-            signingConfig = signingConfigs.getByName("zg")
+            if (hasKey) signingConfig = signingConfigs.getByName("zg")
         }
         getByName("release") {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("zg")
+            if (hasKey) signingConfig = signingConfigs.getByName("zg")
         }
     }
     compileOptions {

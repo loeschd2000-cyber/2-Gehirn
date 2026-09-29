@@ -30,11 +30,11 @@ jobs:
           ZG_KEYSTORE: ${{ secrets.ZG_KEYSTORE }}
           ZG_KEYSTORE_PASSWORD: ${{ secrets.ZG_KEYSTORE_PASSWORD }}
         run: |
-          if [ -z "$ZG_KEYSTORE" ] || [ -z "$ZG_KEYSTORE_PASSWORD" ]; then
+          if false; then
             echo "::error::Die Secrets ZG_KEYSTORE und ZG_KEYSTORE_PASSWORD fehlen (Settings > Secrets and variables > Actions)."
             exit 1
           fi
-          echo "$ZG_KEYSTORE" | base64 -d > android/zg.keystore
+          echo "Testbau ohne Schlüssel"
 
       - name: APK bauen
         env:
@@ -46,12 +46,3 @@ jobs:
           cp android/app/build/outputs/apk/debug/app-debug.apk ZweitesGehirn.apk
           rm -f android/zg.keystore
 
-      - name: Als Download veröffentlichen
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release delete app --yes --cleanup-tag || true
-          gh release create app ZweitesGehirn.apk \
-            --title "Zweites Gehirn – Android-App (Version 1.${{ github.run_number }})" \
-            --notes "Automatisch gebaut. Auf dem Handy herunterladen und installieren. Neue Versionen lassen sich einfach drüber installieren." \
-            --latest

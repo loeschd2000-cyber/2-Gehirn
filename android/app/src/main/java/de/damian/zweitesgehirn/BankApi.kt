@@ -104,12 +104,14 @@ object BankApi {
         val (c, r) = http(ctx, "GET", "/aspsps?country=DE&psu_type=personal")
         if (c != 200) return JSONObject().put("error", err(c, r))
         val all = JSONObject(r).optJSONArray("aspsps") ?: JSONArray()
-        val q = query.lowercase().trim()
+        // ß/ss, Umlaute, Bindestriche egal; alle Wörter müssen vorkommen („sparkasse hassberge“ findet „Sparkasse Schweinfurt-Haßberge“)
+        fun n(x: String) = x.lowercase().replace("ß", "ss").replace("ä", "ae").replace("ö", "oe").replace("ü", "ue").replace(Regex("[^a-z0-9]+"), " ").trim()
+        val words = n(query).split(" ").filter { it.isNotBlank() }
         val out = JSONArray()
         for (i in 0 until all.length()) {
-            val a = all.getJSONObject(i); val n = a.optString("name")
-            if (q.isBlank() || n.lowercase().contains(q)) out.put(JSONObject().put("name", n).put("days", a.optLong("maximum_consent_validity", 0) / 86400))
-            if (out.length() >= 40) break
+            val a = all.getJSONObject(i); val name = a.optString("name"); val nn = n(name + " " + a.optString("bic"))
+            if (words.all { nn.contains(it) }) out.put(JSONObject().put("name", name).put("days", a.optLong("maximum_consent_validity", 0) / 86400))
+            if (out.length() >= 60) break
         }
         return JSONObject().put("banks", out)
     }

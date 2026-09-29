@@ -113,6 +113,12 @@ object BankApi {
             if (words.all { nn.contains(it) }) out.put(JSONObject().put("name", name).put("days", a.optLong("maximum_consent_validity", 0) / 86400))
             if (out.length() >= 60) break
         }
+        // Nichts gefunden (z. B. „Sparkasse Schweinfurt“)? Dann alles, was EIN Wort enthält – bei Sparkassen gibt es nur den Eintrag „Sparkasse“
+        if (out.length() == 0 && words.size > 1) for (i in 0 until all.length()) {
+            val a = all.getJSONObject(i); val name = a.optString("name"); val nn = n(name)
+            if (words.any { it.length >= 4 && nn.contains(it) }) out.put(JSONObject().put("name", name).put("days", a.optLong("maximum_consent_validity", 0) / 86400))
+            if (out.length() >= 60) break
+        }
         return JSONObject().put("banks", out)
     }
 

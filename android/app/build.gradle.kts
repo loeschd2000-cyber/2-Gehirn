@@ -55,4 +55,4 @@ dependencies {
     implementation("com.microsoft.onnxruntime:onnxruntime-android:1.20.0")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
 }
-// Build-Auslöser: 2026-09-29
+// Build-Auslöser: 2

@@ -69,7 +69,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             userAgentString = "$userAgentString ZweitesGehirnApp"
         }
         CookieManager.getInstance().setAcceptThirdPartyCookies(web, true)
-        web.addJavascriptInterface(Js(), "ZGAndroid")
+        web.addJavascriptInterface(js, "ZGAndroid")
         web.webChromeClient = WebChromeClient()
         web.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
@@ -232,6 +232,8 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
     }
 
     /** Alles, was die Web-App aufrufen darf */
+    val js by lazy { Js() }
+
     inner class Js {
         @JavascriptInterface fun version(): String =
             try { act.packageManager.getPackageInfo(act.packageName, 0).versionName ?: "" } catch (_: Throwable) { "" }
@@ -337,6 +339,21 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                 }
             }
             return installed
+        }
+        // Spotify-Schnittstelle (Premium): einmal anmelden, dann spielt alles im Hintergrund
+        @JavascriptInterface fun spotifyApiState(): String = JSONObject()
+            .put("clientId", SpotifyApi.clientId(act)).put("connected", SpotifyApi.connected(act))
+            .put("redirect", SpotifyApi.REDIRECT).toString()
+        @JavascriptInterface fun spotifyConnect(clientId: String): Boolean {
+            if (clientId.isNotBlank()) SpotifyApi.setClientId(act, clientId)
+            return SpotifyApi.startLogin(act)
+        }
+        @JavascriptInterface fun spotifyDisconnect() { SpotifyApi.disconnect(act) }
+        fun spotifyRedirect(uri: android.net.Uri) {
+            Thread {
+                val (ok, msg) = try { SpotifyApi.handleRedirect(act, uri) } catch (e: Throwable) { false to (e.message ?: "Fehler") }
+                main.post { web.loadUrl("file:///android_asset/setup.html#spotify=" + (if (ok) "ok" else "fehler") + "&msg=" + android.net.Uri.encode(msg)) }
+            }.start()
         }
         /** Protokoll des letzten Abspielversuchs (für die Einstellungsseite) */
         @JavascriptInterface fun musicLog(): String = Music.lastLog

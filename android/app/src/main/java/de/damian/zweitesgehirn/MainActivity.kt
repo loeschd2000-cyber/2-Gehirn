@@ -72,6 +72,12 @@ class MainActivity : Activity() {
     }
 
     private fun handleIntent(i: Intent?) {
+        val d = i?.data
+        if (d != null && d.scheme == "zweitesgehirn" && d.host == "spotify-callback") {
+            i.data = null
+            bridge.js.spotifyRedirect(d)
+            return
+        }
         if (i?.getBooleanExtra("wake", false) == true) {
             i.removeExtra("wake")
             bridge.deliverWake()

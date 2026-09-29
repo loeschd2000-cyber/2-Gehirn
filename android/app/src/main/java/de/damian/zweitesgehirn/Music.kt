@@ -95,6 +95,8 @@ object Music {
         } else putString(MediaStore.EXTRA_MEDIA_FOCUS, "vnd.android.cursor.item/*")
     }
 
+    fun wakeSpotifyPublic(ctx: Context) = wakeSpotify(ctx)
+
     /** Spotify im Hintergrund "aufwecken", ohne es zu öffnen (wie die Play-Taste am Kopfhörer). */
     private fun wakeSpotify(ctx: Context) {
         for (a in listOf(KeyEvent.ACTION_DOWN, KeyEvent.ACTION_UP)) {
@@ -114,6 +116,21 @@ object Music {
     fun play(ctx: Context, query: String, artist: String, backToApp: Boolean, done: Done) {
         log.setLength(0); t0 = SystemClock.elapsedRealtime()
         step("Anfrage: „$query“" + if (artist.isNotBlank()) " (Künstler)" else "")
+        if (SpotifyApi.connected(ctx)) {
+            step("Weg 1: offizielle Spotify-Schnittstelle")
+            Thread {
+                val (ok, msg) = try { SpotifyApi.play(ctx, query, artist) { step(it) } } catch (e: Throwable) { false to (e.message ?: "Fehler") }
+                main.post {
+                    if (ok) done.done(true, "hintergrund", msg)
+                    else { step("Schnittstelle ging nicht → alte Wege"); playOld(ctx, query, artist, backToApp, done) }
+                }
+            }.start()
+            return
+        }
+        playOld(ctx, query, artist, backToApp, done)
+    }
+
+    private fun playOld(ctx: Context, query: String, artist: String, backToApp: Boolean, done: Done) {
         if (!spotifyInstalled(ctx)) {
             step("Spotify ist nicht installiert → Browser")
             playViaApp(ctx, query, artist, backToApp, done); return

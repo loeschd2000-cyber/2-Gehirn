@@ -73,6 +73,13 @@
     <div class="row"><span>Benachrichtigungszugriff</span><span class="state" id="sMusic"></span></div>
     <button id="bMusic" type="button">Erlauben (Zweites Gehirn einschalten)</button>
     <small>Schalter grau oder „Eingeschränkte Einstellung“? Dann zuerst: Handy-Einstellungen → Apps → Zweites Gehirn → oben rechts ⋮ → „Eingeschränkte Einstellungen zulassen“. Danach hier nochmal tippen.</small>
+    <div class="row"><span>Spotify-Schnittstelle (Premium)</span><span class="state" id="sSpApi"></span></div>
+    <small>Das ist der beste Weg: Musik startet komplett im Hintergrund. Anleitung: „Spotify einrichten.md“. Bei Spotify als Redirect URI eintragen:</small>
+    <pre id="spRedirect"></pre>
+    <label for="spId">Client ID von developer.spotify.com</label>
+    <input id="spId" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="z. B. 1a2b3c4d…">
+    <div class="two"><button class="primary" id="spConnect" type="button">Mit Spotify verbinden</button><button id="spOff" type="button">Trennen</button></div>
+    <small id="spMsg"></small>
     <label for="mq">Musik testen</label>
     <div class="two"><input id="mq" type="text" value="Gzuz" autocomplete="off"><button id="mTest" type="button" style="flex:none">Abspielen</button></div>
     <pre id="mLog"></pre>
@@ -98,6 +105,7 @@
   function refresh() {
     if (!A) return;
     const set = (id, ok) => { const e = $(id); e.textContent = ok ? "erledigt" : "fehlt"; e.className = "state " + (ok ? "ok" : "warn"); };
+    if (A.spotifyApiState) { try { const st = JSON.parse(A.spotifyApiState()); set("sSpApi", st.connected); } catch {} }
     set("sMic", A.micGranted()); set("sOver", A.overlayGranted()); set("sBat", A.batteryOk());
     if (A.alexaReady) set("sAlexa", A.alexaReady());
     if (A.musicAccess) set("sMusic", A.musicAccess());
@@ -116,6 +124,21 @@
       $("mLog").textContent = "Teste …";
       A.spotifyPlay(q, "");
     };
+    if (A.spotifyApiState) {
+      const st = JSON.parse(A.spotifyApiState());
+      $("spRedirect").textContent = st.redirect; $("spId").value = st.clientId || "";
+      $("spConnect").onclick = () => {
+        const id = $("spId").value.trim();
+        if (!/^[0-9a-f]{32}$/i.test(id)) { $("spMsg").textContent = "Die Client ID hat 32 Zeichen (Zahlen und Buchstaben a–f). Bitte genau kopieren."; return; }
+        $("spMsg").textContent = A.spotifyConnect(id) ? "Browser geht auf: Bei Spotify anmelden und „Zustimmen“ tippen." : "Konnte den Browser nicht öffnen.";
+      };
+      $("spOff").onclick = () => { A.spotifyDisconnect(); $("spMsg").textContent = "Getrennt."; refresh(); };
+      const h = new URLSearchParams(location.hash.slice(1));
+      if (h.get("spotify")) {
+        $("spMsg").textContent = (h.get("spotify") === "ok" ? "✓ " : "✗ ") + (h.get("msg") || "");
+        setTimeout(() => $("spMsg").scrollIntoView({ block: "center" }), 200);
+      }
+    } else { $("spRedirect").textContent = "Neue App-Version nötig"; }
     if (A.alexaDevice) $("vmDevice").value = A.alexaDevice();
     $("vmSave").onclick = () => {
       const tok = $("vmToken").value.trim(), dev = $("vmDevice").value.trim();

@@ -1269,32 +1269,80 @@ Nachricht: "${text}"`;
 
 
   /* ---------- Musik (nur Android-App): „Spiel Gzuz auf Spotify“, „nächstes Lied“ ---------- */
+  // Welche Sätze was bedeuten (bewusst großzügig, weil man es unterschiedlich sagt)
+  const M_ART = "(?:die|den|das|meine?n?)\\s+";
+  const M_OBJ = "(?:musik|lied|song|titel|track|playlist|spotify|podcast)";
+  const MEDIA_CMDS = [
+    ["next", "Nächstes Lied.", [
+      /^(?:(?:spiel|spiele|mach|nimm|geh\s+zu|gehe\s+zu|zum)\s+)?(?:das\s+|dem\s+)?(?:nächste[nmrs]?)(?:\s+(?:lied|song|titel|track))?(?:\s+(?:ab|bitte))?$/,
+      /^(?:überspring\w*|skip\w*)(?:\s+(?:das|den|dieses?n?)?\s*(?:lied|song|titel|track)?)?$/,
+      /^(?:lied|song|titel|track)\s+(?:weiter|überspringen|wechseln)$/,
+      /^(?:(?:ein|n)\s+)?(?:anderes|neues)\s+(?:lied|song)(?:\s+bitte)?$/,
+      /^(?:weiter\s*(?:schalten|springen)|vorspulen|next)$/]],
+    ["previous", "Vorheriges Lied.", [
+      /^(?:(?:spiel|spiele|mach|nimm|geh\s+zu(?:rück)?)\s+)?(?:das\s+|zum\s+)?(?:vorherige[nmrs]?|letzte[nmrs]?)\s+(?:lied|song|titel|track)(?:\s+nochmal)?$/,
+      /^(?:ein\s+)?(?:lied|song)\s+zurück$|^zurück\s*(?:spulen|springen)?$/,
+      /^(?:spiel|spiele|mach)\s+(?:das\s+)?(?:lied|song)\s+(?:nochmal|noch\s+einmal|von\s+vorne)$/]],
+    ["pause", "Musik pausiert.", [
+      /^(?:mach\s+)?(?:(?:eine?|mal)\s+)?pause$/,
+      new RegExp("^(?:pausier\\w*|stopp\\w*|stop|halt\\w*|anhalten|beende\\w*|aus)(?:\\s+" + M_ART + "?" + M_OBJ + ")?(?:\\s+an)?$"),
+      new RegExp("^(?:" + M_ART + ")?" + M_OBJ + "\\s+(?:aus|stopp\\w*|stop|anhalten|pausier\\w*|beenden|pause|halt)$"),
+      new RegExp("^(?:mach|schalt\\w*|dreh\\w*)\\s+(?:" + M_ART + ")?" + M_OBJ + "\\s+aus$"),
+      new RegExp("^(?:halt\\w*|stopp\\w*|pausier\\w*)\\s+(?:" + M_ART + ")?" + M_OBJ + "(?:\\s+an)?$")]],
+    ["play", "Weiter geht's.", [
+      /^(?:weiter|weiter\s*spielen|weiter\s*machen|fortsetzen|fortfahren|fort|resume|play|abspielen|los)$/,
+      new RegExp("^(?:spiel|spiele|mach|lass|lasse|setz|setze|fahr|fahre|starte?)\\s+(?:" + M_ART + ")?(?:" + M_OBJ + "\\s+)?(?:wieder\\s+|mal\\s+)?(?:weiter|fort|an|ab|laufen|weiterlaufen|weiterspielen)$"),
+      new RegExp("^(?:" + M_ART + ")?" + M_OBJ + "\\s+(?:wieder\\s+)?(?:an|weiter|fortsetzen|starten|abspielen|läuft\\s+weiter|weiterspielen|wieder)$"),
+      new RegExp("^(?:spiel|spiele|mach|schalt\\w*|dreh\\w*)\\s+(?:" + M_ART + ")?" + M_OBJ + "\\s+(?:wieder\\s+)?(?:an|ein)$"),
+      new RegExp("^(?:" + M_OBJ + "|spiel\\w*|mach)\\s+(?:bitte\\s+)?(?:wieder|weiter)$")]],
+    ["louder", "Lauter.", [/^(?:mach\s+|dreh\s+)?(?:die\s+musik\s+|es\s+)?(?:etwas\s+|noch\s+|mal\s+|bisschen\s+)?(?:lauter|auf)(?:\s+machen|\s+drehen)?$/]],
+    ["quieter", "Leiser.", [/^(?:mach\s+|dreh\s+)?(?:die\s+musik\s+|es\s+)?(?:etwas\s+|noch\s+|mal\s+|bisschen\s+)?(?:leiser)(?:\s+machen|\s+drehen)?$/]],
+  ];
+  /** Satz aufräumen: „Hey Jarvis, bitte spiel die Musik weiter.“ -> „spiel die musik weiter“ */
+  function mediaClean(text) {
+    return text.toLowerCase().trim()
+      .replace(/[.,!?;:„“"]+/g, " ")
+      .replace(/^\s*(?:hey\s+|hallo\s+|ok\s+)?jarvis\s+/, "")
+      .replace(/^(?:kannst\s+du\s+|könntest\s+du\s+|würdest\s+du\s+)/, "")
+      .replace(/^(?:bitte|mal|jetzt|und|dann)\s+/, "").replace(/^(?:bitte|mal|jetzt)\s+/, "")
+      .replace(/\s+(?:bitte|mal|jetzt|danke)$/, "").replace(/\s+(?:bitte|mal|jetzt)$/, "")
+      .replace(/\s+(?:auf|bei|in|über|mit)\s+spotify$/, (m) => m)   // bleibt für die Suche erhalten
+      .replace(/\s+/g, " ").trim();
+  }
+  function mediaCommand(text) {
+    let t = mediaClean(text).replace(/\s+(?:auf|bei|in|über|mit)\s+spotify$/, "");
+    t = t.replace(/\s+(?:mal|bitte|wieder)\s+/g, m => m.includes("wieder") ? " wieder " : " ").trim();
+    for (const [cmd, msg, res] of MEDIA_CMDS) if (res.some(r => r.test(t))) return { cmd, msg };
+    return null;
+  }
+
   function handleMedia(text) {
-    const t = text.trim().replace(/[.!?]+$/, "");
     const quiet = msg => { lastViaVoice = false; assistantSay(msg, true); return true; };   // leise, damit die Musik nicht übertönt wird
-    let cmd = null, msg = "";
-    if (/^(?:(?:spiel|spiele|mach)\s+)?(?:das\s+)?(?:nächste[sn]?|nächster)\s*(?:lied|song|titel|track)?(?:\s+ab)?$|^(?:überspring\w*|skip)(?:\s+(?:das\s+)?(?:lied|song))?$|^(?:lied|song)\s+(?:weiter|überspringen)$/i.test(t)) { cmd = "next"; msg = "Nächstes Lied."; }
-    else if (/^(?:(?:spiel|spiele|mach)\s+)?(?:das\s+)?(?:vorherige[sn]?|letzte[sn]?)\s+(?:lied|song|titel|track)(?:\s+nochmal)?$/i.test(t)) { cmd = "previous"; msg = "Vorheriges Lied."; }
-    else if (/^(?:pause|stopp?|halt)(?:\s+(?:die\s+)?musik)?$|^musik\s+(?:aus|stopp?|stoppen|anhalten|pausieren)$|^(?:mach\s+)?(?:die\s+)?musik\s+aus$/i.test(t)) { cmd = "pause"; msg = "Musik pausiert."; }
-    else if (/^(?:weiterspielen|fortsetzen|musik\s+(?:an|weiter)|(?:spiel|mach)\s+(?:die\s+)?musik\s+weiter)$/i.test(t)) { cmd = "play"; msg = "Weiter geht's."; }
-    else if (/^(?:mach\s+)?(?:die\s+musik\s+)?(?:etwas\s+|noch\s+)?lauter(?:\s+bitte)?$/i.test(t)) { cmd = "louder"; msg = "Lauter."; }
-    else if (/^(?:mach\s+)?(?:die\s+musik\s+)?(?:etwas\s+|noch\s+)?leiser(?:\s+bitte)?$/i.test(t)) { cmd = "quieter"; msg = "Leiser."; }
-    if (cmd) {
+    const c = mediaCommand(text);
+    if (c) {
       if (!AND) return quiet("Musik steuern geht nur in der Android-App.");
-      AND.media(cmd);
-      return quiet(msg);
+      AND.media(c.cmd);
+      return quiet(c.msg);
     }
     // „Spiel Gzuz (auf Spotify)“, „Spiele Musik von Gzuz“, „Spiel das Lied Bonez auf Spotify“
-    const m = /^(?:bitte\s+)?(?:spiel|spiele|play|hör|höre)\s+(?:mal\s+)?(.+?)(?:\s+(?:auf|bei|in|über|mit)\s+spotify)?$/i.exec(t);
-    if (!m || /^(?:ein\s+)?spiel\b/i.test(m[1])) return false;
-    let q = m[1].replace(/^(?:bitte\s+)?(?:etwas|was|musik|songs?|lieder|das\s+lied|den\s+song|die\s+playlist)\s+/i, "").trim();
+    const t = mediaClean(text);
+    const m = /^(?:spiel|spiele|play|hör|höre|leg|lege|mach)\s+(?:mir\s+)?(?:mal\s+)?(.+?)(?:\s+(?:auf|bei|in|über|mit)\s+spotify)?(?:\s+(?:auf|an|ab))?$/i.exec(t);
+    if (!m || /^(?:ein\s+|eine\s+)?spiel\b/i.test(m[1])) return false;
+    // „mach …“ nur, wenn klar Musik gemeint ist
+    if (/^mach\b/.test(t) && !/\b(?:musik|lied|song|spotify|playlist)\b/.test(t)) return false;
+    let q = m[1].replace(/^(?:bitte\s+)?(?:etwas|was|musik|songs?|lieder|das\s+lied|den\s+song|die\s+playlist|ein\s+lied|einen\s+song)\s+/i, "").trim();
     let artist = "";
-    const von = /^(?:(?:etwas|was|musik|songs?|lieder)\s+)?von\s+(.+)$/i.exec(q);
+    const von = /^(?:(?:etwas|was|musik|songs?|lieder|ein\s+lied|einen\s+song)\s+)?von\s+(.+)$/i.exec(q);
     if (von) { q = von[1].trim(); artist = q; }
-    if (!q || q.length < 2) return false;
+    // Nur Füllwörter übrig (z. B. „spiel die Musik“, „spiel wieder“)? Dann einfach weiterspielen.
+    if (!q || q.length < 2 || /^(?:die|das|den|meine?)?\s*(?:musik|lied|song|was|etwas|wieder|weiter|fort|ab|an|spotify)?$/.test(q)) {
+      if (!AND) return quiet("Musik steuern geht nur in der Android-App.");
+      AND.media("play");
+      return quiet("Weiter geht's.");
+    }
     if (!AND) return quiet("Musik abspielen geht nur in der Android-App.");
     const ok = AND.spotifyPlay(q, artist);
-    return quiet(ok ? `Ich spiele ${q} auf Spotify.` : "Spotify ist nicht installiert, ich öffne es im Browser.");
+    return quiet(ok ? `Ich spiele ${q}.` : "Spotify ist nicht installiert, ich öffne es im Browser.");
   }
 
   /* ---------- Wecker (nur Android-App): „Stell einen Wecker bei der Alexa um 5 Uhr“ ---------- */

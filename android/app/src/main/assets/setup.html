@@ -49,7 +49,15 @@
   </section>
 
   <section>
-    <h2>3. Alexa (Voice Monkey)</h2>
+    <h2>3. Musik im Hintergrund</h2>
+    <p>Damit „Spiel Gzuz“ die Musik startet, ohne dass Spotify aufgeht, braucht die App den Benachrichtigungszugriff. Sie liest damit keine Nachrichten, sie steuert nur den Musik-Player.</p>
+    <div class="row"><span>Benachrichtigungszugriff</span><span class="state" id="sMusic"></span></div>
+    <button id="bMusic" type="button">Erlauben (Zweites Gehirn einschalten)</button>
+    <small>Ist der Schalter grau oder kommt „Eingeschränkte Einstellung“? Dann zuerst: Einstellungen → Apps → Zweites Gehirn → oben rechts ⋮ → „Eingeschränkte Einstellungen zulassen“. Danach nochmal hier tippen.</small>
+  </section>
+
+  <section>
+    <h2>4. Alexa (Voice Monkey)</h2>
     <p>Damit Jarvis Wecker auf deiner Alexa stellen kann. Anleitung: „Alexa einrichten.md“.</p>
     <div class="row"><span>Alexa verbunden</span><span class="state" id="sAlexa"></span></div>
     <label for="vmToken">API-Token von voicemonkey.io</label>
@@ -71,6 +79,7 @@
     const set = (id, ok) => { const e = $(id); e.textContent = ok ? "erledigt" : "fehlt"; e.className = "state " + (ok ? "ok" : "warn"); };
     set("sMic", A.micGranted()); set("sOver", A.overlayGranted()); set("sBat", A.batteryOk());
     if (A.alexaReady) set("sAlexa", A.alexaReady());
+    if (A.musicAccess) set("sMusic", A.musicAccess());
   }
   if (A) {
     $("url").value = A.getAppUrl();
@@ -78,6 +87,7 @@
     $("bMic").onclick = () => A.requestMic();
     $("bOver").onclick = () => A.openOverlaySettings();
     $("bBat").onclick = () => A.openBatterySettings();
+    $("bMusic").onclick = () => A.openMusicAccess();
     if (A.alexaDevice) $("vmDevice").value = A.alexaDevice();
     $("vmSave").onclick = () => {
       const tok = $("vmToken").value.trim(), dev = $("vmDevice").value.trim();

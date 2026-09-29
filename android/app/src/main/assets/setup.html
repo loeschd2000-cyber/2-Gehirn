@@ -48,6 +48,19 @@
     <small>Samsung beendet sonst Apps im Hintergrund. Einschalten kannst du „Hey Jarvis“ danach in der App bei den Schnellbefehlen.</small>
   </section>
 
+  <section>
+    <h2>3. Alexa (Voice Monkey)</h2>
+    <p>Damit Jarvis Wecker auf deiner Alexa stellen kann. Anleitung: „Alexa einrichten.md“.</p>
+    <div class="row"><span>Alexa verbunden</span><span class="state" id="sAlexa"></span></div>
+    <label for="vmToken">API-Token von voicemonkey.io</label>
+    <input id="vmToken" type="password" autocomplete="off" placeholder="Token einfügen">
+    <label for="vmDevice">Geräte-ID des Routine Triggers</label>
+    <input id="vmDevice" type="text" autocomplete="off" autocapitalize="off" placeholder="z. B. jarvis-wecker">
+    <button class="primary" id="vmSave" type="button">Speichern</button>
+    <button id="vmTest" type="button">Jetzt testen (Alexa klingelt)</button>
+    <small id="vmMsg"></small>
+  </section>
+
   <small id="ver"></small>
 </main>
 <script>
@@ -57,6 +70,7 @@
     if (!A) return;
     const set = (id, ok) => { const e = $(id); e.textContent = ok ? "erledigt" : "fehlt"; e.className = "state " + (ok ? "ok" : "warn"); };
     set("sMic", A.micGranted()); set("sOver", A.overlayGranted()); set("sBat", A.batteryOk());
+    if (A.alexaReady) set("sAlexa", A.alexaReady());
   }
   if (A) {
     $("url").value = A.getAppUrl();
@@ -64,6 +78,16 @@
     $("bMic").onclick = () => A.requestMic();
     $("bOver").onclick = () => A.openOverlaySettings();
     $("bBat").onclick = () => A.openBatterySettings();
+    if (A.alexaDevice) $("vmDevice").value = A.alexaDevice();
+    $("vmSave").onclick = () => {
+      const tok = $("vmToken").value.trim(), dev = $("vmDevice").value.trim();
+      if (!dev) { $("vmMsg").textContent = "Bitte die Geräte-ID eintragen."; return; }
+      if (!tok && !A.alexaReady()) { $("vmMsg").textContent = "Bitte den Token eintragen."; return; }
+      A.alexaSetup(tok || "__keep__", dev);
+      $("vmToken").value = ""; $("vmMsg").textContent = "Gespeichert."; refresh();
+    };
+    window.__zgAlexa = { emit: r => { $("vmMsg").textContent = r.ok ? "Hat geklappt! Deine Alexa sollte jetzt klingeln." : "Hat nicht geklappt: " + r.msg; } };
+    $("vmTest").onclick = () => { $("vmMsg").textContent = "Teste …"; A.alexaTest(); };
     document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); });
     setInterval(refresh, 2000);
     refresh();

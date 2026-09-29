@@ -13,6 +13,7 @@ import android.os.PowerManager
 import android.app.SearchManager
 import android.media.AudioManager
 import android.provider.ContactsContract
+import android.provider.AlarmClock
 import android.provider.MediaStore
 import android.view.KeyEvent
 import android.provider.Settings
@@ -359,6 +360,31 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                 }
                 am.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, code))
                 am.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, code))
+            }
+        }
+
+        // Alexa über Voice Monkey + Wecker
+        @JavascriptInterface fun alexaReady(): Boolean = AlexaAlarm.configured(act)
+        @JavascriptInterface fun alexaSetup(token: String, device: String) { AlexaAlarm.configure(act, token, device) }
+        @JavascriptInterface fun alexaDevice(): String = AlexaAlarm.device(act)
+        @JavascriptInterface fun alexaTest() {
+            Thread {
+                val (ok, msg) = AlexaAlarm.trigger(act)
+                emit("__zgAlexa", JSONObject().put("ok", ok).put("msg", msg))
+            }.start()
+        }
+        /** at = Zeitpunkt in Millisekunden (als Text, weil JavaScript-Zahlen zu groß für Int sind) */
+        @JavascriptInterface fun alexaAlarm(at: String, label: String): Int = AlexaAlarm.schedule(act, at.toLong(), label)
+        @JavascriptInterface fun alexaAlarms(): String = AlexaAlarm.list(act).toString()
+        @JavascriptInterface fun alexaCancel(id: Int) { AlexaAlarm.cancel(act, id) }
+        /** Wecker in der Uhr-App des Handys stellen, ohne sie zu öffnen */
+        @JavascriptInterface fun phoneAlarm(hour: Int, minute: Int, label: String) {
+            main.post {
+                val i = Intent(AlarmClock.ACTION_SET_ALARM)
+                    .putExtra(AlarmClock.EXTRA_HOUR, hour).putExtra(AlarmClock.EXTRA_MINUTES, minute)
+                    .putExtra(AlarmClock.EXTRA_MESSAGE, label).putExtra(AlarmClock.EXTRA_SKIP_UI, true)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                try { act.startActivity(i) } catch (_: Throwable) {}
             }
         }
 

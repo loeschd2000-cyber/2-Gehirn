@@ -131,7 +131,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
     // ---------- Hilfen ----------
     private fun emit(target: String, obj: JSONObject) {
         val code = "window.$target && $target.emit($obj)"
-        main.post { web.evaluateJavascript(code, null) }
+        main.post { try { web.evaluateJavascript(code, null) } catch (_: Throwable) {} }
     }
 
     private fun ttsFinished(id: String, type: String) {
@@ -330,12 +330,16 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             main.post {
                 WakeService.setMicBusy(false)
                 speech?.cancel()
-                if (!installed) { Music.playViaApp(app, query, artist, false); return@post }
                 // erst im Hintergrund versuchen, nur wenn das nicht geht kurz über Spotify
-                Music.play(app, query, artist) { Music.playViaApp(app, query, artist, wasBig) }
+                Music.play(app, query, artist, wasBig) { ok, how, msg ->
+                    emit("__zgMusic", JSONObject().put("ok", ok).put("how", how).put("msg", msg)
+                        .put("access", Music.accessGranted(app)).put("log", Music.lastLog))
+                }
             }
             return installed
         }
+        /** Protokoll des letzten Abspielversuchs (für die Einstellungsseite) */
+        @JavascriptInterface fun musicLog(): String = Music.lastLog
         /** Steuert die gerade laufende Musik (Spotify oder jede andere App), ohne sie zu öffnen. */
         @JavascriptInterface fun media(cmd: String) {
             main.post {

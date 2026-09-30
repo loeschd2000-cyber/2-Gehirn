@@ -3,6 +3,7 @@
   // Läuft die Seite in der Zweites-Gehirn-Android-App, übernimmt die App Mikrofon und Stimme (Webseiten dürfen das dort nicht).
   const AND = window.ZGAndroid || null;
   const MINI = !!(AND && AND.isMini && AND.isMini());
+  const CAR = !!(AND && AND.isCar && AND.isCar());   // läuft unsichtbar für Android Auto
   if (MINI) document.body.classList.add("mini");
   if (AND) (function installAndroid() {
     const active = {};
@@ -399,6 +400,7 @@
     if (cancel) { input.value = ""; rec.abort(); } else { rec.userStop(); rec.stop(); }
   }
   function maybeListenAgain() {
+    if (CAR) return;   // im Auto hört Jarvis nur nach dem „Sprechen“-Knopf zu
     if (loopOn && lastViaVoice && !busy && !speaking && !listening && ollamaOk) setTimeout(() => { if (!busy && !speaking && !listening) listen(); }, 350);
   }
 
@@ -439,7 +441,8 @@
     el.className = cls; el.textContent = text; log.append(el);
     log.scrollTop = log.scrollHeight; markChatting(); return el;
   }
-  const note = t => { const l = log.lastElementChild; if (l && l.className === "note" && l.textContent === t) return l; return add("note", t); };
+  const note = t => {
+    if (CAR) { try { AND.carShow("jarvis", t); } catch {} } const l = log.lastElementChild; if (l && l.className === "note" && l.textContent === t) return l; return add("note", t); };
   function markChatting() { const c = $("core"); if (c) c.classList.toggle("chatting", log.children.length > (MINI ? 0 : 1)); }
   function renderChat() {
     log.textContent = ""; markChatting();

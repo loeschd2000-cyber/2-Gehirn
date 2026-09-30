@@ -54,5 +54,7 @@ android {
 dependencies {
     implementation("com.microsoft.onnxruntime:onnxruntime-android:1.20.0")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
+    // Android Auto (Jarvis-Bildschirm im Auto)
+    implementation("androidx.car.app:app:1.4.0")
 }
 // Build-Auslöser: 2

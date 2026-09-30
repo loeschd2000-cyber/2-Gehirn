@@ -242,13 +242,14 @@
       if (!full) bubble.remove(); else revealAll();
     }
     await saving;
-    if (full.trim()) { messages.push({ role: "assistant", content: full.trim(), ts: Date.now() }); await persist(); }
+    if (full.trim()) { messages.push({ role: "assistant", content: full.trim(), ts: Date.now() }); if (CAR) { try { AND.carShow("jarvis", full.trim()); } catch {} } await persist(); }
     ctl = null; busy = false; refreshUi();
     if (!speaking) { revealAll(); maybeListenAgain(); scheduleWake(700); }
   }
 
   // Eine feste Antwort (ohne KI) sprechen, anzeigen und speichern
   function assistantSay(text, silent) {
+    if (CAR) { try { AND.carShow("jarvis", text); } catch {} }
     const b = add("msg ai wait", "…");
     bubbleEl = b; shown = ""; fullAnswer = text; spokenUpTo = 0; genDone = true;
     if (voiceActive() && !silent) pump(); else revealAll();

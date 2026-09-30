@@ -41,7 +41,17 @@ import java.util.Locale
  * Wird von der großen App (MainActivity) und vom kleinen Kreis (MiniActivity) benutzt.
  * Die Web-App spricht über das JavaScript-Objekt "ZGAndroid" damit.
  */
-class NativeBridge(private val act: Activity, val web: WebView, private val mini: Boolean) {
+class NativeBridge(private val act: android.content.Context, val web: WebView, private val mini: Boolean, private val car: Boolean = false) {
+    /** Nur in der App (nicht im Auto) vorhanden */
+    private val activity: Activity? get() = act as? Activity
+    /** Im Auto: Anrufe/Navigation über Android Auto starten (sonst würde es aufs Handy-Display gehen) */
+    var carIntent: ((Intent) -> Boolean)? = null
+    /** Im Auto: Text für den Auto-Bildschirm (wer, Text) */
+    var carShow: ((String, String) -> Unit)? = null
+    /** Im Auto: Sprechen-Knopf-Zustand */
+    var carState: ((String) -> Unit)? = null
+    var carListen: (() -> Unit)? = null
+    @Volatile var carAudio: String? = null
 
     companion object {
         const val REQ_PERMS = 7
@@ -131,7 +141,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         val need = mutableListOf(Manifest.permission.RECORD_AUDIO)
         if (Build.VERSION.SDK_INT >= 33) need += Manifest.permission.POST_NOTIFICATIONS
         val missing = need.filter { act.checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }
-        if (missing.isNotEmpty()) act.requestPermissions(missing.toTypedArray(), REQ_PERMS)
+        if (missing.isNotEmpty()) activity?.requestPermissions(missing.toTypedArray(), REQ_PERMS)
     }
 
     /** "Hey Jarvis" wurde gehört: Web-App soll zuhören (oder merkt es sich, falls sie noch lädt). */
@@ -179,6 +189,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
     @Volatile private var destroyed = false
     fun destroy() {
         destroyed = true
+        if (car) releaseFocus()
         try { recorder.abortAll() } catch (_: Throwable) {}
         srEnded = true
         main.removeCallbacksAndMessages(null)
@@ -206,7 +217,27 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
 
     private fun ttsFinished(id: String, type: String) {
         emit("__zgTTS", JSONObject().put("type", type).put("id", id))
-        main.postDelayed({ if (tts?.isSpeaking != true) WakeService.setSpeaking(false) }, 400)
+        main.postDelayed({ if (tts?.isSpeaking != true) { WakeService.setSpeaking(false); if (car) releaseFocus() } }, 400)
+    }
+
+    // Im Auto: Musik leiser machen, solange Jarvis spricht
+    private var focusReq: android.media.AudioFocusRequest? = null
+    private val speechAttrs = android.media.AudioAttributes.Builder()
+        .setUsage(android.media.AudioAttributes.USAGE_ASSISTANT)
+        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SPEECH).build()
+    private fun takeFocus() {
+        if (focusReq != null) return
+        try {
+            val req = android.media.AudioFocusRequest.Builder(android.media.AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+                .setAudioAttributes(speechAttrs).build()
+            act.getSystemService(android.media.AudioManager::class.java).requestAudioFocus(req)
+            focusReq = req
+        } catch (_: Throwable) {}
+    }
+    private fun releaseFocus() {
+        val r = focusReq ?: return
+        focusReq = null
+        try { act.getSystemService(android.media.AudioManager::class.java).abandonAudioFocusRequest(r) } catch (_: Throwable) {}
     }
 
     // ---------- Spracherkennung ----------
@@ -302,7 +333,8 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                     if (silent) { googleResult(null, "needs-ui"); return@addOnSuccessListener }
                     try {
                         @Suppress("DEPRECATION")
-                        act.startIntentSenderForResult(res.pendingIntent!!.intentSender, REQ_AUTH, null, 0, 0, 0)
+                        val a = activity ?: run { googleResult(null, "Öffne die App am Handy, um Google zu verbinden"); return@addOnSuccessListener }
+                        a.startIntentSenderForResult(res.pendingIntent!!.intentSender, REQ_AUTH, null, 0, 0, 0)
                     } catch (e: Throwable) { googleResult(null, e.message ?: "Anmeldung konnte nicht starten") }
                 } else googleResult(res.accessToken, null)
             }
@@ -392,6 +424,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                             (v ?: bestVoice())?.let { if (t.voice?.name != it.name) t.setVoice(it) }
                         } catch (_: Throwable) {}
                         t.setSpeechRate(rate)
+                        if (car) { try { t.setAudioAttributes(speechAttrs) } catch (_: Throwable) {}; takeFocus() }
                         WakeService.setSpeaking(true)
                         val r = t.speak(text, TextToSpeech.QUEUE_ADD, null, id)
                         if (r != TextToSpeech.SUCCESS) { WakeService.setSpeaking(false); emit("__zgTTS", JSONObject().put("type", "error").put("id", id)) }
@@ -405,7 +438,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             }
         }
         @JavascriptInterface fun ttsEngine(): String = try { tts?.defaultEngine ?: "" } catch (_: Throwable) { "" }
-        @JavascriptInterface fun ttsCancel() { main.post { tts?.stop(); main.postDelayed({ WakeService.setSpeaking(false) }, 300) } }
+        @JavascriptInterface fun ttsCancel() { main.post { tts?.stop(); main.postDelayed({ WakeService.setSpeaking(false); if (car) releaseFocus() }, 300) } }
         @JavascriptInterface fun ttsVoices(): String {
             val arr = JSONArray()
             try {
@@ -445,11 +478,11 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         @JavascriptInterface fun wakeScore(): Float = WakeService.lastScore
 
         // kleiner Kreis
-        @JavascriptInterface fun miniClose() { main.post { if (mini) act.finish() } }
+        @JavascriptInterface fun miniClose() { main.post { if (mini) activity?.finish() } }
         @JavascriptInterface fun openFullApp() {
             main.post {
-                act.startActivity(Intent(act, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                if (mini) act.finish()
+                try { act.startActivity(Intent(act, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } catch (_: Throwable) {}
+                if (mini) activity?.finish()
             }
         }
 
@@ -531,7 +564,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         @JavascriptInterface fun bankPickKey() {
             main.post {
                 val i = Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*")
-                try { act.startActivityForResult(i, REQ_BANKKEY) } catch (_: Throwable) {}
+                try { activity?.startActivityForResult(i, REQ_BANKKEY) } catch (_: Throwable) {}
             }
         }
         @JavascriptInterface fun bankSearch(q: String) {
@@ -566,7 +599,21 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         @JavascriptInterface fun priceAlertList(): String = PriceAlerts.list(act).toString()
         @JavascriptInterface fun priceAlertCancel(id: Int) { PriceAlerts.cancel(act, id) }
         @JavascriptInterface fun timer(seconds: Int, label: String) { main.post { Phone.timer(act, seconds, label) } }
-        @JavascriptInterface fun maps(dest: String, mode: String, start: Boolean) { main.post { Phone.maps(act, dest, mode, start) } }
+        @JavascriptInterface fun maps(dest: String, mode: String, start: Boolean) {
+            main.post {
+                // Im Auto: Navigation direkt auf dem Auto-Bildschirm starten
+                val viaCar = carIntent?.let { f -> try { f(Intent("androidx.car.app.action.NAVIGATE", Uri.parse("geo:0,0?q=" + Uri.encode(dest)))) } catch (_: Throwable) { false } } ?: false
+                if (!viaCar) Phone.maps(act, dest, mode, start)
+            }
+        }
+        // Auto (Android Auto)
+        @JavascriptInterface fun isCar(): Boolean = car
+        /** Aufnahme aus dem Auto-Mikrofon abholen (einmal) */
+        @JavascriptInterface fun carTake(): String { val a = carAudio ?: ""; carAudio = null; return a }
+        /** Nach einer Rückfrage (z. B. „Soll ich eintragen?“) gleich wieder zuhören */
+        @JavascriptInterface fun carListen() { main.post { carListen?.invoke() } }
+        @JavascriptInterface fun carShow(who: String, text: String) { main.post { carShow?.invoke(who, text) } }
+        @JavascriptInterface fun carState(state: String) { main.post { carState?.invoke(state) } }
 
         // Tagebuch
         @JavascriptInterface fun consumeDiary(): Boolean { val d = pendingDiary; pendingDiary = false; return d }
@@ -622,7 +669,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             act.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED &&
             act.checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
         @JavascriptInterface fun requestPhone() {
-            main.post { act.requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE), REQ_PERMS) }
+            main.post { activity?.requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE), REQ_PERMS) }
         }
         /** Sucht Kontakte mit Telefonnummer, deren Name den Suchbegriff enthält. */
         @JavascriptInterface fun findContacts(query: String): String {
@@ -658,8 +705,9 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                 val i = Intent(if (canCall) Intent.ACTION_CALL else Intent.ACTION_DIAL, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 WakeService.setMicBusy(false)
                 try { speech?.cancel() } catch (_: Throwable) {}; endActive()
-                try { act.startActivity(i) } catch (_: Throwable) {}
-                if (mini) main.postDelayed({ act.finish() }, 300)
+                val viaCar = carIntent?.let { f -> try { f(Intent(Intent.ACTION_CALL, uri)) } catch (_: Throwable) { false } } ?: false
+                if (!viaCar) try { act.startActivity(i) } catch (_: Throwable) {}
+                if (mini) main.postDelayed({ activity?.finish() }, 300)
             }
         }
 

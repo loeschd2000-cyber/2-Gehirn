@@ -225,6 +225,26 @@ async def main():
         if "Einkaufsliste" in out: ok += 1; print("✓ KI-Erkennung versteht Sprache und führt Befehl aus")
         else: fail += 1; print("✗ KI-Erkennung:", out[:300], await pg.evaluate("() => JSON.stringify({u: aiEarUsable(), busy, listening, speaking, key: !!geminiKey, m: geminiModel, inp: input.value, ph: input.placeholder})"))
         await pg.evaluate("() => { aiEarOn = false; }")
+        # Android Auto: unsichtbare App bekommt Aufnahme, schreibt mit, antwortet auf dem Auto-Bildschirm
+        car = await b.new_page()
+        await car.route("**/*", route)
+        car.on("pageerror", lambda e: errs.append("Auto: " + str(e)))
+        await car.add_init_script(FAKE_ANDROID + """
+          window.__car = []; ZGAndroid.isCar = () => true; ZGAndroid.carShow = (w, t) => window.__car.push(w + ': ' + t);
+          ZGAndroid.carState = s => window.__car.push('state: ' + s); ZGAndroid.carListen = () => window.__car.push('listen');
+          ZGAndroid.carTake = () => 'UklGRg==';""")
+        await car.goto(PAGE)
+        await car.wait_for_timeout(2500)
+        await car.evaluate("() => __zgCarAudio()")
+        await car.wait_for_timeout(3000)
+        got = await car.evaluate("() => window.__car.join(' | ')")
+        if "du: Was steht auf der Einkaufsliste?" in got and "jarvis:" in got and "state: bereit" in got: ok += 1; print("✓ Android Auto: Sprechen → Antwort auf dem Auto-Bildschirm")
+        else: fail += 1; print("✗ Android Auto:", got[:400])
+        await car.evaluate("() => __zgCarAsk('Schreib Papa auf WhatsApp hallo')")
+        await car.wait_for_timeout(1500)
+        got = await car.evaluate("() => window.__car.join(' | ')")
+        if "im Auto nicht schicken" in got: ok += 1; print("✓ Android Auto: WhatsApp wird im Auto freundlich abgelehnt")
+        else: fail += 1; print("✗ Android Auto WhatsApp:", got[-300:])
         if errs: fail += 1; print("✗ JavaScript-Fehler:", errs)
         await b.close()
     print(f"\n{ok} bestanden, {fail} fehlgeschlagen")

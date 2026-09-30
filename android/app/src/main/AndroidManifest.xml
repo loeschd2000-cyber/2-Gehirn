@@ -104,6 +104,16 @@
         </receiver>
         <receiver android:name=".PriceReceiver" android:exported="false" />
 
+        <!-- Android Auto: Jarvis-Bildschirm im Auto -->
+        <service android:name=".CarJarvisService" android:exported="true" android:label="Jarvis" android:icon="@mipmap/ic_launcher">
+            <intent-filter>
+                <action android:name="androidx.car.app.CarAppService" />
+                <category android:name="androidx.car.app.category.IOT" />
+            </intent-filter>
+        </service>
+        <meta-data android:name="androidx.car.app.minCarApiLevel" android:value="1" />
+        <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/automotive_app_desc" />
+
         <!-- Startbildschirm-Widget -->
         <receiver android:name=".JarvisWidget" android:exported="false" android:label="Jarvis">
             <intent-filter>

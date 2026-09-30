@@ -165,3 +165,29 @@
       toast(aiEarOn ? "Genaue KI-Erkennung an – Gemini schreibt mit" : "Handy-Erkennung (schneller)", "👂");
     };
   }
+
+  /* ================= Android Auto: Aufnahme vom Auto-Mikrofon → mitschreiben → Befehl ================= */
+  if (CAR) {
+    const carDone = () => {
+      const wait = () => { if (busy || speaking) { setTimeout(wait, 300); return; }
+        // Hat Jarvis eine Rückfrage gestellt (z. B. „Soll ich eintragen?“)? Dann gleich wieder zuhören.
+        if (typeof pending !== "undefined" && pending) AND.carListen(); else AND.carState("bereit"); };
+      setTimeout(wait, 400);
+    };
+    const carRun = async t => {
+      AND.carShow("du", t); AND.carState("Denkt nach …");
+      try { await ask(t, true); } catch (e) { AND.carShow("jarvis", "Da ist etwas schiefgegangen: " + (e.message || e)); }
+      carDone();
+    };
+    window.__zgCarAudio = async () => {
+      const wav = AND.carTake(); if (!wav) { AND.carState("bereit"); return; }
+      if (!geminiKey) { AND.carShow("jarvis", "Für Sprache im Auto brauche ich deinen Gemini-Schlüssel. Trag ihn in der App am Handy unter KI-Quelle ein."); AND.carState("bereit"); return; }
+      if (!geminiModel) { try { await checkAi(); } catch {} }
+      let t = "";
+      try { t = await transcribe(wav); } catch (e) { AND.carShow("jarvis", "Ich konnte dich gerade nicht verstehen – ist Internet da?"); AND.carState("bereit"); return; }
+      if (!t) { AND.carShow("jarvis", "Ich habe nichts verstanden. Tippe nochmal auf Sprechen."); AND.carState("bereit"); return; }
+      carRun(t);
+    };
+    window.__zgCarAsk = t => { if (busy) { try { ctl && ctl.abort(); } catch {} } carRun(t); };
+    window.__zgCarHush = () => { try { hush(); cancelAgent(); } catch {} };
+  }

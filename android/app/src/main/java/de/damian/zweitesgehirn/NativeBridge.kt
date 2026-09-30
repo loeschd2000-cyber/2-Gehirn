@@ -169,6 +169,18 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
         main.postDelayed({ tryIt(0) }, 600)
     }
 
+    /** Rückkehr von einer Anmeldung im Browser (z. B. SmartThings) an die Web-App geben */
+    fun deliverLink(kind: String, code: String, state: String) {
+        val o = JSONObject().put("kind", kind).put("code", code).put("state", state)
+        fun tryIt(n: Int) {
+            if (destroyed) return
+            web.evaluateJavascript("(window.__zgLink && __zgLink($o)) ? 'ok' : 'wait'") { r ->
+                if (r?.contains("ok") != true && n < 30) main.postDelayed({ tryIt(n + 1) }, 500)
+            }
+        }
+        main.postDelayed({ tryIt(0) }, 400)
+    }
+
     @Volatile var pendingDiary = false
     fun deliverDiary() {
         pendingDiary = true
@@ -629,6 +641,41 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
         @JavascriptInterface fun amazonCart(asin: String, qty: Int) {
             main.post { Amazon.addToCart(act, asin, qty) { ok, msg -> emit("__zgShop", JSONObject().put("type", "cart").put("ok", ok).put("msg", msg)) } }
         }
+        // ---------- Neue Dienste (Untis, Müll, Tanken, News, DHL, SmartThings …) ----------
+        /** Internet-Anfrage an einen erlaubten Dienst; Antwort als __zgNet-Ereignis {id, status, body} */
+        @JavascriptInterface fun http(id: String, method: String, url: String, headers: String, body: String) {
+            Thread { emit("__zgNet", Net.forWeb(url, method, headers, body).put("id", id)) }.start()
+        }
+        @JavascriptInterface fun untisReady(): Boolean = Untis.creds(act) != null
+        @JavascriptInterface fun untisRange(id: String, from: Int, to: Int) { Thread { emit("__zgNet", Untis.range(act, from, to).put("id", id)) }.start() }
+        @JavascriptInterface fun untisSearch(id: String, q: String) { Thread { emit("__zgNet", Untis.search(q.take(80)).put("id", id)) }.start() }
+        // Samsung Health / Health Connect
+        @JavascriptInterface fun healthState(): String = if (!Health.available()) "old" else if (Health.granted(act)) "ok" else "perm"
+        @JavascriptInterface fun healthConnect() { main.post { if (Health.available()) activity?.requestPermissions(Health.PERMS, REQ_PERMS + 20) } }
+        @JavascriptInterface fun healthToday(id: String) { Health.today(act) { emit("__zgNet", it.put("id", id)) } }
+        // Handy
+        @JavascriptInterface fun torch(on: Boolean): String = Phone.torch(act, on)
+        @JavascriptInterface fun dnd(on: Boolean): String = Phone.dnd(act, on)
+        @JavascriptInterface fun ringer(mode: String): String = Phone.ringer(act, mode)
+        @JavascriptInterface fun battery(): String = try { Phone.battery(act).toString() } catch (_: Throwable) { "{}" }
+        // Standort + Orts-Erinnerungen
+        @JavascriptInterface fun locState(): String = if (!Loc.has(act)) "none" else if (Build.VERSION.SDK_INT >= 29 && !Loc.hasBackground(act)) "fg" else "bg"
+        @JavascriptInterface fun locPerm(background: Boolean) {
+            main.post {
+                val a = activity ?: return@post
+                if (!background || !Loc.has(act)) a.requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), REQ_PERMS + 21)
+                else if (Build.VERSION.SDK_INT >= 29) a.requestPermissions(arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION), REQ_PERMS + 22)
+            }
+        }
+        @JavascriptInterface fun locNow(id: String) { main.post { Loc.current(act) { emit("__zgNet", it.put("id", id)) } } }
+        @JavascriptInterface fun placeAdd(text: String, place: String, spots: String, radius: Float): String =
+            try { Places.add(act, text.take(200), place.take(80), JSONArray(spots), radius) } catch (e: Throwable) { e.message ?: "Fehler" }
+        @JavascriptInterface fun placeList(): String = Places.list(act).toString()
+        @JavascriptInterface fun placeRemove(id: String) { Places.remove(act, id) }
+        // Tank-Alarm
+        @JavascriptInterface fun fuelWatchSet(limit: Double, type: String, lat: Double, lng: Double) { FuelWatch.set(act, limit, type, lat, lng) }
+        @JavascriptInterface fun fuelWatchGet(): String = FuelWatch.get(act)?.toString() ?: ""
+        @JavascriptInterface fun fuelWatchClear() { FuelWatch.clear(act) }
         @JavascriptInterface fun amazonSearch(q: String) { main.post { Amazon.search(act, q) } }
         /** Produkt auf amazon.de suchen (ohne Gemini); Antwort kommt als __zgShop-Ereignis „find“ */
         @JavascriptInterface fun amazonFind(q: String, id: String) {

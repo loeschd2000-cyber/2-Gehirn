@@ -16,6 +16,15 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <!-- Standort: günstigste Tankstelle in der Nähe, Orts-Erinnerungen („beim Edeka“) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!-- „Nicht stören“ / lautlos schalten -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <!-- Samsung Health über Health Connect: nur lesen -->
+    <uses-permission android:name="android.permission.health.READ_STEPS" />
+    <uses-permission android:name="android.permission.health.READ_SLEEP" />
 
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
@@ -62,8 +71,21 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="zweitesgehirn" android:host="spotify-callback" />
                 <data android:scheme="zweitesgehirn" android:host="bank-callback" />
+                <data android:scheme="zweitesgehirn" android:host="smartthings-callback" />
             </intent-filter>
         </activity>
+
+        <!-- Health Connect verlangt eine Seite, die erklärt, wofür die Gesundheitsdaten genutzt werden -->
+        <activity-alias
+            android:name=".HealthRationale"
+            android:exported="true"
+            android:targetActivity=".MainActivity"
+            android:permission="android.permission.START_VIEW_PERMISSION_USAGE">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW_PERMISSION_USAGE" />
+                <category android:name="android.intent.category.HEALTH_PERMISSIONS" />
+            </intent-filter>
+        </activity-alias>
 
         <activity
             android:name=".MiniActivity"
@@ -146,6 +168,14 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".GeofenceReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".FuelReceiver" android:exported="false" />
 
         <receiver android:name=".DiaryReceiver" android:exported="false">
             <intent-filter>

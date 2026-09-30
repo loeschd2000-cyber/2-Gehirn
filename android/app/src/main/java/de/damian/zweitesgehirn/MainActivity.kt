@@ -215,6 +215,11 @@ class MainActivity : Activity() {
             bridge.js.spotifyRedirect(d)
             return
         }
+        if (d != null && d.scheme == "zweitesgehirn" && d.host == "smartthings-callback") {
+            i.data = null
+            bridge.deliverLink("smartthings", d.getQueryParameter("code") ?: "", d.getQueryParameter("state") ?: "")
+            return
+        }
         if (i.getBooleanExtra("wake", false)) {
             i.removeExtra("wake")
             bridge.deliverWake()

@@ -25,24 +25,60 @@ object Proactive {
     private fun snap(ctx: Context): JSONObject = try { JSONObject(p(ctx).getString("snap", "{}") ?: "{}") } catch (_: Throwable) { JSONObject() }
     fun enabled(ctx: Context) = snap(ctx).optBoolean("on", true)
 
-    private fun pending(ctx: Context) = PendingIntent.getBroadcast(ctx, 7300, Intent(ctx, ProactiveReceiver::class.java),
+    private fun pending(ctx: Context, evening: Boolean = false) = PendingIntent.getBroadcast(ctx, if (evening) 7310 else 7300,
+        Intent(ctx, ProactiveReceiver::class.java).putExtra("slot", if (evening) "evening" else "morning"),
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 
     fun arm(ctx: Context) {
         val am = ctx.getSystemService(AlarmManager::class.java)
-        am.cancel(pending(ctx))
+        am.cancel(pending(ctx)); am.cancel(pending(ctx, true))
         if (!enabled(ctx)) return
         val s = snap(ctx)
-        val c = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, s.optInt("h", 7)); set(Calendar.MINUTE, s.optInt("m", 30)); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+        fun at(h: Int, m: Int) = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, h); set(Calendar.MINUTE, m); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
             if (timeInMillis <= System.currentTimeMillis() + 5000) add(Calendar.DAY_OF_YEAR, 1)
+        }.timeInMillis
+        am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at(s.optInt("h", 7), s.optInt("m", 30)), pending(ctx))
+        // Abends (19 Uhr): Müll, Stundenplan-Änderungen für morgen, Berichtsheft
+        am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at(s.optInt("eh", 19), s.optInt("em", 0)), pending(ctx, true))
+    }
+
+    private fun key(c: Calendar) = "%04d-%02d-%02d".format(c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1, c.get(Calendar.DAY_OF_MONTH))
+
+    /** Abend-Hinweise (für morgen) */
+    fun eveningLines(ctx: Context, now: Calendar = Calendar.getInstance()): List<String> {
+        val s = snap(ctx); val out = ArrayList<String>()
+        val tomorrow = (now.clone() as Calendar).apply { add(Calendar.DAY_OF_YEAR, 1) }
+        // Müllabfuhr morgen
+        val mu = s.optJSONArray("muell") ?: JSONArray()
+        val bins = (0 until mu.length()).mapNotNull { mu.optJSONObject(it) }.filter { it.optString("d") == key(tomorrow) }.map { it.optString("t") }
+        if (bins.isNotEmpty()) out += "🗑 Morgen wird abgeholt: ${bins.joinToString(", ")} – heute Abend rausstellen!"
+        // Stundenplan morgen (Ausfälle/Vertretungen)
+        try { out += Untis.changes(ctx, 1) } catch (_: Throwable) {}
+        // Berichtsheft (Mo–Fr)
+        val b = s.optJSONObject("bericht")
+        val wd = now.get(Calendar.DAY_OF_WEEK)
+        if (b != null && b.optBoolean("on", true) && wd in Calendar.MONDAY..Calendar.FRIDAY) {
+            val days = b.optJSONArray("days") ?: JSONArray()
+            val has = (0 until days.length()).any { days.optString(it) == key(now) }
+            if (!has) out += "📒 Berichtsheft: Was hast du heute gemacht? Sag „Berichtsheft: …“"
+            if (wd == Calendar.FRIDAY) out += "📒 Wochenende! Sag „Mach meinen Wochenbericht“, dann ist das Berichtsheft fertig."
         }
-        am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, c.timeInMillis, pending(ctx))
+        return out
     }
 
     /** Welche Hinweise gibt es heute? (auch für Tests/Anzeige nutzbar) */
     fun lines(ctx: Context, now: Calendar = Calendar.getInstance()): List<String> {
         val s = snap(ctx); val out = ArrayList<String>()
+        // Stundenplan heute (kurzfristige Änderungen)
+        try { out += Untis.changes(ctx, 0) } catch (_: Throwable) {}
+        // Lernplan: bis zur nächsten Arbeit jeden Tag ein Thema
+        val st = s.optJSONArray("study") ?: JSONArray()
+        for (i in 0 until st.length()) {
+            val x = st.optJSONObject(i) ?: continue
+            val topic = x.optJSONObject("plan")?.optString(key(now)).orEmpty()
+            if (topic.isNotBlank()) out += "📚 Lernplan ${x.optString("subject")} (noch ${x.optInt("left")} Tage → heute: $topic). Sag „Frag mich ${x.optString("subject")} ab“."
+        }
         val today = now.clone() as Calendar
         fun dayOffset(k: Int) = (today.clone() as Calendar).apply { add(Calendar.DAY_OF_YEAR, k) }
         // Geburtstage heute / morgen
@@ -81,19 +117,27 @@ object Proactive {
         return out
     }
 
-    fun fire(ctx: Context) {
+    fun fire(ctx: Context, evening: Boolean = false) {
         if (!enabled(ctx)) return
-        val l = lines(ctx)
-        if (l.isNotEmpty()) Notes.show(ctx, "proactive", "Hinweise von Jarvis", 7301,
-            if (l.size == 1) "Hinweis von Jarvis" else "Jarvis: ${l.size} Hinweise für heute",
-            l.joinToString("\n"))
-        arm(ctx)
+        try {
+            if (evening) {
+                val l = eveningLines(ctx)
+                if (l.isNotEmpty()) Notes.show(ctx, "proactive", "Hinweise von Jarvis", 7302,
+                    if (l.size == 1) "Hinweis für morgen" else "Jarvis: ${l.size} Hinweise für morgen", l.joinToString("\n"))
+            } else {
+                val l = lines(ctx)
+                if (l.isNotEmpty()) Notes.show(ctx, "proactive", "Hinweise von Jarvis", 7301,
+                    if (l.size == 1) "Hinweis von Jarvis" else "Jarvis: ${l.size} Hinweise für heute", l.joinToString("\n"))
+            }
+        } finally { arm(ctx) }
     }
 }
 
 class ProactiveReceiver : BroadcastReceiver() {
     override fun onReceive(ctx: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED || intent.action == "android.intent.action.QUICKBOOT_POWERON") { Proactive.arm(ctx); return }
-        Proactive.fire(ctx)
+        val evening = intent.getStringExtra("slot") == "evening"
+        val r = goAsync()   // Untis braucht Internet: im Hintergrund-Thread
+        Thread { try { Proactive.fire(ctx, evening) } catch (_: Throwable) {} finally { r.finish() } }.start()
     }
 }

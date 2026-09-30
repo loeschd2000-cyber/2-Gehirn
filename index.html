@@ -329,6 +329,14 @@
     .mic small { display: none; }
     .mic { width: 78px; height: 78px; }
     .talk { padding-bottom: 2px; }
+    /* Aufgeräumter Startbildschirm am Handy: Kern oben, 4 Kacheln, Mikrofon unten – sonst nichts */
+    .core:not(.chatting) .log, .chips { display: none; }
+    .core:not(.chatting) .orbwrap { height: 36vh; margin-top: 2vh; }
+    .core:not(.chatting) .state { margin-bottom: auto; }
+    .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; overflow: visible; padding: 0 2px 18px; margin-top: auto; }
+    .tile { min-width: 0; padding: 12px 14px; }
+    .tile b { font-size: 19px; overflow: hidden; text-overflow: ellipsis; }
+    .dock { margin-bottom: 26px; }
   }
   .kb-hidden form { display: none; }
   @media (min-width: 641px) { .kb-hidden form { display: flex; } .dock .kbd { visibility: hidden; } }
@@ -2407,7 +2415,7 @@ Nachricht: "${text}"`;
       box.append(b);
     };
     const n = new Date();
-    add("🗓", n.toLocaleDateString("de-DE", { weekday: "long" }), n.toLocaleDateString("de-DE", { day: "numeric", month: "long" }), "Was steht an?", "", "Was steht heute an?");
+    add("🗓", n.toLocaleDateString("de-DE", { weekday: "long" }), n.toLocaleDateString("de-DE", { day: "numeric", month: "short" }), "Was steht an?", "", "Was steht heute an?");
     // Konto (letzter Stand)
     try {
       if (AND && AND.bankCached) {
@@ -2431,7 +2439,8 @@ Nachricht: "${text}"`;
         if (al) { const d = new Date(al.at); add("⏰", "Wecker", d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), d.toLocaleDateString("de-DE", { weekday: "short" }) + " · Alexa", "", "Welche Wecker sind gestellt?"); }
       }
     } catch {}
-    add("♫", "Musik", "Spotify", "Weiter / Pause", "", "Spiel die Musik weiter");
+    if (box.children.length < 4) add("✉", "Mails", "Posteingang", "Neue Mails?", "", "Hab ich neue Mails?");
+    if (box.children.length < 4) add("♫", "Musik", "Spotify", "Weiter / Pause", "", "Spiel die Musik weiter");
   }
   document.addEventListener("visibilitychange", () => { if (!document.hidden) renderTiles(); });
 

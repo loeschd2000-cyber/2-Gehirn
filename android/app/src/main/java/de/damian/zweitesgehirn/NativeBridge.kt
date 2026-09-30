@@ -156,6 +156,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
     fun onWakeStopped() { main.post { web.evaluateJavascript("window.__zgWakeState && __zgWakeState(false)", null) } }
     fun isListening(): Boolean = !srEnded
 
+    private val recorder by lazy { VoiceRecorder { type, sid, extra -> emit("__zgRec", JSONObject().put("type", type).put("sid", sid).put("info", extra ?: "")) } }
     @Volatile private var ttsReady = false
     private var ttsFallbackTried = false
     private var ttsInit: TextToSpeech.OnInitListener? = null
@@ -163,6 +164,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
     @Volatile private var destroyed = false
     fun destroy() {
         destroyed = true
+        try { recorder.abortAll() } catch (_: Throwable) {}
         srEnded = true
         main.removeCallbacksAndMessages(null)
         try { speech?.destroy() } catch (_: Throwable) {}; speech = null
@@ -409,6 +411,14 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             }
         }
         @JavascriptInterface fun wakeOn(): Boolean = Prefs.wake(act)
+        // Genaue KI-Erkennung: Aufnahme bis zur Sprechpause, die Web-App schickt sie an Gemini
+        @JavascriptInterface fun recStart(pauseMs: Int, maxMs: Int): Int {
+            main.post { if (!srEnded) { try { speech?.cancel() } catch (_: Throwable) {}; endActive() } }
+            return recorder.start(pauseMs, maxMs)
+        }
+        @JavascriptInterface fun recStop(sid: Int) { recorder.stop(sid) }
+        @JavascriptInterface fun recAbort(sid: Int) { recorder.abort(sid) }
+        @JavascriptInterface fun recTake(sid: Int): String = recorder.take(sid)
         @JavascriptInterface fun bargeInGet(): Boolean = Prefs.bargeIn(act)
         @JavascriptInterface fun bargeInSet(on: Boolean) { Prefs.setBargeIn(act, on); WakeService.bargeIn = on }
         /** Für die KI-Stimme (spielt in der Web-App): Hintergrund-Dienst wissen lassen, dass Jarvis spricht */

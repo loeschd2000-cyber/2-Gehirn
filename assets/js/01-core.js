@@ -341,7 +341,7 @@
     if (busy || listening) return;
     stopWake();
     hush();
-    rec = new SR();
+    rec = (typeof aiEarUsable === "function" && aiEarUsable()) ? new GemSR() : new SR();
     // Am PC hört der Browser durchgehend zu, auf Android klappt das nicht zuverlässig: dort wird bei Bedarf neu gestartet
     rec.lang = "de-DE"; rec.interimResults = true; rec.continuous = !IS_ANDROID; rec.maxAlternatives = 1;
     const before = keepText ? input.value.trim() + " " : "";

@@ -62,6 +62,7 @@ def llm_answer(body):
     if "Bewerte fair" in body: return {"richtig": True, "erklaerung": "Genau."}
     if "Tagebuch erzählt" in body: return {"titel": "Guter Tag", "text": "Heute war ein guter Tag.", "stimmung": "😊 gut"}
     if "WhatsApp schreiben" in body: return {"nachricht": "Ich komme später."}
+    if "wortwörtlich" in body: return "__TEXT__Was steht auf der Einkaufsliste?"
     if "Fundstellen aus seinen alten" in body: return {"antwort": "Du hast gesagt, dass Lukas am 12. März Geburtstag hat."}
     if "Befehls-Übersetzer" in body:
         if "Käse" in body: return {"befehle": ["Setz Käse und Brot auf die Einkaufsliste", "Was steht auf der Einkaufsliste?"]}
@@ -99,6 +100,7 @@ async def route(r):
         if "streamGenerateContent" in u:
             text = "Das ist eine Testantwort."
             return await r.fulfill(status=200, body='data: {"candidates":[{"content":{"parts":[{"text":"' + text + '"}]}}]}\n\n', headers={**H, "content-type": "text/event-stream"})
+        if isinstance(out, str) and out.startswith("__TEXT__"): return await r.fulfill(json={"candidates": [{"content": {"parts": [{"text": out[8:]}]}}]}, headers=H)
         return await r.fulfill(json={"candidates": [{"content": {"parts": [{"text": json.dumps(out or {"aktion": "keine"})}]}}]}, headers=H)
     return await r.abort()
 
@@ -193,6 +195,16 @@ async def main():
         if len(TTS_HITS) >= 2 and not await pg.evaluate("speaking"): ok += 1; print("✓ KI-Stimme spricht Satz für Satz")
         else: fail += 1; print(f"✗ KI-Stimme: {len(TTS_HITS)} Anfragen, speaking={await pg.evaluate('speaking')}")
         await pg.evaluate("() => { aiVoiceName = ''; }")
+        # Genaue KI-Erkennung: Aufnahme (nachgebaut) → Gemini schreibt mit → Befehl läuft
+        before_log = await pg.evaluate("document.getElementById('log').children.length")
+        await pg.evaluate("""() => { ZGAndroid.recStart = () => { setTimeout(() => { __zgRec.emit({type:'speech', sid: 7}); __zgRec.emit({type:'end', sid: 7, info:'ok'}); }, 150); return 7; };
+          ZGAndroid.recStop = () => {}; ZGAndroid.recAbort = () => {}; ZGAndroid.recTake = () => 'UklGRg==';
+          aiEarOn = true; if (rec) { rec.onend = null; rec = null; } listening = false; listen(); }""")
+        await pg.wait_for_timeout(2500)
+        out = await pg.evaluate("n => [...document.getElementById('log').children].slice(n).map(e => e.textContent).join(' | ')", before_log)
+        if "Einkaufsliste" in out: ok += 1; print("✓ KI-Erkennung versteht Sprache und führt Befehl aus")
+        else: fail += 1; print("✗ KI-Erkennung:", out[:300], await pg.evaluate("() => JSON.stringify({u: aiEarUsable(), busy, listening, speaking, key: !!geminiKey, m: geminiModel, inp: input.value, ph: input.placeholder})"))
+        await pg.evaluate("() => { aiEarOn = false; }")
         if errs: fail += 1; print("✗ JavaScript-Fehler:", errs)
         await b.close()
     print(f"\n{ok} bestanden, {fail} fehlgeschlagen")

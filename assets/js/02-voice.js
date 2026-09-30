@@ -99,3 +99,61 @@
     };
     updateAiVoiceUi();
   }
+
+  /* ================= Genaue KI-Erkennung (Android): Aufnahme → Gemini schreibt auf, was du gesagt hast =================
+     Versteht Namen, Fachwörter und Nuscheln meist besser als die Handy-Erkennung. Dauert dafür etwa 1 Sekunde länger. */
+  let aiEarOn = lsGet("zg_ai_ear") === "1", earBlockedUntil = 0;
+  const aiEarUsable = () => aiEarOn && !!(AND && AND.recStart) && !!geminiKey && !!geminiModel && Date.now() > earBlockedUntil;
+  class GemSR {
+    constructor() { this.onresult = this.onerror = this.onend = null; this.sid = 0; this.aborted = false; }
+    start() { GemSR.cur = this; this.sid = AND.recStart(pauseMs, 25000); }
+    stop() { AND.recStop(this.sid); }
+    abort() { this.aborted = true; AND.recAbort(this.sid); }
+  }
+  async function transcribe(wavB64) {
+    const ab = AbortSignal.timeout(15000);
+    const r = await gemFetch("generateContent", {
+      contents: [{ role: "user", parts: [
+        { inlineData: { mimeType: "audio/wav", data: wavB64 } },
+        { text: "Schreib wortwörtlich auf, was in dieser Aufnahme gesagt wird (meist Deutsch). Nur der gesprochene Text, keine Erklärung, keine Anführungszeichen. Typische Wörter: Jarvis, Spotify, WhatsApp, Phantom Wallet, Alexa, SPS, Sparkasse, Tagebuch, Einkaufsliste. Wenn nichts Verständliches gesagt wird, antworte mit genau: -" },
+      ] }],
+      generationConfig: { temperature: 0 },
+    }, ab);
+    const j = await r.json();
+    const t = ((((j.candidates || [])[0] || {}).content || {}).parts || []).filter(p => !p.thought).map(p => p.text || "").join("").trim();
+    return t === "-" ? "" : t.replace(/^["„“]|["“”]$/g, "").trim();
+  }
+  window.__zgRec = {
+    emit(ev) {
+      const r = GemSR.cur; if (!r || ev.sid !== r.sid) return;
+      if (ev.type === "speech") { input.placeholder = "Hört zu …"; return; }
+      if (ev.type === "error") { GemSR.cur = null; r.onerror && r.onerror({ error: ev.info || "audio-capture" }); r.onend && r.onend(); return; }
+      if (ev.type !== "end") return;
+      GemSR.cur = null;
+      if (r.aborted || ev.info !== "ok") { r.onerror && r.onerror({ error: ev.info === "no-speech" ? "no-speech" : "aborted" }); r.onend && r.onend(); return; }
+      const wav = AND.recTake(r.sid);
+      input.placeholder = "Versteht …";
+      transcribe(wav).then(t => {
+        input.placeholder = "Schreib Jarvis etwas …";
+        if (r.aborted) { r.onerror && r.onerror({ error: "aborted" }); }
+        else if (t) { const res = [{ transcript: t }]; res.isFinal = true; r.onresult && r.onresult({ results: [res] }); }
+        else r.onerror && r.onerror({ error: "no-speech" });
+        r.onend && r.onend();
+      }).catch(e => {
+        input.placeholder = "Schreib Jarvis etwas …";
+        earBlockedUntil = Date.now() + 10 * 60000;   // 10 Minuten wieder die Handy-Erkennung
+        note("Die KI-Erkennung hat gerade nicht geklappt – ich nehme wieder die Handy-Erkennung. Sag es bitte nochmal.");
+        r.onerror && r.onerror({ error: "aborted" }); r.onend && r.onend();
+      });
+    },
+  };
+  if ($("cAiEar")) {
+    if (AND && AND.recStart && !MINI) $("cAiEar").hidden = false;
+    const earUi = () => { $("cAiEarState").textContent = aiEarOn ? "AN" : "AUS"; };
+    earUi();
+    $("cAiEar").onclick = () => {
+      if (!aiEarOn && !geminiKey) { toast("Dafür brauchst du einen Gemini-Schlüssel (KI-Quelle)", "⚠", 4000); $("kSetup").hidden = false; return; }
+      aiEarOn = !aiEarOn; lsSet("zg_ai_ear", aiEarOn ? "1" : "0"); earBlockedUntil = 0; earUi();
+      toast(aiEarOn ? "Genaue KI-Erkennung an – Gemini schreibt mit" : "Handy-Erkennung (schneller)", "👂");
+    };
+  }

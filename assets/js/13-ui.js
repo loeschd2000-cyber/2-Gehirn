@@ -239,10 +239,13 @@
     return true;
   }
 
-  const NEWS_V = "2.2";
+  const NEWS_V = "2.3";
   function openNews() {
     openSheet("Neu in Jarvis", body => {
       const items = [
+        ["😎", "Jarvis sagt Boss", "Jarvis nennt dich jetzt „Boss“. Ändern: „Nenn mich …“."],
+        ["🛒", "Amazon per Sprache", "„Bestell Zahnpasta auf Amazon“ – Jarvis sucht das Produkt, fragt nach und legt es in den Warenkorb. Gekauft wird nie etwas. Preis-Wächter: „Sag mir Bescheid, wenn die AirPods unter 180 Euro fallen“."],
+        ["💸", "Geld verdienen & sparen", "„Verkauf meinen alten Controller“ (fertige Kleinanzeige), „Wo kann ich sparen?“ (Spar-Coach mit deinen Kontodaten), „Such mir Programmier-Jobs“ (echte Angebote + Bewerbung)."],
         ["🚗", "Jarvis im Auto (Android Auto)", "Neu: Im Auto einfach „Hey Jarvis“ sagen – ohne Knopf. Antwort kommt über die Auto-Lautsprecher, dazu ein eigener Jarvis-Bildschirm in Android Auto. Einrichtung: siehe „Android Auto einrichten.md“ (einmal „Unbekannte Quellen“ erlauben)."],
         ["✨", "Frei reden", "Jarvis versteht jetzt auch freie Sätze und mehrere Wünsche auf einmal: „Setz Brot auf die Liste und weck mich um 7.“"],
         ["🔎", "Gedächtnis-Suche", "„Was hab ich über Lukas gesagt?“ – Jarvis durchsucht alle Gespräche und dein Tagebuch. Im Gespräche-Menü gibt es jetzt auch ein Suchfeld."],

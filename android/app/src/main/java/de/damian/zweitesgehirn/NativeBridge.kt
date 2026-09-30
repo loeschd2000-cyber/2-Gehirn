@@ -82,9 +82,12 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                 return true
             }
         }
-        tts = TextToSpeech(act) { status ->
+        val googleTts = try { act.packageManager.getPackageInfo("com.google.android.tts", 0); true } catch (_: Throwable) { false }
+        val onInit = TextToSpeech.OnInitListener { status ->
             if (status == TextToSpeech.SUCCESS) {
                 tts?.setLanguage(Locale.GERMANY)
+                bestVoice()?.let { tts?.setVoice(it) }
+                tts?.setPitch(1.0f)
                 tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                     override fun onStart(id: String) { emit("__zgTTS", JSONObject().put("type", "start").put("id", id)) }
                     override fun onDone(id: String) { ttsFinished(id, "end") }
@@ -95,7 +98,18 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                 main.post { web.evaluateJavascript("window.__zgTTS && __zgTTS.voices()", null) }
             }
         }
+        // Die Google-Sprachausgabe klingt meist deutlich natürlicher als die Samsung-Stimme
+        tts = if (googleTts) TextToSpeech(act, onInit, "com.google.android.tts") else TextToSpeech(act, onInit)
     }
+
+    /** Beste deutsche Stimme: höchste Qualität, gern die Online-Stimme (klingt am natürlichsten), sonst die beste Offline-Stimme */
+    private fun bestVoice(): android.speech.tts.Voice? = try {
+        tts?.voices?.filter { it.locale.language == "de" && !it.features.contains("notInstalled") }
+            ?.sortedWith(compareByDescending<android.speech.tts.Voice> { it.quality }
+                .thenByDescending { it.locale.country == "DE" }
+                .thenByDescending { it.isNetworkConnectionRequired })
+            ?.firstOrNull()
+    } catch (_: Throwable) { null }
 
     fun loadStart() {
         val url = Prefs.appUrl(act)
@@ -164,17 +178,18 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             emit("__zgSR", JSONObject().put("type", "error").put("sid", sid).put("error", "service-not-allowed"))
             endSession(); return
         }
-        val sr = SpeechRecognizer.createSpeechRecognizer(act)
+        val sr = recognizerComponent()?.let { SpeechRecognizer.createSpeechRecognizer(act, it) } ?: SpeechRecognizer.createSpeechRecognizer(act)
         speech = sr
         sr.setRecognitionListener(object : RecognitionListener {
             private fun text(b: android.os.Bundle?): String? = b?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull()
+            private fun alts(b: android.os.Bundle?): JSONArray = JSONArray((b?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) ?: arrayListOf<String>()).take(5))
             override fun onPartialResults(b: android.os.Bundle?) {
                 val t = text(b) ?: return
                 if (t.isNotBlank()) emit("__zgSR", JSONObject().put("type", "result").put("sid", sid).put("text", t).put("final", false))
             }
             override fun onResults(b: android.os.Bundle?) {
                 val t = text(b)
-                if (!t.isNullOrBlank()) emit("__zgSR", JSONObject().put("type", "result").put("sid", sid).put("text", t).put("final", true))
+                if (!t.isNullOrBlank()) emit("__zgSR", JSONObject().put("type", "result").put("sid", sid).put("text", t).put("final", true).put("alts", alts(b)))
                 endSession()
             }
             override fun onError(error: Int) {
@@ -199,11 +214,34 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, lang)
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, interim)
-            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
+            putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, act.packageName)
+            putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, false)                 // Online-Erkennung ist genauer
+            // nicht zu früh abschneiden, wenn man kurz überlegt
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 1800L)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 1500L)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 1500L)
+            if (Build.VERSION.SDK_INT >= 33) {
+                putExtra(RecognizerIntent.EXTRA_ENABLE_FORMATTING, RecognizerIntent.FORMATTING_OPTIMIZE_QUALITY)
+                // Wörter, die Jarvis oft hört – die Erkennung versteht sie dann besser
+                putStringArrayListExtra(RecognizerIntent.EXTRA_BIASING_STRINGS, arrayListOf(
+                    "Jarvis", "Hey Jarvis", "Spotify", "WhatsApp", "Phantom Wallet", "Wallet", "Alexa", "Tagebuch", "Einkaufsliste",
+                    "To-do", "SPS", "Sparkasse", "Fixkosten", "Budget", "Briefing", "Gzuz", "Solana", "Wecker", "Timer", "Berufsschule",
+                    "Elektrotechnik", "Automatisierungstechnik", "Stundenplan", "Kontostand", "Guthaben", "Haßfurt", "Schweinfurt"))
+            }
         }
         // kurz warten, damit der Hintergrund-Dienst das Mikrofon sicher freigegeben hat
         main.postDelayed({ if (srActiveSid == sid && !srEnded) sr.startListening(intent) }, 180)
     }
+
+    /** Google-Spracherkennung bevorzugen (Samsung nimmt sonst oft die eigene, schlechtere) */
+    private fun recognizerComponent(): android.content.ComponentName? = try {
+        val services = act.packageManager.queryIntentServices(Intent(android.speech.RecognitionService.SERVICE_INTERFACE), 0)
+        val pick = services.firstOrNull { it.serviceInfo.packageName == "com.google.android.googlequicksearchbox" }
+            ?: services.firstOrNull { it.serviceInfo.packageName == "com.google.android.tts" }
+            ?: services.firstOrNull { it.serviceInfo.packageName.startsWith("com.google") }
+        pick?.let { android.content.ComponentName(it.serviceInfo.packageName, it.serviceInfo.name) }
+    } catch (_: Throwable) { null }
 
     // ---------- Google-Anmeldung (für Kalender, Gmail, Kontakte, Drive) ----------
     private fun requestGoogle(scopes: String, silent: Boolean) {
@@ -278,18 +316,21 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         @JavascriptInterface fun ttsSpeak(id: String, text: String, voice: String, rate: Float) {
             main.post {
                 val t = tts ?: return@post
-                if (voice.isNotBlank()) t.voices?.firstOrNull { it.name == voice }?.let { t.setVoice(it) }
+                val v = if (voice.isNotBlank()) t.voices?.firstOrNull { it.name == voice } else null
+                (v ?: bestVoice())?.let { if (t.voice?.name != it.name) t.setVoice(it) }
                 t.setSpeechRate(rate)
                 WakeService.setSpeaking(true)
                 t.speak(text, TextToSpeech.QUEUE_ADD, null, id)
             }
         }
+        @JavascriptInterface fun ttsEngine(): String = try { tts?.defaultEngine ?: "" } catch (_: Throwable) { "" }
         @JavascriptInterface fun ttsCancel() { main.post { tts?.stop(); main.postDelayed({ WakeService.setSpeaking(false) }, 300) } }
         @JavascriptInterface fun ttsVoices(): String {
             val arr = JSONArray()
             try {
-                tts?.voices?.filter { it.locale.language == "de" }?.sortedBy { it.isNetworkConnectionRequired }?.forEach {
-                    arr.put(JSONObject().put("name", it.name).put("lang", it.locale.toLanguageTag()).put("online", it.isNetworkConnectionRequired))
+                tts?.voices?.filter { it.locale.language == "de" && !it.features.contains("notInstalled") }
+                    ?.sortedWith(compareByDescending<android.speech.tts.Voice> { it.quality }.thenByDescending { it.isNetworkConnectionRequired })?.forEach {
+                    arr.put(JSONObject().put("name", it.name).put("lang", it.locale.toLanguageTag()).put("online", it.isNetworkConnectionRequired).put("quality", it.quality))
                 }
             } catch (_: Throwable) {}
             return arr.toString()

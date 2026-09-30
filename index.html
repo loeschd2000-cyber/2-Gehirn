@@ -515,7 +515,7 @@
     window.__zgSR = {
       emit(ev) {
         const r = active[ev.sid]; if (!r) return;
-        if (ev.type === "result") { const res = [[{ transcript: ev.text }]]; res[0].isFinal = !!ev.final; r.onresult && r.onresult({ resultIndex: 0, results: res }); }
+        if (ev.type === "result") { const txt = ev.final && ev.alts && ev.alts.length > 1 && window.__zgPickAlt ? window.__zgPickAlt(ev.alts) : ev.text; const res = [[{ transcript: txt }]]; res[0].isFinal = !!ev.final; r.onresult && r.onresult({ resultIndex: 0, results: res }); }
         else if (ev.type === "error") { r.onerror && r.onerror({ error: ev.error }); }
         else if (ev.type === "end") { delete active[ev.sid]; r.onend && r.onend(); }
       },
@@ -684,16 +684,47 @@
   function pickVoice() {
     if (!synth) return;
     const vs = synth.getVoices().filter(v => /^de/i.test(v.lang));
-    voice = vs.find(v => /natural/i.test(v.name)) || vs.find(v => /online|google/i.test(v.name)) || vs[0] || null;
+    const saved = lsGet("zg_voice");
+    if (AND) voice = vs.find(v => v.name === saved) || null;   // null = die App nimmt automatisch die beste Google-Stimme
+    else voice = vs.find(v => v.name === saved) || vs.find(v => /natural/i.test(v.name)) || vs.find(v => /online|google/i.test(v.name)) || vs[0] || null;
     updateVoiceUi();
   }
+  // Tippen auf „Stimme“ im Status wechselt die Stimme und spielt eine Probe ab
+  function cycleVoice() {
+    if (!synth) return;
+    const vs = synth.getVoices().filter(v => /^de/i.test(v.lang));
+    if (!vs.length) { note("Keine deutschen Stimmen gefunden. Installiere in den Handy-Einstellungen „Sprachausgabe von Google“."); return; }
+    const opts = AND ? [null, ...vs] : vs;
+    const i = opts.findIndex(v => (v ? v.name : null) === (voice ? voice.name : null));
+    voice = opts[(i + 1) % opts.length];
+    lsSet("zg_voice", voice ? voice.name : "");
+    updateVoiceUi(); hush();
+    speak("Hallo Damian, so klinge ich jetzt.");
+  }
+  const voiceLabel = v => {
+    if (!v) return AND ? "Automatisch (beste Google-Stimme)" : "Deutsche Standardstimme";
+    const m = /^de-de-x-(\w+)-(network|local)$/i.exec(v.name);
+    return m ? `Google ${m[1].toUpperCase()} (${m[2] === "network" ? "online, natürlicher" : "offline"})` : v.name;
+  };
+  // Aus mehreren Erkennungs-Vorschlägen den nehmen, der am besten zu Jarvis-Befehlen passt
+  const VOCAB = /\b(jarvis|spotify|whatsapp|phantom|wallet|alexa|tagebuch|einkaufsliste|to-?dos?|sps|sparkasse|fixkosten|budget|briefing|wecker|timer|stundenplan|kontostand|guthaben|erinner\w*|merk dir|navigier\w*|wetter|termin\w*|mails?|lied|musik|pause|weiter|ruf|schreib|spiel)\b/gi;
+  window.__zgPickAlt = alts => {
+    let best = alts[0], bestScore = -1;
+    alts.forEach((a, i) => {
+      let sc = (a.match(VOCAB) || []).length * 2 + (i === 0 ? 1.5 : 0) - i * 0.2;
+      try { if (typeof mediaCommand === "function" && mediaCommand(a)) sc += 3; } catch {}
+      if (sc > bestScore) { bestScore = sc; best = a; }
+    });
+    return best;
+  };
   function updateVoiceUi() {
     $("cVoiceState").textContent = voiceOn ? "AN" : "AUS";
     if (!synth) { setDot("vDot", "bad"); $("vV").textContent = "Browser kann nicht vorlesen"; return; }
     setDot("vDot", voiceOn ? "ok" : "");
-    $("vV").textContent = voiceOn ? (voice ? voice.name : "Deutsche Standardstimme") : "Aus";
+    $("vV").textContent = voiceOn ? voiceLabel(voice) + " · antippen zum Wechseln" : "Aus";
   }
   if (synth) { pickVoice(); synth.onvoiceschanged = pickVoice; } else updateVoiceUi();
+  $("vV").style.cursor = "pointer"; $("vV").parentElement.addEventListener("click", cycleVoice);
 
   // Text erscheint genau dann, wenn die Stimme ihn spricht
   let bubbleEl = null, shown = "", fullAnswer = "";
@@ -711,11 +742,16 @@
 
   let ttsEpoch = 0;   // wird bei jedem Stoppen erhöht, damit alte Sätze nicht weiterlaufen
   function speak(text, onShow) {
-    const clean = text.replace(/[*#_`>]/g, "").trim();
+    // Für die Stimme aufbereiten: Zeichen aussprechbar machen, Emojis weg – klingt deutlicher
+    const clean = text.replace(/[*#_`>]/g, "")
+      .replace(/\p{Extended_Pictographic}|[\u{FE0F}\u{200D}✓✗☐▲▼•◎]/gu, "")
+      .replace(/(\d)\s*€/g, "$1 Euro").replace(/€/g, "Euro").replace(/(\d)\s*%/g, "$1 Prozent").replace(/°\s*C/g, " Grad")
+      .replace(/\bz\.\s*B\./g, "zum Beispiel").replace(/\bca\./g, "circa").replace(/\bbzw\./g, "beziehungsweise").replace(/\bu\.\s*a\./g, "unter anderem")
+      .replace(/\s+&\s+/g, " und ").replace(/\s[–—]\s/g, ", ").replace(/\s{2,}/g, " ").trim();
     if (!voiceActive() || !clean) { onShow && onShow(); return; }
     const ep = ttsEpoch;
     const u = new SpeechSynthesisUtterance(clean);
-    u.lang = "de-DE"; if (voice) u.voice = voice; u.rate = 1.05;
+    u.lang = "de-DE"; if (voice) u.voice = voice; u.rate = AND ? 1.0 : 1.05;
     let shownOnce = false;
     const show = () => { if (!shownOnce) { shownOnce = true; onShow && onShow(); } };
     queue++; speaking = true; refreshUi();

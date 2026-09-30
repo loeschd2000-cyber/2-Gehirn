@@ -530,6 +530,18 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
             }
             return installed
         }
+        @JavascriptInterface fun spotifyPlaylist(name: String): Boolean {
+            val app = act.applicationContext; val wasBig = !mini
+            main.post {
+                WakeService.setMicBusy(false)
+                try { speech?.cancel() } catch (_: Throwable) {}; endActive()
+                Music.playPlaylist(app, name, wasBig) { ok, how, msg ->
+                    emit("__zgMusic", JSONObject().put("ok", ok).put("how", how).put("msg", msg)
+                        .put("access", Music.accessGranted(app)).put("log", Music.lastLog))
+                }
+            }
+            return Music.spotifyInstalled(app)
+        }
         // Spotify-Schnittstelle (Premium): einmal anmelden, dann spielt alles im Hintergrund
         @JavascriptInterface fun spotifyApiState(): String = JSONObject()
             .put("clientId", SpotifyApi.clientId(act)).put("connected", SpotifyApi.connected(act))

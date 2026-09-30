@@ -139,6 +139,22 @@ object Music {
         playOld(ctx, query, artist, backToApp, done)
     }
 
+    /** Playlist von Anfang an (nur über die Spotify-Schnittstelle sinnvoll) */
+    fun playPlaylist(ctx: Context, name: String, backToApp: Boolean, done: Done) {
+        log.setLength(0); t0 = SystemClock.elapsedRealtime()
+        step("Playlist: „$name“")
+        if (!SpotifyApi.connected(ctx)) { step("Spotify-Schnittstelle nicht verbunden → Suche"); playOld(ctx, "$name playlist", "", backToApp, done); return }
+        Thread {
+            val (ok, msg) = try { SpotifyApi.playPlaylist(ctx, name) { step(it) } } catch (e: Throwable) { false to (e.message ?: "Fehler") }
+            main.post {
+                val found = SpotifyApi.lastFound
+                if (ok) done.done(true, "hintergrund", msg)
+                else if (found != null && found.first.startsWith("spotify:")) playFound(ctx, found.first, found.second, backToApp, done)
+                else done.done(false, "fehler", msg)
+            }
+        }.start()
+    }
+
     private fun playOld(ctx: Context, query: String, artist: String, backToApp: Boolean, done: Done) {
         if (!spotifyInstalled(ctx)) {
             step("Spotify ist nicht installiert → Browser")

@@ -200,6 +200,18 @@
     }
     // „Spiel Gzuz (auf Spotify)“, „Spiele Musik von Gzuz“, „Spiel das Lied Bonez auf Spotify“
     const t = mediaClean(text);
+    // Playlists: „Spiel die Playlist Lieblingssongs“, „Spiel meine Chill-Playlist“, „Spiel meine Lieblingssongs“
+    const PL_END = "(?:\\s+(?:auf|bei|in|über|mit)\\s+spotify)?(?:\\s+(?:ab|an|von\\s+anfang(?:\\s+an)?|von\\s+vorne))?$";
+    const pl = new RegExp("^(?:spiel|spiele|play|hör|höre|starte?|mach|leg|lege)\\s+(?:mir\\s+)?(?:mal\\s+)?(?:bitte\\s+)?(?:die\\s+|meine\\s+|mein\\s+)?(?:playlist|wiedergabeliste)\\s+(?:namens\\s+|mit\\s+dem\\s+namen\\s+)?(.+?)" + PL_END).exec(t)
+      || new RegExp("^(?:spiel|spiele|play|hör|höre|starte?|mach|leg|lege)\\s+(?:mir\\s+)?(?:mal\\s+)?(?:bitte\\s+)?(?:die\\s+|meine\\s+|mein\\s+)?(.+?)[\\s-]*(?:playlist|wiedergabeliste)" + PL_END).exec(t)
+      || new RegExp("^(?:spiel|spiele|play|hör|höre|starte?|mach|leg|lege)\\s+(?:mir\\s+)?(?:mal\\s+)?(?:bitte\\s+)?(?:meine\\s+|die\\s+)?(lieblings[\\s-]*(?:songs?|lieder|musik)|gelikten\\s+songs|liked\\s+songs|favoriten)" + PL_END).exec(t);
+    if (pl && pl[1] && pl[1].trim().length >= 2 && !/^(?:die|meine|eine)$/.test(pl[1].trim())) {
+      const name = pl[1].trim();
+      if (!AND) return quiet("Musik abspielen geht nur in der Android-App.");
+      musicHold = Date.now() + 25000;
+      if (AND.spotifyPlaylist) AND.spotifyPlaylist(name); else AND.spotifyPlay(name + " playlist", "");
+      return quiet(`Ich spiele die Playlist ${name} von Anfang an.`);
+    }
     const m = /^(?:spiel|spiele|play|hör|höre|leg|lege|mach)\s+(?:mir\s+)?(?:mal\s+)?(.+?)(?:\s+(?:auf|bei|in|über|mit)\s+spotify)?(?:\s+(?:auf|an|ab))?$/i.exec(t);
     if (!m || /^(?:ein\s+|eine\s+)?spiel\b/i.test(m[1])) return false;
     // „mach/hör/leg …“ nur, wenn klar Musik gemeint ist („hör auf“, „leg los“ sind keine Lieder)

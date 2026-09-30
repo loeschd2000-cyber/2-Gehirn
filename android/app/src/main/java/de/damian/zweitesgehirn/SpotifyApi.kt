@@ -20,7 +20,7 @@ import java.text.Normalizer
  */
 object SpotifyApi {
     const val REDIRECT = "https://loeschd2000-cyber.github.io/2-Gehirn/spotify.html"
-    private const val SCOPES = "user-modify-playback-state user-read-playback-state user-read-private"
+    private const val SCOPES = "user-modify-playback-state user-read-playback-state user-read-private playlist-read-private playlist-read-collaborative user-library-read"
     private fun p(ctx: Context) = ctx.getSharedPreferences("zg_spotify", Context.MODE_PRIVATE)
 
     fun clientId(ctx: Context) = p(ctx).getString("client_id", "") ?: ""
@@ -167,6 +167,11 @@ object SpotifyApi {
         log("Gewählt: $label")
         lastFound = (body?.optString("context_uri")?.ifBlank { null } ?: body?.optJSONArray("uris")?.optString(0) ?: "") to label
 
+        return startOn(ctx, tok, playBody, label, log)
+    }
+
+    /** Auf diesem Handy abspielen (Spotify notfalls im Hintergrund wecken). [before]: z. B. Zufallswiedergabe aus */
+    private fun startOn(ctx: Context, tok: String, playBody: String, label: String, log: (String) -> Unit, before: ((String) -> Unit)? = null): Pair<Boolean, String> {
         // Gerät: dieses Handy. Läuft Spotify nicht, erst im Hintergrund wecken.
         var dev = pickDevice(tok, log)
         if (dev == null) {
@@ -177,6 +182,7 @@ object SpotifyApi {
         if (dev == null) dev = pickDevice(tok, log, allowOther = true)?.also { log("Nehme anderes Spotify-Gerät: ${it.second}") }
         if (dev == null) { log("Kein Spotify-Gerät gefunden"); return false to "Spotify läuft auf keinem Gerät" }
         log("Gerät: ${dev.second}")
+        before?.invoke(dev.first)
         var (pc, pr) = http("PUT", "https://api.spotify.com/v1/me/player/play?device_id=" + URLEncoder.encode(dev.first, "UTF-8"), tok, playBody)
         if (pc !in 200..299) {
             // Wiedergabe erst auf dieses Handy holen, dann nochmal
@@ -188,6 +194,82 @@ object SpotifyApi {
         if (pc in 200..299) { log("✓ Spielt: $label"); return true to label }
         log("Abspielen fehlgeschlagen ($pc): ${errText(pr)}")
         return false to "Spotify wollte nicht abspielen ($pc)"
+    }
+
+    private val LIKED = setOf("lieblingssongs", "lieblingssong", "lieblingslieder", "lieblings songs", "lieblings lieder", "liked songs", "gelikte songs",
+        "gelikten songs", "meine lieblingssongs", "favoriten", "meine favoriten", "lieblingsmusik", "gespeicherte songs", "likes")
+
+    /**
+     * Playlist von Anfang an abspielen (Zufallswiedergabe aus). Sucht zuerst in deinen eigenen Playlists,
+     * „Lieblingssongs“ = deine mit Herz gespeicherten Songs, sonst öffentliche Playlists. Hintergrund-Thread!
+     */
+    fun playPlaylist(ctx: Context, name: String, log: (String) -> Unit): Pair<Boolean, String> {
+        lastFound = null
+        val tok = token(ctx) ?: return false to "Spotify ist nicht verbunden"
+        val nn = norm(name); val nns = nn.replace(" ", "")
+        val liked = nn in LIKED || LIKED.any { it.replace(" ", "") == nns }
+        var ctxUri: String? = null; var label = ""; var needReconnect = false
+        // 1) eigene Playlists
+        var url: String? = "https://api.spotify.com/v1/me/playlists?limit=50"; var pages = 0; var best = 0; var count = 0
+        while (url != null && pages < 5) {
+            val (c, r) = http("GET", url, tok)
+            if (c == 401 || c == 403) { needReconnect = true; log("Eigene Playlists: keine Berechtigung ($c) – einmal Spotify neu verbinden"); break }
+            if (c != 200) { log("Eigene Playlists gingen nicht ($c)"); break }
+            val j = JSONObject(r); val items = j.optJSONArray("items") ?: break
+            for (i in 0 until items.length()) {
+                val p = items.optJSONObject(i) ?: continue; count++
+                val pn = norm(p.optString("name")); val pns = pn.replace(" ", "")
+                val sc = when { pn == nn || pns == nns -> 100; pn.startsWith(nn) || nn.startsWith(pn) -> 70; pn.contains(nn) || nn.contains(pn) -> 50; else -> 0 }
+                if (sc > best && pn.isNotBlank()) { best = sc; ctxUri = p.optString("uri"); label = p.optString("name") }
+            }
+            url = j.optString("next").takeIf { it.startsWith("https://") }; pages++
+        }
+        if (count > 0) log("$count eigene Playlists durchsucht" + if (ctxUri != null) " → „$label“" else " – keine passt")
+        // 2) Lieblingssongs (mit Herz gespeichert)
+        var likedUris: org.json.JSONArray? = null
+        if (ctxUri == null && liked) {
+            val (c, r) = http("GET", "https://api.spotify.com/v1/me/tracks?limit=50", tok)
+            if (c == 200) {
+                val items = JSONObject(r).optJSONArray("items") ?: org.json.JSONArray()
+                val arr = org.json.JSONArray()
+                for (i in 0 until items.length()) {
+                    val u = items.optJSONObject(i)?.optJSONObject("track")?.optString("uri") ?: ""
+                    if (u.isNotBlank()) arr.put(u)
+                }
+                label = "Lieblingssongs"; log("Lieblingssongs: ${arr.length()} Songs")
+                likedUris = if (arr.length() > 0) arr else null
+            } else { if (c == 401 || c == 403) needReconnect = true; log("Lieblingssongs gingen nicht ($c)") }
+        }
+        // 3) öffentliche Playlist suchen
+        if (ctxUri == null && likedUris == null) {
+            val q = URLEncoder.encode(name, "UTF-8")
+            var (c, r) = http("GET", "https://api.spotify.com/v1/search?q=$q&type=playlist&limit=10&market=DE", tok)
+            if (c == 403 || c == 400) { val r2 = http("GET", "https://api.spotify.com/v1/search?q=$q&type=playlist&limit=10", tok); c = r2.first; r = r2.second }
+            if (c == 200) {
+                val items = JSONObject(r).optJSONObject("playlists")?.optJSONArray("items") ?: org.json.JSONArray()
+                var bs = -1
+                for (i in 0 until items.length()) {
+                    val p = items.optJSONObject(i) ?: continue   // Spotify liefert hier manchmal leere Einträge
+                    val pn = norm(p.optString("name"))
+                    val sc = (if (pn == nn) 100 else if (pn.contains(nn) || nn.contains(pn)) 50 else 0) - i
+                    if (sc > bs) { bs = sc; ctxUri = p.optString("uri"); label = p.optString("name") }
+                }
+                if (ctxUri != null) log("Öffentliche Playlist: „$label“")
+            } else log("Playlist-Suche ging nicht ($c)")
+        }
+        if (ctxUri.isNullOrBlank() && likedUris == null) {
+            return false to (if (needReconnect) "Ich darf deine Playlists noch nicht sehen – bitte in den App-Einstellungen Spotify einmal trennen und neu verbinden"
+                             else "Keine Playlist „$name“ gefunden")
+        }
+        val body = if (likedUris != null) JSONObject().put("uris", likedUris).put("offset", JSONObject().put("position", 0))
+                   else JSONObject().put("context_uri", ctxUri).put("offset", JSONObject().put("position", 0))
+        body.put("position_ms", 0)
+        lastFound = (ctxUri ?: likedUris?.optString(0) ?: "") to label
+        return startOn(ctx, tok, body.toString(), "$label (Playlist)", log) { devId ->
+            // von Anfang an, der Reihe nach: Zufallswiedergabe aus
+            val (c, _) = http("PUT", "https://api.spotify.com/v1/me/player/shuffle?state=false&device_id=" + URLEncoder.encode(devId, "UTF-8"), tok, "")
+            if (c !in 200..299) log("Zufall ausschalten ging nicht ($c)")
+        }
     }
 
     /** (id, name) des Handys, sonst des aktiven Geräts */

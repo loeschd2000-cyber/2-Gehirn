@@ -83,7 +83,7 @@
     <div class="two"><button class="primary" id="spConnect" type="button">Mit Spotify verbinden</button><button id="spOff" type="button">Trennen</button></div>
     <small id="spMsg"></small>
     <label for="mq">Musik testen</label>
-    <div class="two"><input id="mq" type="text" value="Gzuz" autocomplete="off"><button id="mTest" type="button" style="flex:none">Abspielen</button></div>
+    <div class="two"><input id="mq" type="text" value="Gzuz" autocomplete="off"><button id="mTest" type="button" style="flex:none">Abspielen</button><button id="mPl" type="button" style="flex:none">Playlist</button></div>
     <label>Steuerung testen (während Musik läuft)</label>
     <div class="ctl">
       <button type="button" data-c="pause">⏸ Pause</button><button type="button" data-c="play">▶ Weiter</button>
@@ -155,6 +155,7 @@
     if (A.openWhatsappAuto) $("bWa").onclick = () => A.openWhatsappAuto();
     if (A.musicLog) { const l = A.musicLog(); if (l && !/^Noch nichts/.test(l)) $("mLog").textContent = "Letzter Versuch:\n" + l; }
     window.__zgMusic = { emit: r => { $("mLog").textContent = (r.ok ? "✓ Hat geklappt" : "✗ Hat nicht geklappt") + " (" + (r.how === "hintergrund" ? "im Hintergrund" : r.how === "app" ? "über Spotify" : "Fehler") + ")\n\n" + r.log; } };
+    $("mPl").onclick = () => { const q = $("mq").value.trim(); if (!q || !A.spotifyPlaylist) return; $("mLog").textContent = "Teste Playlist …"; A.spotifyPlaylist(q); };
     document.querySelectorAll(".ctl button").forEach(b => b.onclick = () => {
       if (!A.media) return;
       $("mLog").textContent = "Teste „" + b.textContent + "“ …";

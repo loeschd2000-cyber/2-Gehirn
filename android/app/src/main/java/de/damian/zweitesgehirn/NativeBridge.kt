@@ -148,9 +148,15 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
     @Volatile var pendingAsk: String? = null
     fun deliverAsk(text: String) {
         pendingAsk = text
-        main.postDelayed({
-            if (!destroyed) web.evaluateJavascript("(window.__zgAsk && __zgAsk(" + JSONObject.quote(text) + ")) ? 'ok' : 'wait'") { r -> if (r?.contains("ok") == true) pendingAsk = null }
-        }, 600)
+        fun tryIt(n: Int) {
+            if (destroyed || pendingAsk == null) return
+            web.evaluateJavascript("(window.__zgAsk && __zgAsk(" + JSONObject.quote(text) + ")) ? 'ok' : 'wait'") { r ->
+                if (r?.contains("ok") == true) pendingAsk = null
+                else if (n < 20) main.postDelayed({ tryIt(n + 1) }, 500)
+                else pendingAsk = null   // nach 10 Sekunden verwerfen, nicht später überraschend ausführen
+            }
+        }
+        main.postDelayed({ tryIt(0) }, 600)
     }
 
     @Volatile var pendingDiary = false
@@ -163,7 +169,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
 
     fun onResume() { web.evaluateJavascript("window.__zgResume && __zgResume()", null) }
     fun onWakeStopped() { main.post { web.evaluateJavascript("window.__zgWakeState && __zgWakeState(false)", null) } }
-    fun isListening(): Boolean = !srEnded
+    fun isListening(): Boolean = !srEnded || recorder.active
 
     private val recorder by lazy { VoiceRecorder { type, sid, extra -> emit("__zgRec", JSONObject().put("type", type).put("sid", sid).put("info", extra ?: "")) } }
     @Volatile private var ttsReady = false
@@ -187,7 +193,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         if (!srEnded) {
             srEnded = true
             emit("__zgSR", JSONObject().put("type", "end").put("sid", srActiveSid))
-            main.postDelayed({ if (srEnded) WakeService.setMicBusy(false) }, 400)
+            main.postDelayed({ if (srEnded && !recorder.active) WakeService.setMicBusy(false) }, 400)
         }
     }
 
@@ -200,7 +206,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
 
     private fun ttsFinished(id: String, type: String) {
         emit("__zgTTS", JSONObject().put("type", type).put("id", id))
-        main.postDelayed({ WakeService.setSpeaking(tts?.isSpeaking == true) }, 400)
+        main.postDelayed({ if (tts?.isSpeaking != true) WakeService.setSpeaking(false) }, 400)
     }
 
     // ---------- Spracherkennung ----------
@@ -214,7 +220,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             if (srActiveSid != sid || srEnded) return
             srEnded = true
             emit("__zgSR", JSONObject().put("type", "end").put("sid", sid))
-            main.postDelayed({ if (srEnded) WakeService.setMicBusy(false) }, 400)
+            main.postDelayed({ if (srEnded && !recorder.active) WakeService.setMicBusy(false) }, 400)
         }
         if (!SpeechRecognizer.isRecognitionAvailable(act)) {
             emit("__zgSR", JSONObject().put("type", "error").put("sid", sid).put("error", "service-not-allowed"))
@@ -342,15 +348,18 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         @JavascriptInterface fun secretSet(name: String, value: String) { if (okName(name) && value.length < 4000) Secure.vaultSet(act, name, value) }
         // Jarvis meldet sich von selbst (Geburtstage, Arbeiten, Budget)
         @JavascriptInterface fun proactiveSync(json: String) { if (json.length < 100_000) Proactive.sync(act, json) }
-        @JavascriptInterface fun deviceLocked(): Boolean = try { act.getSystemService(android.app.KeyguardManager::class.java).isKeyguardLocked } catch (_: Throwable) { false }
+        @JavascriptInterface fun deviceLocked(): Boolean = try { MainActivity.privateLocked(act) } catch (_: Throwable) { false }
         @JavascriptInterface fun appLockGet(): Boolean = Prefs.appLock(act)
         /** Rückgabe: "ok" oder ein Grund, warum es nicht geht */
         @JavascriptInterface fun appLockSet(on: Boolean): String {
             if (on && !(try { act.getSystemService(android.app.KeyguardManager::class.java).isDeviceSecure } catch (_: Throwable) { false }))
                 return "Auf deinem Handy ist keine Bildschirmsperre eingerichtet. Richte zuerst PIN oder Fingerabdruck ein."
-            Prefs.setAppLock(act, on)
-            if (on) (act as? MainActivity)?.markUnlocked()
-            return "ok"
+            if (on) { Prefs.setAppLock(act, true); main.post { (act as? MainActivity)?.markUnlocked() }; return "ok" }
+            if (!Prefs.appLock(act)) return "ok"
+            // Ausschalten nur nach Fingerabdruck/PIN (und nicht im kleinen Kreis)
+            val m = act as? MainActivity ?: return "Öffne dafür die große App."
+            main.post { m.confirmThen { Prefs.setAppLock(act, false); if (!destroyed) web.evaluateJavascript("window.__zgLockChanged && __zgLockChanged()", null) } }
+            return "auth"
         }
 
         // Spracherkennung
@@ -367,7 +376,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                 emit("__zgSR", JSONObject().put("type", "error").put("sid", sid).put("error", "aborted"))
                 srEnded = true
                 emit("__zgSR", JSONObject().put("type", "end").put("sid", sid))
-                main.postDelayed({ if (srEnded) WakeService.setMicBusy(false) }, 400)
+                main.postDelayed({ if (srEnded && !recorder.active) WakeService.setMicBusy(false) }, 400)
             }
         }
 
@@ -431,7 +440,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         @JavascriptInterface fun bargeInGet(): Boolean = Prefs.bargeIn(act)
         @JavascriptInterface fun bargeInSet(on: Boolean) { Prefs.setBargeIn(act, on); WakeService.bargeIn = on }
         /** Für die KI-Stimme (spielt in der Web-App): Hintergrund-Dienst wissen lassen, dass Jarvis spricht */
-        @JavascriptInterface fun setSpeaking(on: Boolean) { WakeService.setSpeaking(on) }
+        @JavascriptInterface fun setSpeaking(on: Boolean) { WakeService.setWebSpeaking(on) }
         @JavascriptInterface fun consumeWake(): Boolean { val w = pendingWake; pendingWake = false; return w }
         @JavascriptInterface fun wakeScore(): Float = WakeService.lastScore
 

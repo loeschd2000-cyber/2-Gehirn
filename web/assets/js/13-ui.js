@@ -152,9 +152,11 @@
     lockUi(); proUi();
     $("cLock").onclick = () => {
       const r = AND.appLockSet(!AND.appLockGet());
+      if (r === "auth") { toast("Zum Ausschalten kurz bestätigen (Fingerabdruck oder PIN)", "🔒", 3500); return; }
       if (r !== "ok") { toast(r, "⚠", 5000); return; }
       lockUi(); toast(AND.appLockGet() ? "App-Sperre an: beim Öffnen Fingerabdruck oder PIN" : "App-Sperre aus", "🔒");
     };
+    window.__zgLockChanged = () => { lockUi(); toast(AND.appLockGet() ? "App-Sperre an" : "App-Sperre aus", "🔒"); };
     $("cPro").onclick = () => { lsSet("zg_pro_on", lsGet("zg_pro_on") === "0" ? "1" : "0"); proUi(); proactiveSync(); toast(lsGet("zg_pro_on") === "0" ? "Morgen-Hinweise aus" : "Morgen-Hinweise an (7:30 Uhr)", "🔔"); };
   }
 

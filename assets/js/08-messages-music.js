@@ -200,8 +200,8 @@
     const m = /^(?:spiel|spiele|play|hör|höre|leg|lege|mach)\s+(?:mir\s+)?(?:mal\s+)?(.+?)(?:\s+(?:auf|bei|in|über|mit)\s+spotify)?(?:\s+(?:auf|an|ab))?$/i.exec(t);
     if (!m || /^(?:ein\s+|eine\s+)?spiel\b/i.test(m[1])) return false;
     // „mach/hör/leg …“ nur, wenn klar Musik gemeint ist („hör auf“, „leg los“ sind keine Lieder)
-    if (/^(?:mach|hör|höre|leg|lege)(?![\wäöüß])/.test(t) && !/\b(?:musik|lied|song|spotify|playlist|album)\b/.test(t)) return false;
-    if (/^(?:auf|zu|los|mit\s+mir\b.*|mal\s+zu|weiter\s+zu)$/.test(m[1].trim())) return false;
+    if (/^mach(?![\wäöüß])/.test(t) && !/\b(?:musik|lied|song|spotify|playlist|album)\b/.test(t)) return false;
+    if (/^(?:auf|zu|los|mit\s+mir\b.*|mal\s+zu|weiter\s+zu|(?:dich|mich|dir|es|das)\b.*)$/.test(m[1].trim())) return false;
     let q = m[1].replace(/^(?:bitte\s+)?(?:etwas|was|musik|songs?|lieder|das\s+lied|den\s+song|die\s+playlist|ein\s+lied|einen\s+song)\s+/i, "").trim();
     let artist = "";
     const von = /^(?:(?:etwas|was|musik|songs?|lieder|ein\s+lied|einen\s+song)\s+)?von\s+(.+)$/i.exec(q);

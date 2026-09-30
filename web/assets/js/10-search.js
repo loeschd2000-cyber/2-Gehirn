@@ -2,10 +2,9 @@
      Durchsucht alle Gespräche, das Tagebuch und die gemerkten Dinge.
      Mit KI: kurze Antwort mit Datum. Ohne KI: die besten Fundstellen als Liste. */
   const SEARCH_RE = [
-    /^\W*(?:(?:hey\s+)?jarvis\W*)?(?:was|wann|wo)\s+(?:hab|habe|hatte)\s+ich\s+(?:(?:denn|mal|schon|damals|je|jemals|letztens|zuletzt|dir|dir\s+mal|im\s+tagebuch|in\s+meinem\s+tagebuch)\s+)*(?:über|von|zu|wegen|zum\s+thema)\s+(.+?)\s+(?:gesagt|geredet|gesprochen|erzählt|geschrieben|gefragt|notiert|aufgeschrieben)\W*$/i,
-    /\b(?:such\w*|find\w*|durchsuch\w*)\s+(?:mal\s+)?(?:in\s+|im\s+|durch\s+)?(?:meinen?\s+|meinem\s+|den\s+|dem\s+)?(?:chats?|gesprächen?|verlauf|tagebuch|notizen|nachrichten|erinnerungen|allem|gedächtnis)\s+(?:nach|über|zu)\s+(.+?)\W*$/i,
-    /^\W*was\s+(?:stand|steht)\s+(?:in\s+meinem\s+|im\s+)tagebuch\s+(?:über|zu|von|wegen)\s+(.+?)\W*$/i,
-    /^\W*wann\s+(?:hab|habe)\s+ich\s+(?:zuletzt\s+|das\s+letzte\s+mal\s+)?(?:über|von)\s+(.+?)\s+(?:geredet|gesprochen|erzählt|geschrieben)\W*$/i,
+    /^\W*(?:(?:hey\s+)?jarvis\W*)?(?:was|wann|wo)\s+(?:hab|habe|hatte)\s+ich\s+(?:(?:denn|mal|schon|damals|je|jemals|letztens|zuletzt|dir|dir\s+mal|im\s+tagebuch|in\s+meinem\s+tagebuch)\s+)*(?:über|von|zu|wegen|zum\s+thema)\s+(.+?)\s+(?:gesagt|geredet|gesprochen|erzählt|geschrieben|gefragt|notiert|aufgeschrieben)[^\p{L}\p{N}]*$/iu,
+    /^\W*(?:(?:hey\s+)?jarvis\W*)?(?:kannst\s+du\s+)?(?:such\w*|find\w*|durchsuch\w*)\s+(?:mal\s+)?(?:bitte\s+)?(?:in\s+|im\s+|durch\s+)?(?:(?:mein(?:e[nmr]?)?|den|dem|die|das)\s+)?(?:chats?|gespräch\w*|verlauf|tagebuch|notizen|allem|gedächtnis|(?<=mein\w*\s+)(?:nachrichten|erinnerungen))\s+(?:nach|über|zu)\s+(.+?)[^\p{L}\p{N}]*$/iu,
+    /^\W*was\s+(?:stand|steht)\s+(?:in\s+meinem\s+|im\s+)tagebuch\s+(?:über|zu|von|wegen)\s+(.+?)[^\p{L}\p{N}]*$/iu,
   ];
   const STOP = new Set("der die das den dem des ein eine einen einem einer und oder mit mein meine meinen meinem meiner ich du er sie es wir ihr mal was wie wo wann über von zu im in am an auf für bei nach vor".split(" "));
 
@@ -63,6 +62,7 @@
     let q = null;
     for (const re of SEARCH_RE) { const m = re.exec(text); if (m) { q = m[1].trim(); break; } }
     if (!q) return false;
+    if (MINI && deviceLocked()) { assistantSay("Das ist privat. Entsperr zuerst dein Handy, dann sag es nochmal."); return true; }
     q = q.replace(/^(?:den|die|das|dem|meinen?|meinem)\s+/i, "");
     const hits = searchAll(q);
     if (!hits.length) { assistantSay(`Dazu habe ich nichts gefunden – weder in unseren Gesprächen noch im Tagebuch. Über „${q}“ haben wir wohl noch nicht geredet.`); return true; }
@@ -75,7 +75,7 @@
           { type: "object", properties: { antwort: { type: "string" } }, required: ["antwort"] });
         busy = false; refreshUi();
         if (j && j.antwort) { assistantSay(j.antwort); return true; }
-      } catch {}
+      } catch (e) { if (e && e.name === "AbortError") { busy = false; refreshUi(); return true; } }
       busy = false; refreshUi();
     }
     const h = hits[0];

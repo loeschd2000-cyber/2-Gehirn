@@ -17,20 +17,23 @@ class VoiceRecorder(
     @Volatile private var sid = 0
     @Volatile private var flag = 0          // 0 = läuft, 1 = fertig (auswerten), 2 = abbrechen
     @Volatile private var result: Pair<Int, String>? = null
+    /** Nimmt gerade auf (dann darf „Hey Jarvis“ nicht mithören) */
+    @Volatile var active = false
+        private set
 
     fun start(pauseMs: Int, maxMs: Int): Int {
-        val my = ++sid; flag = 0; result = null
+        val my = ++sid; flag = 0; result = null; active = true
+        WakeService.setMicBusy(true)
         Thread({ loop(my, pauseMs.coerceIn(700, 5000), maxMs.coerceIn(3000, 60000)) }, "zg-rec").start()
         return my
     }
     fun stop(s: Int) { if (s == sid) flag = 1 }
     fun abort(s: Int) { if (s == sid) flag = 2 }
-    fun abortAll() { flag = 2; sid++ }
+    fun abortAll() { flag = 2; sid++; if (active) { active = false; WakeService.setMicBusy(false) } }
     /** Holt die Aufnahme ab (nur einmal) */
     fun take(s: Int): String { val r = result; return if (r != null && r.first == s) { result = null; r.second } else "" }
 
     private fun loop(my: Int, pauseMs: Int, maxMs: Int) {
-        WakeService.setMicBusy(true)
         val rate = 16000
         val min = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
         val r = try {
@@ -74,7 +77,10 @@ class VoiceRecorder(
     }
 
     private fun finish(my: Int, type: String, extra: String?) {
-        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({ WakeService.setMicBusy(false) }, 400)
+        if (sid == my) {   // nur die neueste Aufnahme gibt das Mikrofon frei
+            active = false
+            android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({ if (!active && sid == my) WakeService.setMicBusy(false) }, 400)
+        }
         onEvent(type, my, extra)
     }
 

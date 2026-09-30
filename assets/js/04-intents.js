@@ -32,4 +32,6 @@ Nachricht: "${text}"`;
   }
 
   const YES = /^\s*(ja|jo|jep|jawohl|genau|klar|okay|ok|passt|mach( das)?|speicher\w*|trag( es)? ein|senden|schick\w*|bitte$|ja bitte)(?![\wäöüß])/i;
-  const NO = /^\s*(nein|nee|ne|nö|abbrechen|stopp?|lass( es)?|verwerfen|lieber nicht|doch nicht)(?![\wäöüß])|\b(nicht|kein\w*)\b/i;
+  const NO_START = /^\s*(nein|nee|ne|nö|abbrechen|stopp?|lass( es)?|verwerfen|lieber nicht|doch nicht)(?![\wäöüß])/i;
+  // „bitte nicht“, „besser nicht“, „keine Lust“: nur bei kurzen Antworten als Nein werten (sonst „Ja, ich komme nicht“ = Nein)
+  const NO = { test: t => NO_START.test(t) || (!YES.test(t) && t.trim().split(/\s+/).length <= 4 && /(?:^|\s)(nicht|kein\w*)(?![\wäöüß])/i.test(t)) };

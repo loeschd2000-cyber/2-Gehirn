@@ -256,7 +256,9 @@
     persist();
   }
 
+  let askGen = 0;
   async function ask(text, viaVoice) {
+    askGen++;
     if (!backend) await checkAi();
     lastViaVoice = viaVoice;
     hush();

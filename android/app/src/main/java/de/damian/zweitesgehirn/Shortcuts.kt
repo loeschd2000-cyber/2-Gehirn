@@ -25,7 +25,7 @@ class JarvisWidget : AppWidgetProvider() {
             setOnClickPendingIntent(R.id.w_mic, listen)
             setOnClickPendingIntent(R.id.w_root, listen)
             setOnClickPendingIntent(R.id.w_brief, pi(ctx, 7402, Intent(ctx, MainActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra("ask", "Guten Morgen")))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra("widget", "brief")))
             setOnClickPendingIntent(R.id.w_diary, pi(ctx, 7403, Intent(ctx, MainActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra("diary", true)))
         }

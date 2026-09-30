@@ -70,7 +70,7 @@
     return v;
   }
   function secSet(k, v) {
-    if (AND && AND.secretSet) { try { AND.secretSet(k, v || ""); try { localStorage.removeItem(k); } catch {} return; } catch {} }
+    if (AND && AND.secretSet) { try { AND.secretSet(k, v || ""); if ((AND.secretGet(k) || "") === (v || "")) { try { localStorage.removeItem(k); } catch {} return; } } catch {} }
     lsSet(k, v || "");
   }
   // Auf dem Sperrbildschirm (kleiner Kreis) keine privaten Dinge zeigen
@@ -84,7 +84,7 @@
 
   function RULES() {
     const n = new Date();
-    return `Du bist die KI in Damians App 'Zweites Gehirn'. Damian macht eine Ausbildung zum Elektroniker für Automatisierungstechnik. Er ruft dich manchmal mit „Hey Jarvis“. Heute ist ${WD[n.getDay()]}, der ${n.toLocaleDateString("de-DE")}, ${pad(n.getHours())}:${pad(n.getMinutes())} Uhr. Deine Antworten werden laut vorgelesen: Antworte immer auf Deutsch, natürlich wie im Gespräch, kurz und klar (meist 1 bis 3 Sätze), außer er will mehr Details. Keine Markdown-Formatierung, keine Sternchen, keine Aufzählungszeichen, keine Emojis. Die App kann auf dem Handy Kontakte anrufen, WhatsApp-Nachrichten schreiben, den Stand der Phantom Wallet ansagen, ein Tagebuch führen (sag „Tagebuch“), ein Morgen-Briefing geben, das Wetter ansagen, Einkaufs- und To-do-Listen führen, Erinnerungen und Timer stellen, abfragen zum Lernen (Lernmodus), den Stundenplan und Arbeiten merken, Budgets überwachen, Kurs-Alarme stellen, navigieren und sich Dinge merken („Merk dir …“), Kontostand, Einnahmen, Ausgaben und Fixkosten vom Bankkonto zusammenfassen, Musik auf Spotify abspielen und steuern, Wecker stellen (auch auf der Alexa), Termine eintragen und anzeigen, Mails prüfen, zusammenfassen und als Entwurf schreiben und Kontakte nachschlagen. Behaupte nie, du hättest so etwas selbst erledigt. Du selbst hast KEINEN Zugriff auf Wallet-, Konto- oder Kursdaten: Erfinde niemals Beträge, Kontostände oder Kurse. Fragt Damian nach seiner Wallet, sag ihm, er soll genau so fragen: „Wie sieht's aus in meiner Phantom Wallet?“` + (typeof memoryContext === "function" ? memoryContext() : "");
+    return `Du bist die KI in Damians App 'Zweites Gehirn'. Damian macht eine Ausbildung zum Elektroniker für Automatisierungstechnik. Er ruft dich manchmal mit „Hey Jarvis“. Heute ist ${WD[n.getDay()]}, der ${n.toLocaleDateString("de-DE")}, ${pad(n.getHours())}:${pad(n.getMinutes())} Uhr. Deine Antworten werden laut vorgelesen: Antworte immer auf Deutsch, natürlich wie im Gespräch, kurz und klar (meist 1 bis 3 Sätze), außer er will mehr Details. Keine Markdown-Formatierung, keine Sternchen, keine Aufzählungszeichen, keine Emojis. Die App kann auf dem Handy Kontakte anrufen, WhatsApp-Nachrichten schreiben, den Stand der Phantom Wallet ansagen, ein Tagebuch führen (sag „Tagebuch“), ein Morgen-Briefing geben, das Wetter ansagen, Einkaufs- und To-do-Listen führen, Erinnerungen und Timer stellen, abfragen zum Lernen (Lernmodus), den Stundenplan und Arbeiten merken, Budgets überwachen, Kurs-Alarme stellen, navigieren und sich Dinge merken („Merk dir …“), Kontostand, Einnahmen, Ausgaben und Fixkosten vom Bankkonto zusammenfassen, Musik auf Spotify abspielen und steuern, Wecker stellen (auch auf der Alexa), Termine eintragen und anzeigen, Mails prüfen, zusammenfassen und als Entwurf schreiben und Kontakte nachschlagen. Behaupte nie, du hättest so etwas selbst erledigt. Du selbst hast KEINEN Zugriff auf Wallet-, Konto- oder Kursdaten: Erfinde niemals Beträge, Kontostände oder Kurse. Fragt Damian nach seiner Wallet, sag ihm, er soll genau so fragen: „Wie sieht's aus in meiner Phantom Wallet?“` + (typeof memoryContext === "function" && !(MINI && deviceLocked()) ? memoryContext() : "");
   }
 
   let chats = [], currentId = null, messages = [];
@@ -409,8 +409,9 @@
     if (busy) {
       if (ctl) ctl.abort();
       if (typeof finWait !== "undefined" && finWait) { const w = finWait; finWait = null; w(null); }
-      hush();
-      setTimeout(() => { if (busy) { busy = false; refreshUi(); } }, 2000);   // Notbremse, falls etwas hängt
+      hush(); try { cancelAgent(); } catch {}
+      const gen = askGen;
+      setTimeout(() => { if (busy && askGen === gen) { busy = false; refreshUi(); } }, 2000);   // Notbremse, falls etwas hängt (nicht bei einer neuen Frage)
       return;
     }
     if (speaking) { hush(); lastViaVoice = false; return; }
@@ -592,9 +593,10 @@
     if (busy && !speaking) return false;              // gerade eine Aktion (z. B. Bank) – nicht stören
     const interrupted = busy || speaking;
     if (busy) { try { ctl && ctl.abort(); } catch {} } // Unterbrechen: laufende Antwort abbrechen
+    try { cancelAgent(); } catch {}
     hush(); beep();
     let tries = 0;
-    const go = () => { if (busy && tries++ < 15) { setTimeout(go, 100); return; } listen(); };
+    const go = () => { if (busy && tries++ < 30) { setTimeout(go, 100); return; } if (busy) { busy = false; refreshUi(); } listen(); };
     setTimeout(go, interrupted ? 250 : 150);
     return true;
   }

@@ -14,7 +14,8 @@
       if (lsGet("zg_g_ok") === "1") getToken(true).catch(() => {});   // Drive-Abgleich ohne Nachfrage, falls schon erlaubt
       if (AND.consumeWake()) nativeWake();
       if (AND.consumeDiary && AND.consumeDiary()) setTimeout(() => startDiary(true), 1800);
-      const q0 = AND.consumeAsk ? AND.consumeAsk() : ""; if (q0) setTimeout(() => { if (!busy) ask(q0, true); }, 1500);
+      const q0 = AND.consumeAsk ? AND.consumeAsk() : "";
+      if (q0) { let n = 0; const go = () => { if ((busy || listening) && n++ < 40) { setTimeout(go, 250); return; } ask(q0, true); }; setTimeout(go, 1500); }
     }
     if (MINI) startMiniWatch();
     $("cWakeState").textContent = wakeOn ? "AN" : "AUS";

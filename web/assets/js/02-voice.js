@@ -47,15 +47,23 @@
     aiCache.set(clean, pr);
     if (aiCache.size > 8) aiCache.delete(aiCache.keys().next().value);
   }
-  function playPcm(inl, onStart, onEnd) {
+  async function playPcm(inl, onStart, onEnd) {
     aiCtx = aiCtx || new (window.AudioContext || window.webkitAudioContext)();
-    if (aiCtx.state === "suspended") aiCtx.resume();
+    if (aiCtx.state !== "running") {
+      // Browser erlaubt Ton erst nach einem Klick: nicht ewig hängen, sondern normale Stimme nehmen
+      await Promise.race([aiCtx.resume().catch(() => {}), new Promise(r => setTimeout(r, 400))]);
+      if (aiCtx.state !== "running") throw new Error("Ton gesperrt");
+    }
     const rate = +((/rate=(\d+)/.exec(inl.mimeType || "") || [])[1] || 24000);
     const bin = atob(inl.data), n = bin.length >> 1;
     const buf = aiCtx.createBuffer(1, n, rate), ch = buf.getChannelData(0);
     for (let i = 0; i < n; i++) { let v = bin.charCodeAt(2 * i) | (bin.charCodeAt(2 * i + 1) << 8); if (v >= 32768) v -= 65536; ch[i] = v / 32768; }
     const src = aiCtx.createBufferSource(); src.buffer = buf; src.connect(aiCtx.destination);
-    src.onended = () => { if (aiSrc === src) aiSrc = null; onEnd(); };
+    let ended = false;
+    const end = () => { if (ended) return; ended = true; clearTimeout(guard); if (aiSrc === src) aiSrc = null; onEnd(); };
+    const guard = setTimeout(end, buf.duration * 1000 + 1500);   // Sicherheitsnetz, falls „fertig“ nie kommt
+    src.onended = end;
+    src.stopGuard = () => { ended = true; clearTimeout(guard); };
     aiSrc = src; src.start(); onStart();
   }
   function aiSpeak(clean, ep, show, finish, fallback) {
@@ -65,7 +73,7 @@
     const done = () => { try { AND && AND.setSpeaking && AND.setSpeaking(false); } catch {} finish(); };
     pr.then(inl => {
       if (ep !== ttsEpoch) { done(); return; }
-      try { playPcm(inl, show, done); } catch { fallback(); }
+      playPcm(inl, show, done).catch(() => { try { AND && AND.setSpeaking && AND.setSpeaking(false); } catch {} fallback(); });
     }).catch(e => {
       if (ep !== ttsEpoch) return;
       try { AND && AND.setSpeaking && AND.setSpeaking(false); } catch {}
@@ -75,7 +83,7 @@
     });
   }
   function aiStop() {
-    if (aiSrc) { const s = aiSrc; aiSrc = null; try { s.onended = null; s.stop(); } catch {} try { AND && AND.setSpeaking && AND.setSpeaking(false); } catch {} }
+    if (aiSrc) { const s = aiSrc; aiSrc = null; try { s.onended = null; s.stopGuard && s.stopGuard(); s.stop(); } catch {} try { AND && AND.setSpeaking && AND.setSpeaking(false); } catch {} }
     aiCache.clear();
   }
 

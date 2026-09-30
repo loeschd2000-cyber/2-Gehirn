@@ -40,12 +40,15 @@ class WakeService : Service() {
 
         @Volatile var running = false
         @Volatile private var micBusy = false
-        @Volatile private var speaking = false
+        @Volatile private var ttsSpeaking = false     // Handy-Stimme
+        @Volatile private var webSpeaking = false     // KI-Stimme aus der Web-App
+        private val speaking get() = ttsSpeaking || webSpeaking
         @Volatile private var lastTrigger = 0L
         @Volatile var lastScore = 0f
 
         fun setMicBusy(b: Boolean) { micBusy = b }
-        fun setSpeaking(b: Boolean) { speaking = b }
+        fun setSpeaking(b: Boolean) { ttsSpeaking = b }
+        fun setWebSpeaking(b: Boolean) { webSpeaking = b }
 
         fun start(ctx: Context) {
             if (ctx.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) return
@@ -150,7 +153,7 @@ class WakeService : Service() {
                     if (got <= 0) break
                     n += got
                 }
-                if (n < chunk.size) { rec.release(); rec = null; Thread.sleep(300); continue }
+                if (n < chunk.size) { rec.release(); rec = null; releaseAec(); Thread.sleep(300); continue }
                 val score = detector.process(chunk)
                 lastScore = score
                 if (score >= (if (recEcho) THRESHOLD_SPEAKING else THRESHOLD) && !micBusy && (!speaking || recEcho)) {

@@ -103,16 +103,17 @@ object PriceAlerts {
         am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 60000,
             AlarmManager.INTERVAL_FIFTEEN_MINUTES, pending(ctx))
     }
-    /** Hintergrund-Thread! */
-    @Synchronized fun check(ctx: Context) {
-        val a = list(ctx); if (a.length() == 0) return
+    /** Hintergrund-Thread! Die Internet-Abfrage läuft ohne Sperre, damit die App nicht hängt. */
+    fun check(ctx: Context) {
+        val a0 = synchronized(this) { list(ctx) }; if (a0.length() == 0) return
+        val a = a0
         val ids = (0 until a.length()).map { a.getJSONObject(it).optString("coin") }.distinct().joinToString(",")
         val json = try {
             val c = URL("https://api.coingecko.com/api/v3/simple/price?ids=$ids&vs_currencies=usd,eur").openConnection() as HttpURLConnection
             c.connectTimeout = 15000; c.readTimeout = 15000
             val t = c.inputStream.bufferedReader().readText(); c.disconnect(); JSONObject(t)
         } catch (_: Throwable) { return }
-        val keep = JSONArray()
+        val hitIds = HashSet<Int>()
         for (i in 0 until a.length()) {
             val o = a.getJSONObject(i)
             val now = json.optJSONObject(o.optString("coin"))?.optDouble(o.optString("cur", "usd"), Double.NaN) ?: Double.NaN
@@ -122,9 +123,15 @@ object PriceAlerts {
                 Notes.show(ctx, "price", "Kurs-Alarm", 9000 + (o.getInt("id") % 999), "📈 Kurs-Alarm: ${o.optString("sym")}",
                     "${o.optString("sym")} ist jetzt bei ${"%.4f".format(now).trimEnd('0').trimEnd(',', '.')} $cur – " +
                     (if (o.optBoolean("below")) "unter" else "über") + " deiner Grenze von ${o.optDouble("price")} $cur.")
-            } else keep.put(o)
+                hitIds += o.getInt("id")
+            }
         }
-        if (keep.length() != a.length()) save(ctx, keep)
+        if (hitIds.isNotEmpty()) synchronized(this) {
+            // aktuelle Liste neu lesen (könnte sich inzwischen geändert haben) und nur die ausgelösten entfernen
+            val cur = list(ctx); val keep = JSONArray()
+            for (i in 0 until cur.length()) { val o = cur.getJSONObject(i); if (o.getInt("id") !in hitIds) keep.put(o) }
+            save(ctx, keep)
+        }
     }
 }
 class PriceReceiver : BroadcastReceiver() {

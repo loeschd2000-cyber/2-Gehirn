@@ -91,10 +91,19 @@ PC: "Mach am PC leiser" · "Öffne Spotify am PC" · "Sperr den PC" · "Fahr den
   let agentRest = [];      // Befehle, die nach einer Rückfrage (z. B. „Senden?“) noch dran sind
   let agentRunning = false;
 
+  // Nur bei Befehlen fragen (sonst kostet jede normale Frage einen extra KI-Aufruf)
+  const AGENT_CMD_START = /^\W*(?:(?:hey\s+)?jarvis\W*)?(?:(?:und\s+)?(?:bitte|dann|jetzt|noch)\s+|(?:kannst|könntest|würdest)\s+du\s+(?:mir\s+|mich\s+|bitte\s+|mal\s+|noch\s+)*|ich\s+(?:will|möchte|brauch\w*)\s+(?:dass\s+du\s+)?|du\s+sollst\s+)?(?:stell|setz|schreib|schick|spiel|erinner|zeig|trag|merk|ruf|lösch|streich|navigier|bring|weck|leg|pack|notier|lass|mach|check|prüf|schau|guck|sag|öffne|start|fahr|such|frag|lies)/i;
+  const AGENT_MULTI = /(?:^|\s)(?:und\s+dann|danach|außerdem|und\s+(?:stell|setz|schreib|schick|spiel|erinner|trag|merk|ruf|weck|mach|leg|pack|notier|sag|zeig)\w*)(?![\wäöüß])/i;
+  const AGENT_QUESTION = /(?:^|\s)(?:erklär\w*|warum|wieso|weshalb|wie\s+(?:\S+\s+){0,4}funktionier\w*|was\s+(?:ist|sind|bedeutet|heißt)|wie\s+macht\s+man|wer\s+(?:ist|war))(?![\wäöüß])/i;
   function looksLikeCommand(text) {
     if (text.length > 260 || AGENT_SKIP.test(text)) return false;
-    return AGENT_HINT.test(text);
+    const multi = AGENT_MULTI.test(text);
+    if (AGENT_QUESTION.test(text) && !multi) return false;
+    const hits = (text.match(new RegExp(AGENT_HINT.source, "gi")) || []).length;
+    return AGENT_CMD_START.test(text) || (multi && hits >= 1) || hits >= 2;
   }
+  let agentCancel = 0;   // Stopp-Knopf / „Hey Jarvis“ bricht die restlichen Befehle ab
+  function cancelAgent() { agentCancel++; agentRest = []; }
 
   async function agentRoute(text) {
     const now = new Date();
@@ -123,10 +132,12 @@ Nachricht: "${text.replace(/"/g, "'")}"`;
   async function runAgentList(list) {
     agentRunning = true;
     let did = 0;
+    const my = agentCancel;
     try {
       while (list.length) {
         const cmd = list.shift();
         if (did) await waitIdle();
+        if (my !== agentCancel) break;
         if (await handleActions(cmd)) did++;
         if (pending) { agentRest = list.slice(); break; }   // erst die Rückfrage beantworten lassen
       }
@@ -139,9 +150,11 @@ Nachricht: "${text.replace(/"/g, "'")}"`;
     if (agentRunning || !backend || !looksLikeCommand(text)) return false;
     const bubble = add("msg ai wait", "Versteht …");
     busy = true; refreshUi();
-    let list = [];
-    try { list = await agentRoute(text); } catch { list = []; }
+    let list = [], aborted = false;
+    const my = agentCancel;
+    try { list = await agentRoute(text); } catch (e) { list = []; aborted = !!(e && e.name === "AbortError"); }
     bubble.remove(); busy = false; refreshUi();
+    if (aborted || my !== agentCancel) return true;   // Stopp gedrückt: nichts mehr tun
     if (!list.length) return false;
     return (await runAgentList(list)) > 0;
   }
@@ -157,7 +170,9 @@ Nachricht: "${text.replace(/"/g, "'")}"`;
      erst nach dem Entsperren (sonst könnte jeder am gesperrten Handy fragen) */
   const PRIVATE_RE = /\b(finanz\w*|konto\w*|kontostand|guthaben|ausgaben|ausgegeben|einnahmen|fixkosten|abos?|budget\w*|sparkasse|statistik\w*|gehalt|lohn|geld|wallet|phantom|krypto\w*|mails?|e-mails?|posteingang|postfach|whatsapp|sms|nachricht\w*|ruf\w*|anruf\w*|telefonnummer|nummer|adresse|termine?|kalender)\b|was\s+weißt\s+du\s+über\s+mich|was\s+(?:hab|habe)\s+ich\s+.*\s(?:gesagt|geredet|erzählt|geschrieben)|\bsuch\w*\s+in\b|\btagebuch\b.*\b(lies|lese|vor|zeig\w*|was)\b|\b(lies|zeig\w*)\b.*\btagebuch\b/i;
   function lockedBlock(text) {
-    if (!MINI || !deviceLocked() || !PRIVATE_RE.test(text)) return false;
+    if (!MINI || !deviceLocked()) return false;
+    let isSearch = false; try { isSearch = SEARCH_RE.some(re => re.test(text)); } catch {}
+    if (!isSearch && !PRIVATE_RE.test(text) && !/\b(?:tagebuch|gemerkt|gesagt|geredet|erzählt|notiert)\b/i.test(text)) return false;
     assistantSay("Das ist privat. Entsperr zuerst dein Handy, dann sag es nochmal.");
     return true;
   }

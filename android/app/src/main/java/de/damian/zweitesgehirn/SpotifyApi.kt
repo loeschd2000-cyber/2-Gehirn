@@ -20,7 +20,7 @@ import java.text.Normalizer
  */
 object SpotifyApi {
     const val REDIRECT = "https://loeschd2000-cyber.github.io/2-Gehirn/spotify.html"
-    private const val SCOPES = "user-modify-playback-state user-read-playback-state"
+    private const val SCOPES = "user-modify-playback-state user-read-playback-state user-read-private"
     private fun p(ctx: Context) = ctx.getSharedPreferences("zg_spotify", Context.MODE_PRIVATE)
 
     fun clientId(ctx: Context) = p(ctx).getString("client_id", "") ?: ""
@@ -93,7 +93,12 @@ object SpotifyApi {
     fun play(ctx: Context, query: String, artistHint: String, log: (String) -> Unit): Pair<Boolean, String> {
         val tok = token(ctx) ?: return false to "Spotify ist nicht verbunden"
         val q = URLEncoder.encode(query, "UTF-8")
-        val (sc, sr) = http("GET", "https://api.spotify.com/v1/search?q=$q&type=artist,track,playlist&limit=5&market=from_token", tok)
+        // „market=from_token“ braucht seit 2026 eine extra Erlaubnis (sonst 403) → Land fest auf Deutschland
+        var (sc, sr) = http("GET", "https://api.spotify.com/v1/search?q=$q&type=artist,track&limit=5&market=DE", tok)
+        if (sc == 403 || sc == 400) {
+            log("Suche mit Land ging nicht ($sc) → ohne Land")
+            val r2 = http("GET", "https://api.spotify.com/v1/search?q=$q&type=artist,track&limit=5", tok); sc = r2.first; sr = r2.second
+        }
         if (sc != 200) { log("Suche fehlgeschlagen ($sc): ${errText(sr)}"); return false to "Spotify-Suche ging nicht ($sc)" }
         val js = JSONObject(sr)
         val nq = norm(query)

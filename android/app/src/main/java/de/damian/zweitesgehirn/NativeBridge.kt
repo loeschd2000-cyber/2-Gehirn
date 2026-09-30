@@ -421,6 +421,17 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                 main.post { web.loadUrl("file:///android_asset/setup.html#bank=" + (if (ok) "ok" else "fehler") + "&msg=" + android.net.Uri.encode(msg)) }
             }.start()
         }
+        // Erinnerungen, Kurs-Alarm, Timer, Navigation
+        @JavascriptInterface fun reminderAdd(at: String, text: String): Int = Reminders.add(act, at.toLong(), text)
+        @JavascriptInterface fun reminderList(): String = Reminders.list(act).toString()
+        @JavascriptInterface fun reminderCancel(id: Int) { Reminders.cancel(act, id) }
+        @JavascriptInterface fun priceAlertAdd(coin: String, sym: String, below: Boolean, price: String, cur: String): Int =
+            PriceAlerts.add(act, coin, sym, below, price.toDouble(), cur)
+        @JavascriptInterface fun priceAlertList(): String = PriceAlerts.list(act).toString()
+        @JavascriptInterface fun priceAlertCancel(id: Int) { PriceAlerts.cancel(act, id) }
+        @JavascriptInterface fun timer(seconds: Int, label: String) { main.post { Phone.timer(act, seconds, label) } }
+        @JavascriptInterface fun maps(dest: String, mode: String, start: Boolean) { main.post { Phone.maps(act, dest, mode, start) } }
+
         // Tagebuch
         @JavascriptInterface fun consumeDiary(): Boolean { val d = pendingDiary; pendingDiary = false; return d }
         @JavascriptInterface fun diaryReminder(h: Int, m: Int) { DiaryReminder.set(act, h, m) }

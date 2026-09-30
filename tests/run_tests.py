@@ -307,8 +307,15 @@ CASES = [
     ("Leg mal Apache 207 auf", ["spotify apache 207"]),
     ("Schreib Papa auf WhatsApp hallo", ["Soll ich das senden"]),
     ("Ja, schick es, ich komme nicht", ["whatsapp 0171"], ["nicht gesendet"]),
-    ("Frag mich SPS ab", ["Lernmodus: SPS"]),
+    ("Frag mich SPS ab", ["Prüfungs-Abfrage: SPS-Technik", "Frage 1"]),
+    ("A", ["Richtig", "Frage 2"]),
+    ("weiß nicht", ["Richtig ist"]),
+    ("Stopp", ["Abfrage beendet"]),
+    ("Frag mich Mathe ab", ["Lernmodus"]),
     ("Stopp", ["Lernmodus beendet"]),
+    ("Öffne den Prüfungs-Trainer", ["Karteikarten fällig"]),
+    ("js:(async () => { await ptLoad(); ptStartExam('AP1'); for (let i = 0; i < 30; i++) { const b = document.querySelector('.pt-opt') || null; if (b) b.click(); else { const inp = document.querySelector('.pt-in input'); if (inp) { inp.value = '1'; inp.form.requestSubmit(); } } } })()", []),
+    ("Wie gut bin ich vorbereitet?", ["Probeprüfung AP1", "Note"]),
 ]
 
 async def main():

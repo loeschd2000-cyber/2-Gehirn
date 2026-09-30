@@ -4,9 +4,11 @@
       if (YES.test(text)) { await resolvePending(true, false); return true; }
       closeCard(pending); pending = null; agentRest = [];
     }
+    if (ptVoice && await ptVoiceAnswer(text)) return true;   // Prüfungs-Abfrage per Sprache läuft
     if (!diaryMode && !learn && handleHelp(text)) return true;
     if (!diaryMode && !learn && lockedBlock(text)) return true;
     if (!diaryMode && !learn && await handleSearch(text)) return true;
+    if (!diaryMode && !learn && await handleExam(text)) return true;       // Prüfungs-Trainer
     if (!diaryMode && !learn && await handleServices(text)) return true;   // Untis, Müll, Tanken, News, Handy, Gesundheit, Berichtsheft, Lernplan, Orte, Pakete, SmartThings
     if (!diaryMode && !learn && await handleShop(text)) return true;   // Amazon, Preis-Wächter, Verkaufen, Sparen, Jobs   // „Was hab ich über … gesagt?“
     if (await handleDiary(text)) return true;
@@ -104,6 +106,7 @@ Handy: "Taschenlampe an" · "Nicht stören an" · "Mach das Handy lautlos" · "W
 Gesundheit: "Wie hab ich geschlafen?" · "Wie viele Schritte hab ich heute?"
 Orte: "Erinner mich beim Edeka an Milch" · "Erinner mich zu Hause an den Müll" · "Merk dir, hier ist mein Zuhause"
 Pakete: "Wo ist mein Paket?" · "Verfolge Sendung 00340434161234567890"
+Prüfung: "Frag mich SPS ab" · "Prüfungsfragen zu Schutzmaßnahmen" · "Öffne den Prüfungs-Trainer" · "Probeprüfung AP1" · "Wie gut bin ich vorbereitet?"
 Smart Home: "Schalte den Fernseher aus" · "Licht im Wohnzimmer an" · "Ist die Waschmaschine fertig?" · "Welche Geräte hab ich?"`;
 
   let agentRest = [];      // Befehle, die nach einer Rückfrage (z. B. „Senden?“) noch dran sind

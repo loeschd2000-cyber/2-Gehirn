@@ -819,13 +819,14 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
         else {
           svInfo(s, "Gleiche Anmeldung wie in der Untis-App. Dann: „Fällt morgen was aus?“, „Was hab ich morgen?“, Änderungen kommen abends als Hinweis.");
           const q = svEl("input", { type: "text", placeholder: "Schule suchen, z. B. Berufsschule Schweinfurt" }, s);
+          const sBtn = svEl("div", {}, s);
           const res = svEl("div", { className: "svc-list" }, s);
           const form = svEl("div", { className: "svc-form", hidden: true }, s);
           const chosen = svEl("b", {}, form);
           const u = svEl("input", { type: "text", placeholder: "Benutzername (wie in Untis)", autocomplete: "off" }, form);
           const pw = svEl("input", { type: "password", placeholder: "Passwort", autocomplete: "off" }, form);
           let pick = null;
-          svBtn(s, "Suchen", async () => {
+          svBtn(sBtn, "Suchen", async () => {
             res.textContent = "Sucht …";
             const r = await nativeCall(id => AND.untisSearch(id, q.value.trim() || "Schweinfurt"));
             res.textContent = "";

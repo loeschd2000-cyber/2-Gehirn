@@ -4,6 +4,7 @@ set -e
 cd "$(dirname "$0")/.."
 V=$(date +%Y%m%d%H%M%S)
 OUT="/mnt/user-data/outputs/Zweites Gehirn"
+python3 tools/pack_pruefung.py   # Prüfungsfragen zu einer Datei packen
 build_to() {   # $1 = Zielordner, $2 = Dateiname der Startseite
   mkdir -p "$1/assets/js"
   rm -f "$1"/assets/js/*.js
@@ -11,6 +12,7 @@ build_to() {   # $1 = Zielordner, $2 = Dateiname der Startseite
   cp web/assets/js/*.js "$1/assets/js/"
   [ -d web/assets/img ] && mkdir -p "$1/assets/img" && cp -r web/assets/img/. "$1/assets/img/" || true
   sed "s/__V__/$V/g" web/index.src.html > "$1/$2"
+  mkdir -p "$1/assets/data" && cp web/assets/data/pruefung.js "$1/assets/data/pruefung.js"
   cp web/st.html "$1/st.html"   # Rückkehr-Seite für die SmartThings-Anmeldung
 }
 build_to . index.html

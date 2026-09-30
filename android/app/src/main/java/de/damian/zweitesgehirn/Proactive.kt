@@ -72,6 +72,9 @@ object Proactive {
         val s = snap(ctx); val out = ArrayList<String>()
         // Stundenplan heute (kurzfristige Änderungen)
         try { out += Untis.changes(ctx, 0) } catch (_: Throwable) {}
+        // Prüfungs-Trainer: fällige Karteikarten
+        val pd = s.optInt("ptDue", 0)
+        if (pd > 0) out += "🎓 $pd Karteikarte${if (pd == 1) "" else "n"} fällig – 10 Minuten reichen. Sag „Öffne den Prüfungs-Trainer“."
         // Lernplan: bis zur nächsten Arbeit jeden Tag ein Thema
         val st = s.optJSONArray("study") ?: JSONArray()
         for (i in 0 until st.length()) {

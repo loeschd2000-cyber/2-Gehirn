@@ -465,8 +465,9 @@
     }
     const m = LEARN_START.exec(tl);
     if (!m) return false;
-    if (!backend) { assistantSay("Für den Lernmodus brauche ich die KI. Stell sie links bei KI-Quelle ein."); return true; }
     let topic = (tl.match(/frag\s+mich\s+(?:in\s+|zu\s+|über\s+)?(.+?)\s+ab\b/) || tl.match(/(?:lernmodus|quiz|abfrage|übungsfragen|lernen)\s+(?:zu\s+|in\s+|über\s+|für\s+)?(.+)$/) || [])[1];
+    { const gen = !topic || /^(mal|bitte|was|etwas)$/.test(topic); if (await ptVoiceStart(tl, gen ? "" : topic, gen)) return true; }   // geprüfte Fragen aus dem Prüfungs-Trainer (offline)
+    if (!backend) { assistantSay("Für den Lernmodus brauche ich die KI. Stell sie links bei KI-Quelle ein."); return true; }
     if (!topic || /^(mal|bitte|was|etwas)$/.test(topic)) topic = "gemischte Grundlagen: Elektrotechnik, SPS, Messtechnik, Sicherheit (VDE), Digitaltechnik, Automatisierung";
     learn = { topic, topicLow: topic.toLowerCase(), q: null, a: null, n: 0, right: 0, asked: [] };
     const tName = topic.split(":")[0].trim();

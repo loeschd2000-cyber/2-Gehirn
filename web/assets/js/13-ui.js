@@ -202,6 +202,7 @@
     ["🛒", "Amazon", [["Bestell Zahnpasta auf Amazon"], ["Leg Batterien in den Warenkorb"], ["Sag mir Bescheid, wenn die AirPods Pro unter 180 Euro fallen"], ["Welche Preis-Wächter habe ich?", 1]]],
     ["💸", "Geld verdienen & sparen", [["Verkauf meinen alten Controller"], ["Wo kann ich sparen?", 1], ["Such mir Programmier-Jobs", 1], ["Such mir Nebenjobs", 1], ["Schreib mir eine Bewerbung für Job 1"]]],
     ["🖥", "PC steuern (über den PC-Server)", [["Mach am PC leiser"], ["Nächstes Lied am PC"], ["Öffne Spotify am PC"], ["Sperr den PC"], ["Fahr den PC in 30 Minuten herunter"]]],
+    ["🎓", "Prüfungs-Trainer (AP1/AP2)", [["Öffne den Prüfungs-Trainer", 1], ["Frag mich SPS ab", 1], ["Prüfungsfragen zu Schutzmaßnahmen", 1], ["Probeprüfung AP1", 1], ["Wie gut bin ich vorbereitet?", 1]]],
     ["🏫", "Stundenplan (Untis) & Lernen", [["Fällt morgen was aus?", 1], ["Wann hab ich heute Schluss?", 1], ["Stundenplan diese Woche", 1], ["Mach mir einen Lernplan für die nächste Arbeit", 1], ["Was soll ich heute lernen?", 1]]],
     ["📒", "Berichtsheft", [["Berichtsheft: heute habe ich "], ["Mach meinen Wochenbericht", 1], ["Was steht im Berichtsheft?", 1]]],
     ["🗑", "Müll", [["Welcher Müll kommt morgen?", 1], ["Wann kommt die gelbe Tonne?", 1], ["Wann ist die nächste Abfuhr?", 1]]],
@@ -307,6 +308,7 @@
       const mu = dataGet("muell", null), tm = ymd(new Date(Date.now() + 864e5));
       if (mu && mu.items && now.getHours() >= 15) { const b = mu.items.filter(x => x.d === tm).map(x => x.t); if (b.length) out.unshift(["🗑", "Morgen: " + b.join(", ") + " – rausstellen", "Welcher Müll kommt morgen?"]); }
     } catch {}
+    try { const n = ptDueCount(); if (n > 0) out.push(["🎓", `${n} Karteikarte${n === 1 ? "" : "n"} fällig`, "Öffne den Prüfungs-Trainer"]); } catch {}
     if (now.getHours() >= 19 && !chats.some(c => c.id === diaryId(now))) out.push(["📔", "Tagebuch für heute fehlt noch", "Tagebuch"]);
     return out.slice(0, 3);
   }
@@ -341,6 +343,7 @@
         // Abends: Müll für morgen, Berichtsheft; morgens: Lernplan-Thema
         const mu = dataGet("muell", null), t0 = ymd(new Date()), t40 = ymd(new Date(Date.now() + 40 * 864e5));
         if (mu && mu.items) snap.muell = mu.items.filter(x => x.d >= t0 && x.d <= t40);
+        try { snap.ptDue = ptDueCount(ptAddDays(1)); } catch {}
         snap.bericht = { on: lsGet("zg_bericht_on") !== "0", days: [...new Set(dataGet("bericht", []).map(e => e.date))].filter(d => d >= ymd(new Date(Date.now() - 14 * 864e5))) };
         snap.study = dataGet("exams", []).filter(x => x.plan && x.date >= t0).map(x => ({ subject: x.subject || x.kind || "Arbeit", date: x.date,
           left: Math.round((new Date(x.date + "T12:00") - new Date(t0 + "T12:00")) / 864e5), plan: x.plan }));

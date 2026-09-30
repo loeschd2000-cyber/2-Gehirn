@@ -125,7 +125,12 @@ object Music {
             Thread {
                 val (ok, msg) = try { SpotifyApi.play(ctx, query, artist) { step(it) } } catch (e: Throwable) { false to (e.message ?: "Fehler") }
                 main.post {
+                    val found = SpotifyApi.lastFound
                     if (ok) done.done(true, "hintergrund", msg)
+                    else if (found != null && found.first.startsWith("spotify:")) {
+                        step("Gefunden, aber Abspielen über die Schnittstelle ging nicht → direkt über die Spotify-App")
+                        playFound(ctx, found.first, found.second, backToApp, done)
+                    }
                     else { step("Schnittstelle ging nicht → alte Wege"); playOld(ctx, query, artist, backToApp, done) }
                 }
             }.start()
@@ -199,6 +204,42 @@ object Music {
         attempt(0)
     }
 
+    /**
+     * Notweg mit bekanntem Lied (von der Schnittstelle gefunden): direkt über Spotifys Wiedergabe-Steuerung
+     * „spiele diese Spotify-Adresse“ – nie einfach „Play“ (das würde das alte Lied fortsetzen).
+     */
+    private fun playFound(ctx: Context, uri: String, label: String, backToApp: Boolean, done: Done) {
+        val want = label.substringBefore(" – ").substringBefore(" (Künstler)").lowercase().trim()
+        fun ok(): Boolean { val s = spotify(ctx); val t = title(s).lowercase(); val a = artistOf(s).lowercase()
+            return isPlaying(s) && want.isNotBlank() && (t.contains(want) || want.contains(t) && t.isNotBlank() || a.contains(want)) }
+        fun viaApp() {
+            step("Öffne das Lied in Spotify")
+            try { ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uri)).setPackage(SPOTIFY).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
+            catch (e: Throwable) { step("Spotify ließ sich nicht öffnen"); done.done(false, "fehler", "Spotify ließ sich nicht öffnen"); return }
+            var n = 0
+            fun check() {
+                if (ok()) { step("✓ Läuft: „${title(spotify(ctx))}“"); main.postDelayed({
+                    val home = if (backToApp) Intent(ctx, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT) else Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+                    try { ctx.startActivity(home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } catch (_: Throwable) {}
+                    done.done(true, "app", label) }, 300); return }
+                if (n == 6) { spotify(ctx)?.let { try { it.transportControls.playFromUri(Uri.parse(uri), Bundle()); step("Spotify offen → spiele „$label“") } catch (_: Throwable) {} } }
+                if (++n > 25) { step("✗ Spotify spielt „$label“ nicht von selbst → Seite bleibt offen, einmal auf Play tippen"); done.done(false, "app", "Tippe in Spotify auf Play – das richtige Lied ist schon offen"); return }
+                main.postDelayed({ check() }, 400)
+            }
+            main.postDelayed({ check() }, 600)
+        }
+        val c = spotify(ctx)
+        if (c == null || !accessGranted(ctx)) { viaApp(); return }
+        try { c.transportControls.playFromUri(Uri.parse(uri), Bundle()); step("Hintergrund: spiele „$label“") } catch (_: Throwable) { viaApp(); return }
+        var n = 0
+        fun check() {
+            if (ok()) { step("✓ Läuft im Hintergrund: „${title(spotify(ctx))}“"); done.done(true, "hintergrund", label); return }
+            if (++n > 10) { step("  Hintergrund reagiert nicht"); viaApp(); return }
+            main.postDelayed({ check() }, 400)
+        }
+        main.postDelayed({ check() }, 500)
+    }
+
     /** Weg 2: Spotify-Suche öffnen, warten bis wirklich das NEUE Lied läuft, dann zurück. */
     private fun playViaApp(ctx: Context, query: String, artist: String, backToApp: Boolean, done: Done, beforeTitle: String? = null) {
         val installed = spotifyInstalled(ctx)
@@ -222,10 +263,8 @@ object Music {
         }
         fun back() {
             if (!access) {
-                // Ohne Zugriff sehen wir nichts: fest warten, Play drücken, zurück
-                val am = ctx.getSystemService(AudioManager::class.java)
-                if (!am.isMusicActive) { step("Drücke Play"); am.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY)); am.dispatchMediaKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY)) }
-                goBack(); done.done(true, "app", ""); return
+                // Ohne Zugriff sehen wir nichts: Spotify-Suche offen lassen (nicht einfach „Play“ – das würde das alte Lied weiterspielen)
+                done.done(false, "app", "Spotify-Suche ist offen – tippe das Lied an"); return
             }
             if (changed()) {
                 val s = spotify(ctx)
@@ -233,16 +272,10 @@ object Music {
                 main.postDelayed({ goBack(); done.done(true, "app", title(spotify(ctx))) }, 300)
                 return
             }
-            if (waited >= 4000 && !pressed) {
-                pressed = true
-                val s = spotify(ctx)
-                step("Nach 4 s noch altes Lied (${stateName(s)}, „${title(s)}“) → drücke Play")
-                s?.transportControls?.play()
-            }
             if (waited >= 10000) {
                 val s = spotify(ctx)
-                step("✗ Kein neues Lied nach 10 s (${stateName(s)}, „${title(s)}“)")
-                goBack(); done.done(false, "app", "Spotify hat die Suche geöffnet, aber nichts Neues abgespielt"); return
+                step("✗ Kein neues Lied nach 10 s (${stateName(s)}, „${title(s)}“) → Spotify-Suche bleibt offen")
+                done.done(false, "app", "Spotify-Suche ist offen – tippe das Lied an"); return
             }
             waited += 300; main.postDelayed({ back() }, 300)
         }

@@ -90,7 +90,11 @@ object SpotifyApi {
      * Sucht und spielt ab. Muss in einem Hintergrund-Thread laufen.
      * [log] schreibt ins Protokoll. Rückgabe: (geklappt, Titel oder Fehlertext)
      */
+    /** Was die Suche zuletzt gefunden hat (Spotify-Adresse, Anzeige) – für den Notweg über die Spotify-App */
+    @Volatile var lastFound: Pair<String, String>? = null
+
     fun play(ctx: Context, query: String, artistHint: String, log: (String) -> Unit): Pair<Boolean, String> {
+        lastFound = null
         val tok = token(ctx) ?: return false to "Spotify ist nicht verbunden"
         val nq = norm(query); val na = norm(artistHint)
         val onlyArtist = na.isNotBlank() && na == nq                     // „Musik von Gzuz“
@@ -149,14 +153,16 @@ object SpotifyApi {
         }
         val playBody = body?.toString() ?: run { log("Nichts gefunden"); return false to "Auf Spotify nichts zu „$query“ gefunden" }
         log("Gewählt: $label")
+        lastFound = (body?.optString("context_uri")?.ifBlank { null } ?: body?.optJSONArray("uris")?.optString(0) ?: "") to label
 
         // Gerät: dieses Handy. Läuft Spotify nicht, erst im Hintergrund wecken.
         var dev = pickDevice(tok, log)
         if (dev == null) {
             log("Handy ist noch kein Spotify-Gerät → wecke Spotify")
             Music.wakeSpotifyPublic(ctx)
-            for (i in 0 until 8) { Thread.sleep(700); dev = pickDevice(tok, null); if (dev != null) break }
+            for (i in 0 until 16) { Thread.sleep(700); dev = pickDevice(tok, null); if (dev != null) break }
         }
+        if (dev == null) dev = pickDevice(tok, log, allowOther = true)?.also { log("Nehme anderes Spotify-Gerät: ${it.second}") }
         if (dev == null) { log("Kein Spotify-Gerät gefunden"); return false to "Spotify läuft auf keinem Gerät" }
         log("Gerät: ${dev.second}")
         var (pc, pr) = http("PUT", "https://api.spotify.com/v1/me/player/play?device_id=" + URLEncoder.encode(dev.first, "UTF-8"), tok, playBody)
@@ -173,7 +179,7 @@ object SpotifyApi {
     }
 
     /** (id, name) des Handys, sonst des aktiven Geräts */
-    private fun pickDevice(tok: String, log: ((String) -> Unit)?): Pair<String, String>? {
+    private fun pickDevice(tok: String, log: ((String) -> Unit)?, allowOther: Boolean = false): Pair<String, String>? {
         val (c, r) = http("GET", "https://api.spotify.com/v1/me/player/devices", tok)
         if (c != 200) { log?.invoke("Geräteliste ging nicht ($c)"); return null }
         val arr = JSONObject(r).optJSONArray("devices") ?: return null
@@ -182,7 +188,8 @@ object SpotifyApi {
             val d = arr.getJSONObject(i)
             if (d.optString("type").equals("Smartphone", true)) { best = d; break }
         }
-        if (best == null) for (i in 0 until arr.length()) if (arr.getJSONObject(i).optBoolean("is_active")) best = arr.getJSONObject(i)
+        // Andere Geräte (z. B. Echo über Spotify Connect) nur als Notlösung – sonst spielt es woanders statt übers Handy/Bluetooth
+        if (best == null && allowOther) for (i in 0 until arr.length()) if (arr.getJSONObject(i).optBoolean("is_active")) best = arr.getJSONObject(i)
         log?.invoke("Spotify-Geräte: " + (0 until arr.length()).joinToString { arr.getJSONObject(it).optString("name") + " (" + arr.getJSONObject(it).optString("type") + ")" }.ifBlank { "keine" })
         return best?.let { it.optString("id") to it.optString("name") }
     }

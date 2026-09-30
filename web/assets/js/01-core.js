@@ -389,7 +389,7 @@
       // Browser hat mitten im Satz aufgehört -> weiter zuhören (die Android-App erkennt das Satzende selbst)
       if (!AND && !cancelled && !stopRequested && t && Date.now() - lastSpeech < pauseMs) { listen(true); return; }
       if (!cancelled && t) { input.value = ""; ask(t, true); }
-      else scheduleWake(400);
+      else { scheduleWake(400); if (CAR) { try { AND.carState("bereit"); } catch {} } }
     };
     rec.userStop = () => { stopRequested = true; };
     listening = true; refreshUi();

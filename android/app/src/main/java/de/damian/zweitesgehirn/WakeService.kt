@@ -37,6 +37,8 @@ class WakeService : Service() {
         const val THRESHOLD = 0.5f
         const val THRESHOLD_SPEAKING = 0.8f   // beim Unterbrechen strenger, damit Jarvis sich nicht selbst hört
         @Volatile var bargeIn = true
+        /** Handy ist gerade mit Android Auto verbunden */
+        @Volatile var projecting = false
 
         @Volatile var running = false
         @Volatile private var micBusy = false
@@ -176,16 +178,32 @@ class WakeService : Service() {
     @Volatile private var recEcho = false
     private fun releaseAec() { try { aec?.release() } catch (_: Throwable) {}; aec = null }
 
+    // Android Auto verbunden? Dann läuft Jarvis im Auto („Hey Jarvis“ antwortet über die Auto-Lautsprecher)
+    private var carConn: androidx.car.app.connection.CarConnection? = null
+    private val carObserver = androidx.lifecycle.Observer<Int> { type ->
+        val proj = type == androidx.car.app.connection.CarConnection.CONNECTION_TYPE_PROJECTION
+        projecting = proj
+        if (proj) CarBrain.start(applicationContext) else CarBrain.stop()
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        try { carConn = androidx.car.app.connection.CarConnection(applicationContext).also { it.type.observeForever(carObserver) } } catch (e: Throwable) { Log.e(TAG, "Android-Auto-Erkennung", e) }
+    }
+
     private fun onWake() {
         micBusy = true   // Mikrofon für die App freihalten, bis sie selbst meldet, dass sie fertig ist
         main.postDelayed({
-            val listening = (MainActivity.current?.bridge?.isListening() == true) || (MiniActivity.current?.bridge?.isListening() == true)
+            val listening = (MainActivity.current?.bridge?.isListening() == true) || (MiniActivity.current?.bridge?.isListening() == true) ||
+                (CarBrain.bridge?.isListening() == true)
             if (!listening) micBusy = false
         }, 12000)
         try {
             val v = getSystemService(Vibrator::class.java)
             v?.vibrate(VibrationEffect.createOneShot(60, VibrationEffect.DEFAULT_AMPLITUDE))
         } catch (_: Throwable) {}
+        // Im Auto: Jarvis hört zu und antwortet über die Auto-Lautsprecher (kein Kreis am Handy)
+        if (projecting && CarBrain.running) { CarBrain.wake(); return }
         // Ist die große App gerade offen, hört sie direkt zu. Sonst erscheint nur der kleine Kreis.
         val big = MainActivity.current
         if (big != null && big.inForeground) { big.bridge.deliverWake(); return }
@@ -196,6 +214,8 @@ class WakeService : Service() {
     }
 
     override fun onDestroy() {
+        try { carConn?.type?.removeObserver(carObserver) } catch (_: Throwable) {}
+        projecting = false
         stopFlag = true
         worker?.join(800)
         worker = null

@@ -41,56 +41,93 @@ class CarJarvisSession : Session() {
     override fun onCreateScreen(intent: Intent): Screen = JarvisCarScreen(carContext)
 }
 
-class JarvisCarScreen(ctx: CarContext) : Screen(ctx) {
+/**
+ * Das „Gehirn“ fürs Auto: die Jarvis-Web-App unsichtbar im Hintergrund (gleiche Daten wie am Handy).
+ * Läuft, solange das Handy mit Android Auto verbunden ist (oder der Jarvis-Bildschirm im Auto offen ist).
+ * „Hey Jarvis“ landet im Auto hier statt im kleinen Kreis am Handy.
+ */
+object CarBrain {
     private val main = Handler(Looper.getMainLooper())
-    private var status = "Tippe auf „Sprechen“ und sag, was du brauchst."
-    private var youSaid = ""
-    private var answer = ""
-    private var recording = false
     private var web: WebView? = null
-    private var bridge: NativeBridge? = null
-    private var recorder: CarRecorder? = null
-    private var focus: AudioFocusRequest? = null
-    private var pendingRefresh = false
+    var bridge: NativeBridge? = null
+        private set
+    /** der gerade offene Jarvis-Bildschirm im Auto (falls offen) */
+    var screen: JarvisCarScreen? = null
+    /** Anrufe/Navigation übers Auto (kommt vom offenen Auto-Bildschirm oder der Sitzung) */
+    var carContext: CarContext? = null
+    // letzter Stand für den Bildschirm
+    var status = "Sag „Hey Jarvis“ oder tippe auf „Sprechen“."
+    var youSaid = ""
+    var answer = ""
+    val running get() = bridge != null
 
-    init {
-        startBrain()
-        lifecycle.addObserver(LifecycleEventObserver { _, e -> if (e == Lifecycle.Event.ON_DESTROY) stopBrain() })
-    }
-
-    /** Die Jarvis-Web-App unsichtbar starten (gleiche Daten wie am Handy) */
-    private fun startBrain() {
-        if (Prefs.appUrl(carContext).isBlank()) { status = "Richte Jarvis zuerst einmal in der App am Handy ein."; return }
-        try {
-            val w = WebView(carContext.applicationContext)
-            val b = NativeBridge(carContext.applicationContext, w, mini = false, car = true)
-            b.carIntent = { i -> try { carContext.startCarApp(i); true } catch (_: Throwable) { false } }
-            b.carShow = { who, text -> if (who == "du") youSaid = text else answer = text; refresh() }
-            b.carState = { s -> status = when (s) { "bereit" -> "Tippe auf „Sprechen“."; else -> s }; refresh() }
-            b.carListen = { if (!recording) startListening() }
+    fun start(ctx: android.content.Context): Boolean {
+        if (bridge != null) return true
+        if (Prefs.appUrl(ctx).isBlank()) { status = "Richte Jarvis zuerst einmal in der App am Handy ein."; return false }
+        return try {
+            val app = ctx.applicationContext
+            val w = WebView(app)
+            val b = NativeBridge(app, w, mini = false, car = true)
+            b.carIntent = { i -> val c = carContext; if (c == null) false else try { c.startCarApp(i); true } catch (_: Throwable) { false } }
+            b.carShow = { who, text -> if (who == "du") youSaid = text else answer = text; screen?.refresh() }
+            b.carState = { st -> status = if (st == "bereit") "Sag „Hey Jarvis“ oder tippe auf „Sprechen“." else st; screen?.refresh() }
+            // Nach einer Rückfrage weiter zuhören: mit dem Auto-Mikrofon, wenn der Bildschirm offen ist, sonst mit dem Handy-Mikrofon
+            b.carListen = { val sc = screen; if (sc != null && sc.canRecord()) sc.startListening() else js("window.__zgCarListenPhone && __zgCarListenPhone()") }
             b.setup()
             b.loadStart()
             web = w; bridge = b
-        } catch (e: Throwable) {
-            status = "Jarvis konnte im Auto nicht starten: ${e.message ?: "Fehler"}"
-        }
+            true
+        } catch (e: Throwable) { status = "Jarvis konnte im Auto nicht starten: ${e.message ?: "Fehler"}"; false }
     }
 
-    private fun stopBrain() {
-        recorder?.abort(); recorder = null
-        releaseFocus()
+    fun stop() {
+        if (screen != null) return   // Bildschirm im Auto noch offen
         try { bridge?.destroy() } catch (_: Throwable) {}
         bridge = null; web = null
     }
 
+    /** „Hey Jarvis“ im Auto */
+    fun wake() { bridge?.deliverWake() }
+
+    fun js(code: String) { main.post { try { web?.evaluateJavascript(code, null) } catch (_: Throwable) {} } }
+}
+
+class JarvisCarScreen(ctx: CarContext) : Screen(ctx) {
+    private val main = Handler(Looper.getMainLooper())
+    private var recording = false
+    private var recorder: CarRecorder? = null
+    private var focus: AudioFocusRequest? = null
+    private var pendingRefresh = false
+    private var visible = false
+
+    init {
+        CarBrain.carContext = ctx
+        CarBrain.screen = this
+        CarBrain.start(ctx)
+        lifecycle.addObserver(LifecycleEventObserver { _, e ->
+            when (e) {
+                Lifecycle.Event.ON_START -> visible = true
+                Lifecycle.Event.ON_STOP -> visible = false
+                Lifecycle.Event.ON_DESTROY -> {
+                    recorder?.abort(); recorder = null; releaseFocus()
+                    if (CarBrain.screen === this) CarBrain.screen = null
+                    if (CarBrain.carContext === carContext) CarBrain.carContext = null
+                    // Gehirn weiterlaufen lassen, solange das Handy verbunden ist („Hey Jarvis“ im Auto)
+                    if (!WakeService.projecting) CarBrain.stop()
+                }
+                else -> {}
+            }
+        })
+    }
+
+    fun canRecord() = visible && carContext.carAppApiLevel >= 5 && !recording
+
     /** Anzeige neu zeichnen – gebündelt, damit Android Auto nicht zu oft neu malen muss */
-    private fun refresh() {
+    fun refresh() {
         if (pendingRefresh) return
         pendingRefresh = true
         main.postDelayed({ pendingRefresh = false; try { invalidate() } catch (_: Throwable) {} }, 250)
     }
-
-    private fun js(code: String) { main.post { try { web?.evaluateJavascript(code, null) } catch (_: Throwable) {} } }
 
     private fun onSpeakPressed() {
         if (recording) { recorder?.stop(); return }
@@ -98,29 +135,32 @@ class JarvisCarScreen(ctx: CarContext) : Screen(ctx) {
     }
 
     @SuppressLint("MissingPermission")
-    private fun startListening() {
-        if (bridge == null) { refresh(); return }
+    fun startListening() {
+        if (!CarBrain.running && !CarBrain.start(carContext)) { refresh(); return }
         if (carContext.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            status = "Jarvis darf das Mikrofon noch nicht benutzen. Öffne einmal die App am Handy und erlaube es."; refresh(); return
+            CarBrain.status = "Jarvis darf das Mikrofon noch nicht benutzen. Öffne einmal die App am Handy und erlaube es."; refresh(); return
         }
-        if (carContext.carAppApiLevel < 5) { status = "Dein Android Auto ist zu alt für Sprache. Bitte Android Auto aktualisieren."; refresh(); return }
-        js("window.__zgCarHush && __zgCarHush()")   // Jarvis hört auf zu reden
-        if (!takeFocus()) { status = "Das Auto-Mikrofon ist gerade belegt."; refresh(); return }
-        recording = true; status = "🎙 Ich höre zu …"; youSaid = ""; refresh()
+        if (carContext.carAppApiLevel < 5) {
+            // altes Android Auto: Handy-Mikrofon nehmen
+            CarBrain.js("window.__zgCarListenPhone && __zgCarListenPhone()"); return
+        }
+        CarBrain.js("window.__zgCarHush && __zgCarHush()")   // Jarvis hört auf zu reden
+        if (!takeFocus()) { CarBrain.status = "Das Auto-Mikrofon ist gerade belegt."; refresh(); return }
+        recording = true; CarBrain.status = "🎙 Ich höre zu …"; CarBrain.youSaid = ""; refresh()
         val r = CarRecorder(carContext) { type, info ->
             main.post {
                 when (type) {
-                    "speech" -> { status = "🎙 Ich höre zu … (tippe „Sprechen“ zum Beenden)"; refresh() }
+                    "speech" -> { CarBrain.status = "🎙 Ich höre zu … (tippe „Sprechen“ zum Beenden)"; refresh() }
                     "end" -> {
                         recording = false; releaseFocus()
-                        if (info == null) { status = "Ich habe nichts gehört. Tippe nochmal auf „Sprechen“."; refresh() }
+                        if (info == null) { CarBrain.status = "Ich habe nichts gehört. Tippe nochmal auf „Sprechen“."; refresh() }
                         else {
-                            status = "Versteht …"; refresh()
-                            bridge?.carAudio = info
-                            js("window.__zgCarAudio && __zgCarAudio()")
+                            CarBrain.status = "Versteht …"; refresh()
+                            CarBrain.bridge?.carAudio = info
+                            CarBrain.js("window.__zgCarAudio && __zgCarAudio()")
                         }
                     }
-                    "error" -> { recording = false; releaseFocus(); status = "Mikrofon-Fehler: ${info ?: ""}"; refresh() }
+                    "error" -> { recording = false; releaseFocus(); CarBrain.status = "Mikrofon-Fehler: ${info ?: ""}"; refresh() }
                 }
             }
         }
@@ -147,16 +187,16 @@ class JarvisCarScreen(ctx: CarContext) : Screen(ctx) {
     }
 
     private fun ask(text: String) {
-        if (bridge == null) { refresh(); return }
-        youSaid = text; status = "Denkt nach …"; refresh()
-        js("window.__zgCarAsk && __zgCarAsk(" + org.json.JSONObject.quote(text) + ")")
+        if (!CarBrain.running && !CarBrain.start(carContext)) { refresh(); return }
+        CarBrain.youSaid = text; CarBrain.status = "Denkt nach …"; refresh()
+        CarBrain.js("window.__zgCarAsk && __zgCarAsk(" + org.json.JSONObject.quote(text) + ")")
     }
 
     override fun onGetTemplate(): Template {
         val msg = buildString {
-            if (youSaid.isNotBlank()) append("Du: ").append(youSaid.take(120)).append("\n\n")
-            if (answer.isNotBlank()) append(answer.take(350)).append("\n\n")
-            append(status)
+            if (CarBrain.youSaid.isNotBlank()) append("Du: ").append(CarBrain.youSaid.take(120)).append("\n\n")
+            if (CarBrain.answer.isNotBlank()) append(CarBrain.answer.take(350)).append("\n\n")
+            append(CarBrain.status)
         }
         val speak = Action.Builder().setTitle("Sprechen").setFlags(Action.FLAG_PRIMARY)
             .setOnClickListener { onSpeakPressed() }.build()
@@ -165,7 +205,7 @@ class JarvisCarScreen(ctx: CarContext) : Screen(ctx) {
             .addAction(Action.Builder().setTitle("Musik").setOnClickListener { ask("Spiel die Musik weiter") }.build())
             .addAction(Action.Builder().setTitle("Stopp").setOnClickListener {
                 recorder?.abort(); recording = false; releaseFocus()
-                js("window.__zgCarHush && __zgCarHush()"); status = "Tippe auf „Sprechen“."; refresh()
+                CarBrain.js("window.__zgCarHush && __zgCarHush()"); CarBrain.status = "Sag „Hey Jarvis“ oder tippe auf „Sprechen“."; refresh()
             }.build())
             .build()
         return MessageTemplate.Builder(msg)

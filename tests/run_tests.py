@@ -240,6 +240,13 @@ async def main():
         got = await car.evaluate("() => window.__car.join(' | ')")
         if "du: Was steht auf der Einkaufsliste?" in got and "jarvis:" in got and "state: bereit" in got: ok += 1; print("✓ Android Auto: Sprechen → Antwort auf dem Auto-Bildschirm")
         else: fail += 1; print("✗ Android Auto:", got[:400])
+        # „Hey Jarvis“ im Auto (ohne Knopf): Handy-Mikrofon → Gemini schreibt mit → Antwort aufs Auto
+        await car.evaluate("""() => { window.__car = []; ZGAndroid.recStart = () => { setTimeout(() => { __zgRec.emit({type:'speech', sid: 9}); __zgRec.emit({type:'end', sid: 9, info:'ok'}); }, 150); return 9; };
+          ZGAndroid.recStop = () => {}; ZGAndroid.recAbort = () => {}; ZGAndroid.recTake = () => 'UklGRg=='; __zgWake(); }""")
+        await car.wait_for_timeout(3000)
+        got = await car.evaluate("() => window.__car.join(' | ')")
+        if "Ich höre zu" in got and "du: Was steht auf der Einkaufsliste?" in got and "state: bereit" in got: ok += 1; print("✓ Android Auto: „Hey Jarvis“ ohne Knopf")
+        else: fail += 1; print("✗ Android Auto Hey Jarvis:", got[:400])
         await car.evaluate("() => __zgCarAsk('Schreib Papa auf WhatsApp hallo')")
         await car.wait_for_timeout(1500)
         got = await car.evaluate("() => window.__car.join(' | ')")

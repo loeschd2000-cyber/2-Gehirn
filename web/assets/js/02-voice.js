@@ -111,10 +111,10 @@
   /* ================= Genaue KI-Erkennung (Android): Aufnahme → Gemini schreibt auf, was du gesagt hast =================
      Versteht Namen, Fachwörter und Nuscheln meist besser als die Handy-Erkennung. Dauert dafür etwa 1 Sekunde länger. */
   let aiEarOn = lsGet("zg_ai_ear") === "1", earBlockedUntil = 0;
-  const aiEarUsable = () => aiEarOn && !!(AND && AND.recStart) && !!geminiKey && !!geminiModel && Date.now() > earBlockedUntil;
+  const aiEarUsable = () => (aiEarOn || CAR) && !!(AND && AND.recStart) && !!geminiKey && !!geminiModel && Date.now() > earBlockedUntil;
   class GemSR {
     constructor() { this.onresult = this.onerror = this.onend = null; this.sid = 0; this.aborted = false; }
-    start() { GemSR.cur = this; this.sid = AND.recStart(pauseMs, 25000); }
+    start() { GemSR.cur = this; this.sid = AND.recStart(pauseMs, 25000); if (CAR) AND.carState("🎙 Ich höre zu …"); }
     stop() { AND.recStop(this.sid); }
     abort() { this.aborted = true; AND.recAbort(this.sid); }
   }
@@ -174,9 +174,11 @@
         if (typeof pending !== "undefined" && pending) AND.carListen(); else AND.carState("bereit"); };
       setTimeout(wait, 400);
     };
-    const carRun = async t => {
+    // Jede Frage im Auto (Knopf, „Hey Jarvis“, Rückfrage) zeigt sich auf dem Auto-Bildschirm
+    const askPhone = ask;
+    ask = async (t, v) => {
       AND.carShow("du", t); AND.carState("Denkt nach …");
-      try { await ask(t, true); } catch (e) { AND.carShow("jarvis", "Da ist etwas schiefgegangen: " + (e.message || e)); }
+      try { await askPhone(t, v); } catch (e) { AND.carShow("jarvis", "Da ist etwas schiefgegangen: " + (e.message || e)); }
       carDone();
     };
     window.__zgCarAudio = async () => {
@@ -186,8 +188,10 @@
       let t = "";
       try { t = await transcribe(wav); } catch (e) { AND.carShow("jarvis", "Ich konnte dich gerade nicht verstehen – ist Internet da?"); AND.carState("bereit"); return; }
       if (!t) { AND.carShow("jarvis", "Ich habe nichts verstanden. Tippe nochmal auf Sprechen."); AND.carState("bereit"); return; }
-      carRun(t);
+      ask(t, true);
     };
-    window.__zgCarAsk = t => { if (busy) { try { ctl && ctl.abort(); } catch {} } carRun(t); };
+    window.__zgCarAsk = t => { if (busy) { try { ctl && ctl.abort(); } catch {} } ask(t, true); };
     window.__zgCarHush = () => { try { hush(); cancelAgent(); } catch {} };
+    // Zuhören mit dem Handy-Mikrofon (nach „Hey Jarvis“ oder für Rückfragen, wenn der Jarvis-Bildschirm nicht vorne ist)
+    window.__zgCarListenPhone = () => { if (!listening && !busy) { hush(); listen(); } };
   }

@@ -104,6 +104,13 @@
         </receiver>
         <receiver android:name=".PriceReceiver" android:exported="false" />
 
+        <receiver android:name=".ProactiveReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
         <receiver android:name=".DiaryReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

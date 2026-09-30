@@ -12,6 +12,7 @@
     if (!c) { c = { id, title: "⚙ " + name, created: now, updated: now, messages: [], hidden: true }; chats.push(c); }
     c.data = val; c.updated = now; c.hidden = true;
     saveLocal(); scheduleDriveSave(); uploadChat(c);
+    if (/^(birthdays|exams|budgets)$/.test(name)) { try { proactiveSync(); renderHello(); } catch {} }
   }
   const clean = t => t.trim().replace(/^(?:(?:hey\s+|hallo\s+|ok\s+)?jarvis[,\s]+)/i, "").replace(/^(?:bitte|kannst\s+du(?:\s+bitte)?|könntest\s+du)\s+/i, "").replace(/\s+bitte$/i, "").replace(/[.!?]+$/, "").trim();
   const cap = x => x ? x.charAt(0).toUpperCase() + x.slice(1) : x;
@@ -110,7 +111,7 @@
     const card = document.createElement("div"); card.className = "card";
     const b = document.createElement("b"); b.textContent = title; card.append(b);
     if (sub) { const s2 = document.createElement("span"); s2.className = "sub"; s2.textContent = sub; card.append(s2); }
-    if (lines && lines.length) { const body = document.createElement("div"); body.className = "body"; body.textContent = lines.join("\n"); card.append(body); }
+    if (lines && lines.length) { const body = document.createElement("div"); body.className = "body"; fillRows(body, lines); card.append(body); }
     log.append(card); log.scrollTop = log.scrollHeight; return card;
   }
 

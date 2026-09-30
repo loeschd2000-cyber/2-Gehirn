@@ -428,8 +428,22 @@
   function renderList() {
     list.textContent = "";
     $("histCount").textContent = chats.filter(c => !c.hidden).length;
-    if (!chats.length) { list.innerHTML = '<p class="empty">Noch keine Gespräche. Alles, was du sagst, wird automatisch gespeichert.</p>'; return; }
+    if (!chats.some(c => !c.hidden)) { list.innerHTML = '<p class="empty">Noch keine Gespräche. Alles, was du sagst, wird automatisch gespeichert.</p>'; return; }
+    const q = (($("hSearch") && $("hSearch").value) || "").trim().toLowerCase();
+    let shown = 0, lastGroup = "";
+    const t0 = new Date(); t0.setHours(0, 0, 0, 0);
+    const group = ts => ts >= +t0 ? "Heute" : ts >= +t0 - 864e5 ? "Gestern" : ts >= +t0 - 6 * 864e5 ? "Diese Woche" : ts >= +t0 - 30 * 864e5 ? "Dieser Monat" : "Älter";
     for (const c of [...chats].filter(c => !c.hidden).sort((a, b) => b.updated - a.updated)) {
+      let hit = "";
+      if (q) {
+        if (!(c.title || "").toLowerCase().includes(q)) {
+          const m = c.messages.find(m => (m.content || "").toLowerCase().includes(q)); if (!m) continue;
+          const i = m.content.toLowerCase().indexOf(q); hit = (i > 30 ? "… " : "") + m.content.slice(Math.max(0, i - 30), i + 60).replace(/\s+/g, " ");
+        }
+      }
+      shown++;
+      const g = group(c.updated || 0);
+      if (!q && g !== lastGroup) { const h = document.createElement("div"); h.className = "grp"; h.textContent = g; list.append(h); lastGroup = g; }
       const row = document.createElement("div");
       row.className = "item" + (c.id === currentId ? " active" : "");
       const open = document.createElement("button");
@@ -437,6 +451,7 @@
       const t = document.createElement("span"); t.className = "t"; t.textContent = c.title;
       const d = document.createElement("span"); d.className = "d"; d.textContent = fmt(c.updated);
       open.append(t, d);
+      if (hit) { const h = document.createElement("span"); h.className = "hit"; h.textContent = hit; open.append(h); }
       open.onclick = () => { if (busy) return; hush(); stopListening(true); openChat(c); };
       const del = document.createElement("button");
       del.type = "button"; del.className = "del" + (armedDelete === c.id ? " confirm" : "");
@@ -452,6 +467,7 @@
       };
       row.append(open, del); list.append(row);
     }
+    if (q && !shown) list.innerHTML = '<p class="empty">Nichts gefunden. Tipp: Frag Jarvis „Was hab ich über … gesagt?“</p>';
   }
   function renderStats() {
     const today = new Date().toDateString();

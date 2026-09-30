@@ -117,7 +117,7 @@
       const card = document.createElement("div"); card.className = "card";
       const b = document.createElement("b"); b.textContent = "Phantom Wallet · " + euro(r.total); card.append(b);
       const body = document.createElement("div"); body.className = "body";
-      body.textContent = r.rows.slice(0, 10).map(x => `${x.sym}: ${x.amount.toLocaleString("de-DE", { maximumFractionDigits: 4 })} = ${euro(x.val)}  (24 h: ${x.pct >= 0 ? "+" : ""}${x.pct.toFixed(1)} %)`).join("\n");
+      fillRows(body, r.rows.slice(0, 10).map(x => `${x.sym}: ${euro(x.val)} · ${x.pct >= 0 ? "▲" : "▼"} ${Math.abs(x.pct).toFixed(1)} %`));
       card.append(body); log.append(card); log.scrollTop = log.scrollHeight;
       assistantSay(say);
     } catch (e) {

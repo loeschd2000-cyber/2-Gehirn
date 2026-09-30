@@ -4,6 +4,7 @@
       if (YES.test(text)) { await resolvePending(true, false); return true; }
       closeCard(pending); pending = null; agentRest = [];
     }
+    if (!diaryMode && !learn && handleHelp(text)) return true;
     if (!diaryMode && !learn && lockedBlock(text)) return true;
     if (!diaryMode && !learn && await handleSearch(text)) return true;   // „Was hab ich über … gesagt?“
     if (await handleDiary(text)) return true;

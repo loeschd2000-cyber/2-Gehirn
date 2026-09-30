@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/app.css?v=20260930035443">
+<link rel="stylesheet" href="assets/app.css?v=20260930040240">
 
 <div class="boot" id="boot" aria-hidden="true">
   <div style="display:flex;flex-direction:column;align-items:center">
@@ -43,27 +43,34 @@
     <aside class="col side side-l" id="sideL">
       <div class="drawer-head"><span>Menü</span><button class="ibtn" type="button" data-close aria-label="Schließen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
       <section class="panel">
-        <h2>Systemstatus</h2>
-        <div class="status">
-          <div class="srow"><span class="dot" id="aiDot"></span><div><div class="k">KI-Kern</div><div class="v" id="aiV">Verbindet …</div><select id="model" aria-label="KI-Modell" hidden></select></div></div>
-          <div class="srow"><span class="dot" id="micDot"></span><div><div class="k">Mikrofon</div><div class="v" id="micV">Bereit</div></div></div>
-          <div class="srow"><span class="dot" id="vDot"></span><div><div class="k">Stimme</div><div class="v" id="vV">Prüft …</div></div></div>
-          <div class="srow"><span class="dot" id="gDot"></span><div><div class="k">Google</div><div class="v" id="gV">Nicht verbunden</div></div></div>
-          <div class="srow"><span class="dot" id="stDot"></span><div><div class="k">Speicher</div><div class="v" id="stV">Prüft …</div></div></div>
+        <h2>Status</h2>
+        <details class="status-box" id="statusBox">
+          <summary><span class="sum-dots" id="sumDots"></span><span class="sum-t" id="sumText">Prüft …</span><span class="sum-more">Details</span></summary>
+          <div class="status">
+            <div class="srow"><span class="dot" id="aiDot"></span><div><div class="k">KI-Kern</div><div class="v" id="aiV">Verbindet …</div><select id="model" aria-label="KI-Modell" hidden></select></div></div>
+            <div class="srow"><span class="dot" id="micDot"></span><div><div class="k">Mikrofon</div><div class="v" id="micV">Bereit</div></div></div>
+            <div class="srow"><span class="dot" id="vDot"></span><div><div class="k">Stimme</div><div class="v" id="vV">Prüft …</div></div></div>
+            <div class="srow"><span class="dot" id="gDot"></span><div><div class="k">Google</div><div class="v" id="gV">Nicht verbunden</div></div></div>
+            <div class="srow"><span class="dot" id="stDot"></span><div><div class="k">Speicher</div><div class="v" id="stV">Prüft …</div></div></div>
+          </div>
+        </details>
+      </section>
+      <section class="panel">
+        <h2>Sprechen</h2>
+        <div class="setlist">
+          <button class="set tog" type="button" id="cWake"><span class="si">🎙</span><span class="st"><b>„Hey Jarvis“</b><small>Hört auf dein Stichwort, auch wenn die App zu ist</small></span><em id="cWakeState">AUS</em></button>
+          <button class="set tog" type="button" id="cLoop"><span class="si">🔁</span><span class="st"><b>Dauergespräch</b><small>Nach jeder Antwort gleich weiter zuhören</small></span><em id="cLoopState">AN</em></button>
+          <button class="set tog" type="button" id="cVoice"><span class="si">🔊</span><span class="st"><b>Antworten vorlesen</b><small>Jarvis spricht seine Antworten</small></span><em id="cVoiceState">AN</em></button>
+          <button class="set" type="button" id="cPause"><span class="si">⏱</span><span class="st"><b>Sprechpause</b><small>So lange wartet Jarvis, bis du fertig bist</small></span><em id="cPauseState">2,5 S</em></button>
         </div>
       </section>
       <section class="panel">
-        <h2>Schnellbefehle</h2>
-        <div class="cmds">
-          <button class="cmd wide" type="button" id="cNew">Neues Gespräch <em>+</em></button>
-          <button class="cmd" type="button" id="cWake">„Hey Jarvis“ <em id="cWakeState">AUS</em></button>
-          <button class="cmd" type="button" id="cLoop">Dauergespräch <em id="cLoopState">AN</em></button>
-          <button class="cmd" type="button" id="cVoice">Stimme <em id="cVoiceState">AN</em></button>
-          <button class="cmd" type="button" id="cPause">Sprechpause <em id="cPauseState">2,5 S</em></button>
-          <button class="cmd" type="button" id="cAi">KI-Quelle <em id="cAiState">AUTO</em></button>
-          <button class="cmd" type="button" id="cGoogle">Google <em>VERBINDEN</em></button>
-          <button class="cmd" type="button" id="cWallet">Phantom Wallet <em id="cWalletState">EINRICHTEN</em></button>
-          <button class="cmd wide" type="button" id="cApp" hidden>App-Einstellungen <em>⚙</em></button>
+        <h2>Verbindungen</h2>
+        <div class="setlist">
+          <button class="set" type="button" id="cAi"><span class="si">🧠</span><span class="st"><b>KI-Quelle</b><small>PC, Gemini oder automatisch</small></span><em id="cAiState">AUTO</em></button>
+          <button class="set" type="button" id="cGoogle"><span class="si">📅</span><span class="st"><b>Google</b><small>Kalender, Mails, Kontakte, Drive</small></span><em>VERBINDEN</em></button>
+          <button class="set" type="button" id="cWallet"><span class="si">◎</span><span class="st"><b>Phantom Wallet</b><small>Nur die öffentliche Adresse</small></span><em id="cWalletState">EINRICHTEN</em></button>
+          <button class="set" type="button" id="cApp" hidden><span class="si">⚙</span><span class="st"><b>App-Einstellungen</b><small>Alexa, Spotify, Konto, WhatsApp, Tagebuch</small></span><em>›</em></button>
         </div>
         <div class="gsetup" id="kSetup" hidden>
           <label for="kId">Gemini-Schlüssel (beginnt meist mit AIza…)</label>
@@ -92,6 +99,20 @@
           </div>
         </div>
       </section>
+      <section class="panel" id="secPanel" hidden>
+        <h2>Sicherheit &amp; Hinweise</h2>
+        <div class="setlist">
+          <button class="set tog" type="button" id="cLock"><span class="si">🔒</span><span class="st"><b>App-Sperre</b><small>Beim Öffnen Fingerabdruck oder PIN</small></span><em id="cLockState">AUS</em></button>
+          <button class="set tog" type="button" id="cPro"><span class="si">🔔</span><span class="st"><b>Morgen-Hinweise</b><small>7:30 Uhr: Geburtstage, Arbeiten, Budget</small></span><em id="cProState">AN</em></button>
+        </div>
+      </section>
+      <section class="panel">
+        <h2>Hilfe</h2>
+        <div class="setlist">
+          <button class="set" type="button" id="cHelp"><span class="si">💡</span><span class="st"><b>Was kann Jarvis?</b><small>Alle Befehle zum Antippen</small></span><em>›</em></button>
+          <button class="set" type="button" id="cNews"><span class="si">✨</span><span class="st"><b>Neu in dieser Version</b><small>Was sich geändert hat</small></span><em>›</em></button>
+        </div>
+      </section>
     </aside>
 
     <main class="col core-col">
@@ -102,6 +123,7 @@
           <div class="orblabel"><b>KERN</b><small>Zweites Gehirn</small></div>
         </div>
         <div class="state" id="state">Bereit</div>
+        <div class="hello" id="hello"><b id="helloT">Hallo</b><div class="heads" id="heads"></div></div>
         <div class="log" id="log" aria-live="polite"></div>
         <div class="tiles" id="tiles"></div>
         <div class="chips" id="chips">
@@ -132,6 +154,8 @@
       <div class="drawer-head"><span>Gespräche</span><button class="ibtn" type="button" data-close aria-label="Schließen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
       <section class="panel hist">
         <h2>Gespräche <span id="histCount">0</span></h2>
+        <button class="newchat" type="button" id="cNew"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Neues Gespräch</button>
+        <div class="hsearch"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="hSearch" type="search" placeholder="Gespräche durchsuchen …" autocomplete="off" aria-label="Gespräche durchsuchen"></div>
         <div class="list" id="list"></div>
       </section>
       <section class="panel">
@@ -148,19 +172,19 @@
 </div>
 
 
-<script src="assets/js/01-core.js?v=20260930035443"></script>
-<script src="assets/js/02-ai.js?v=20260930035443"></script>
-<script src="assets/js/03-google.js?v=20260930035443"></script>
-<script src="assets/js/04-intents.js?v=20260930035443"></script>
-<script src="assets/js/05-diary.js?v=20260930035443"></script>
-<script src="assets/js/06-finance.js?v=20260930035443"></script>
-<script src="assets/js/07-wallet.js?v=20260930035443"></script>
-<script src="assets/js/08-messages-music.js?v=20260930035443"></script>
-<script src="assets/js/09-alarm.js?v=20260930035443"></script>
-<script src="assets/js/10-extras.js?v=20260930035443"></script>
-<script src="assets/js/10-search.js?v=20260930035443"></script>
-<script src="assets/js/11-actions.js?v=20260930035443"></script>
-<script src="assets/js/12-calendar-mail.js?v=20260930035443"></script>
-<script src="assets/js/13-ui.js?v=20260930035443"></script>
-<script src="assets/js/14-orb.js?v=20260930035443"></script>
-<script src="assets/js/99-start.js?v=20260930035443"></script>
+<script src="assets/js/01-core.js?v=20260930040240"></script>
+<script src="assets/js/02-ai.js?v=20260930040240"></script>
+<script src="assets/js/03-google.js?v=20260930040240"></script>
+<script src="assets/js/04-intents.js?v=20260930040240"></script>
+<script src="assets/js/05-diary.js?v=20260930040240"></script>
+<script src="assets/js/06-finance.js?v=20260930040240"></script>
+<script src="assets/js/07-wallet.js?v=20260930040240"></script>
+<script src="assets/js/08-messages-music.js?v=20260930040240"></script>
+<script src="assets/js/09-alarm.js?v=20260930040240"></script>
+<script src="assets/js/10-extras.js?v=20260930040240"></script>
+<script src="assets/js/10-search.js?v=20260930040240"></script>
+<script src="assets/js/11-actions.js?v=20260930040240"></script>
+<script src="assets/js/12-calendar-mail.js?v=20260930040240"></script>
+<script src="assets/js/13-ui.js?v=20260930040240"></script>
+<script src="assets/js/14-orb.js?v=20260930040240"></script>
+<script src="assets/js/99-start.js?v=20260930040240"></script>

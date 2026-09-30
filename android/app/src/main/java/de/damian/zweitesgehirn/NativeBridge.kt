@@ -329,6 +329,8 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         private fun okName(n: String) = n.length in 3..40 && n.startsWith("zg_") && n.all { it.isLetterOrDigit() || it == '_' }
         @JavascriptInterface fun secretGet(name: String): String = if (okName(name)) Secure.vaultGet(act, name) else ""
         @JavascriptInterface fun secretSet(name: String, value: String) { if (okName(name) && value.length < 4000) Secure.vaultSet(act, name, value) }
+        // Jarvis meldet sich von selbst (Geburtstage, Arbeiten, Budget)
+        @JavascriptInterface fun proactiveSync(json: String) { if (json.length < 100_000) Proactive.sync(act, json) }
         @JavascriptInterface fun deviceLocked(): Boolean = try { act.getSystemService(android.app.KeyguardManager::class.java).isKeyguardLocked } catch (_: Throwable) { false }
         @JavascriptInterface fun appLockGet(): Boolean = Prefs.appLock(act)
         /** Rückgabe: "ok" oder ein Grund, warum es nicht geht */

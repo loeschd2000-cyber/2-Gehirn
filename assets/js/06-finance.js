@@ -127,7 +127,7 @@
     let d = null; try { d = JSON.parse(AND.bankCached() || "null"); } catch {}
     if (!force && d && d.ok && Date.now() - d.fetched < 2 * 3600000) return d;
     const fresh = await new Promise(res => { finWait = res; AND.bankFetch(); setTimeout(() => { if (finWait === res) { finWait = null; res(null); } }, 60000); });
-    if (fresh && fresh.ok) return fresh;
+    if (fresh && fresh.ok) { try { proactiveSync(); } catch {} return fresh; }
     if (d && d.ok) { note("Konnte nicht neu laden (" + ((fresh && fresh.error) || "Zeitüberschreitung") + "), nehme den letzten Stand."); return d; }
     throw new Error((fresh && fresh.error) || "Keine Antwort von der Bank");
   }
@@ -135,7 +135,7 @@
   function finCard(title, lines) {
     const card = document.createElement("div"); card.className = "card";
     const b = document.createElement("b"); b.textContent = title; card.append(b);
-    const body = document.createElement("div"); body.className = "body"; body.textContent = lines.join("\n"); card.append(body);
+    const body = document.createElement("div"); body.className = "body"; fillRows(body, lines); card.append(body);
     log.append(card); log.scrollTop = log.scrollHeight;
   }
   // Nur echte Geld-Fragen (nicht „Eingang bei der SPS“ oder „Gehalt eines Elektronikers“)

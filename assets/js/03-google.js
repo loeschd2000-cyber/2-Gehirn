@@ -17,7 +17,7 @@
     else { setDot("gDot", "warn"); $("gV").textContent = "Eingerichtet. Einmal auf „Google verbinden“ klicken."; }
     $("cGoogle").classList.toggle("alert", !live);
     updateStoreUi();
-    $("cGoogle").firstChild.textContent = live ? "Google neu verbinden " : "Google verbinden ";
+    $("cGoogle").querySelector("em").textContent = live ? "VERBUNDEN" : "VERBINDEN";
   }
   function loadGis() {
     if (window.google && google.accounts && google.accounts.oauth2) return Promise.resolve();

@@ -147,6 +147,7 @@ CASES = [
     # --- freie Sätze über den KI-Helfer (auch mehrere Befehle auf einmal) ---
     ("Kannst du bitte Käse und Brot bei den Einkäufen notieren und mir danach sagen was alles drauf ist", ["Käse und Brot", "Käse, Brot"]),
     ("Lass es morgen früh um 7 klingeln", ["alexa 7:0"]),
+    ("Was kannst du?", ["alle Befehle"]),
     ("Frag mich SPS ab", ["Lernmodus: SPS"]),
     ("Stopp", ["Lernmodus beendet"]),
 ]

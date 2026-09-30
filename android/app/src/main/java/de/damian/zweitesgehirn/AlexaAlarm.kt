@@ -22,12 +22,12 @@ object AlexaAlarm {
     private const val CHANNEL = "alexa"
     private fun p(ctx: Context) = ctx.getSharedPreferences("zg", Context.MODE_PRIVATE)
 
-    fun token(ctx: Context) = p(ctx).getString("vm_token", "") ?: ""
+    fun token(ctx: Context) = Secure.get(p(ctx), "vm_token")
     fun device(ctx: Context) = p(ctx).getString("vm_device", "") ?: ""
     fun configured(ctx: Context) = token(ctx).isNotBlank() && device(ctx).isNotBlank()
     fun configure(ctx: Context, token: String, device: String) {
         val e = p(ctx).edit().putString("vm_device", device.trim())
-        if (token != "__keep__") e.putString("vm_token", token.trim())   // leer lassen = alten Token behalten
+        if (token != "__keep__") e.putString("vm_token", Secure.enc(token.trim()))   // leer lassen = alten Token behalten
         e.apply()
     }
 

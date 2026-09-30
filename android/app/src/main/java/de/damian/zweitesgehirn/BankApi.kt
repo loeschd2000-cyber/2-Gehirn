@@ -30,9 +30,9 @@ object BankApi {
     private fun p(ctx: Context) = ctx.getSharedPreferences("zg_bank", Context.MODE_PRIVATE)
 
     fun appId(ctx: Context) = p(ctx).getString("app_id", "") ?: ""
-    fun hasKey(ctx: Context) = (p(ctx).getString("key", "") ?: "").isNotBlank()
+    fun hasKey(ctx: Context) = Secure.get(p(ctx), "key").isNotBlank()
     fun bankName(ctx: Context) = p(ctx).getString("aspsp", "") ?: ""
-    fun connected(ctx: Context) = (p(ctx).getString("session", "") ?: "").isNotBlank() &&
+    fun connected(ctx: Context) = Secure.get(p(ctx), "session").isNotBlank() &&
         System.currentTimeMillis() < p(ctx).getLong("valid_until", 0)
     fun validUntil(ctx: Context) = p(ctx).getLong("valid_until", 0)
 
@@ -43,7 +43,7 @@ object BankApi {
     /** Schlüssel-Datei (.pem) speichern. Gibt Fehlertext zurück oder null. */
     fun setKey(ctx: Context, pem: String): String? {
         if (!pem.contains("PRIVATE KEY")) return "Das ist keine Schlüssel-Datei (.pem mit PRIVATE KEY)."
-        return try { loadKey(pem); p(ctx).edit().putString("key", pem).apply(); null }
+        return try { loadKey(pem); p(ctx).edit().putString("key", Secure.enc(pem)).apply(); null }
         catch (e: Throwable) { "Schlüssel konnte nicht gelesen werden: ${e.message}" }
     }
 
@@ -74,7 +74,7 @@ object BankApi {
         val header = JSONObject().put("typ", "JWT").put("alg", "RS256").put("kid", appId(ctx))
         val body = JSONObject().put("iss", "enablebanking.com").put("aud", "api.enablebanking.com").put("iat", now).put("exp", now + 3600)
         val input = b64url(header.toString().toByteArray()) + "." + b64url(body.toString().toByteArray())
-        val sig = Signature.getInstance("SHA256withRSA").apply { initSign(loadKey(p(ctx).getString("key", "")!!)); update(input.toByteArray()) }.sign()
+        val sig = Signature.getInstance("SHA256withRSA").apply { initSign(loadKey(Secure.get(p(ctx), "key"))); update(input.toByteArray()) }.sign()
         return input + "." + b64url(sig)
     }
 
@@ -165,7 +165,7 @@ object BankApi {
         }
         val validStr = j.optJSONObject("access")?.optString("valid_until") ?: ""
         val valid = try { SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).apply { timeZone = TimeZone.getTimeZone("UTC") }.parse(validStr.take(19))!!.time } catch (_: Throwable) { System.currentTimeMillis() + 89L * 86400000L }
-        p(ctx).edit().putString("session", j.optString("session_id")).putString("accounts", list.toString()).putLong("valid_until", valid).apply()
+        p(ctx).edit().putString("session", Secure.enc(j.optString("session_id"))).putString("accounts", list.toString()).putLong("valid_until", valid).apply()
         return true to "Konto verbunden (${list.length()} Konto/Konten)"
     }
 

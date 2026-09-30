@@ -24,7 +24,7 @@ object SpotifyApi {
     private fun p(ctx: Context) = ctx.getSharedPreferences("zg_spotify", Context.MODE_PRIVATE)
 
     fun clientId(ctx: Context) = p(ctx).getString("client_id", "") ?: ""
-    fun connected(ctx: Context) = (p(ctx).getString("refresh", "") ?: "").isNotBlank()
+    fun connected(ctx: Context) = Secure.get(p(ctx), "refresh").isNotBlank()
     fun setClientId(ctx: Context, id: String) = p(ctx).edit().putString("client_id", id.trim()).apply()
     fun disconnect(ctx: Context) = p(ctx).edit().remove("refresh").remove("access").remove("exp").apply()
 
@@ -36,7 +36,7 @@ object SpotifyApi {
         val verifier = b64url(ByteArray(48).also { SecureRandom().nextBytes(it) })
         val challenge = b64url(MessageDigest.getInstance("SHA-256").digest(verifier.toByteArray()))
         val state = b64url(ByteArray(12).also { SecureRandom().nextBytes(it) })
-        p(ctx).edit().putString("verifier", verifier).putString("state", state).apply()
+        p(ctx).edit().putString("verifier", Secure.enc(verifier)).putString("state", state).apply()
         val url = Uri.parse("https://accounts.spotify.com/authorize").buildUpon()
             .appendQueryParameter("client_id", id)
             .appendQueryParameter("response_type", "code")
@@ -57,7 +57,7 @@ object SpotifyApi {
         if (state == null || saved == null || state != saved) return false to "Anmeldung passt nicht zusammen, bitte nochmal verbinden"
         p(ctx).edit().remove("state").apply()   // jeder Anmelde-Link gilt nur einmal
         val body = form("grant_type" to "authorization_code", "code" to code, "redirect_uri" to REDIRECT,
-            "client_id" to clientId(ctx), "code_verifier" to (p(ctx).getString("verifier", "") ?: ""))
+            "client_id" to clientId(ctx), "code_verifier" to Secure.get(p(ctx), "verifier"))
         val (c, r) = http("POST", "https://accounts.spotify.com/api/token", null, body, form = true)
         if (c != 200) return false to "Anmeldung fehlgeschlagen ($c): ${errText(r)}"
         saveTokens(ctx, JSONObject(r))
@@ -66,21 +66,21 @@ object SpotifyApi {
 
     private fun saveTokens(ctx: Context, j: JSONObject) {
         val e = p(ctx).edit()
-            .putString("access", j.optString("access_token"))
+            .putString("access", Secure.enc(j.optString("access_token")))
             .putLong("exp", System.currentTimeMillis() + j.optLong("expires_in", 3600) * 1000 - 60000)
-        if (j.optString("refresh_token").isNotBlank()) e.putString("refresh", j.optString("refresh_token"))
+        if (j.optString("refresh_token").isNotBlank()) e.putString("refresh", Secure.enc(j.optString("refresh_token")))
         e.apply()
     }
 
     private fun token(ctx: Context): String? {
-        val acc = p(ctx).getString("access", "") ?: ""
+        val acc = Secure.get(p(ctx), "access")
         if (acc.isNotBlank() && System.currentTimeMillis() < p(ctx).getLong("exp", 0)) return acc
-        val ref = p(ctx).getString("refresh", "") ?: ""; if (ref.isBlank()) return null
+        val ref = Secure.get(p(ctx), "refresh"); if (ref.isBlank()) return null
         val (c, r) = http("POST", "https://accounts.spotify.com/api/token", null,
             form("grant_type" to "refresh_token", "refresh_token" to ref, "client_id" to clientId(ctx)), form = true)
         if (c != 200) return null
         saveTokens(ctx, JSONObject(r))
-        return p(ctx).getString("access", null)
+        return Secure.get(p(ctx), "access").ifBlank { null }
     }
 
     private fun norm(s: String) = Normalizer.normalize(s.lowercase(), Normalizer.Form.NFD)

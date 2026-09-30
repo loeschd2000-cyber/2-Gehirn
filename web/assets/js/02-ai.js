@@ -1,7 +1,7 @@
   /* ================= KI-Motor: PC (Ollama) oder Gemini ================= */
   const AI_MODES = ["auto", "pc", "gemini"];
   let aiMode = AI_MODES.includes(lsGet("zg_ai_mode")) ? lsGet("zg_ai_mode") : "auto";
-  let geminiKey = lsGet("zg_gemini_key") || "";
+  let geminiKey = secGet("zg_gemini_key");
   let geminiModel = null, geminiCandidates = [], pcOk = false, backend = null;   // backend: "pc" | "gemini" | null
   const GEM = "https://generativelanguage.googleapis.com/v1beta";
 
@@ -80,7 +80,7 @@
   $("kSave").onclick = async () => {
     const k = $("kId").value.trim();
     if (k.length < 20) { note("Das sieht nicht wie ein Gemini-Schlüssel aus."); return; }
-    geminiKey = k; geminiModel = null; lsSet("zg_gemini_key", k); $("kId").value = "";
+    geminiKey = k; geminiModel = null; secSet("zg_gemini_key", k); $("kId").value = "";
     $("kSetup").hidden = true;
     const b = await checkAi();
     note(geminiModel ? "Gemini ist eingerichtet." + (b === "pc" ? " Solange der PC erreichbar ist, nutzt „AUTO“ den PC. Für Gemini auf „KI-Quelle“ tippen." : "") : "Mit diesem Schlüssel klappt es nicht. Bitte prüfen.");

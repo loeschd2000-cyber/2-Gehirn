@@ -4,6 +4,7 @@
       if (YES.test(text)) { await resolvePending(true, false); return true; }
       closeCard(pending); pending = null; agentRest = [];
     }
+    if (!diaryMode && !learn && lockedBlock(text)) return true;
     if (!diaryMode && !learn && await handleSearch(text)) return true;   // „Was hab ich über … gesagt?“
     if (await handleDiary(text)) return true;
     if (await handleExtras(text)) return true;
@@ -146,4 +147,13 @@ Nachricht: "${text.replace(/"/g, "'")}"`;
     const rest = agentRest; agentRest = [];
     await waitIdle();
     await runAgentList(rest);
+  }
+
+  /* Sperrbildschirm: Finanzen, Wallet, Tagebuch lesen, Mails, Nachrichten, Anrufe, Suche und „Was weißt du über mich“
+     erst nach dem Entsperren (sonst könnte jeder am gesperrten Handy fragen) */
+  const PRIVATE_RE = /\b(finanz\w*|konto\w*|kontostand|guthaben|ausgaben|ausgegeben|einnahmen|fixkosten|abos?|budget\w*|sparkasse|statistik\w*|gehalt|lohn|geld|wallet|phantom|krypto\w*|mails?|e-mails?|posteingang|postfach|whatsapp|sms|nachricht\w*|ruf\w*|anruf\w*|telefonnummer|nummer|adresse|termine?|kalender)\b|was\s+weißt\s+du\s+über\s+mich|was\s+(?:hab|habe)\s+ich\s+.*\s(?:gesagt|geredet|erzählt|geschrieben)|\bsuch\w*\s+in\b|\btagebuch\b.*\b(lies|lese|vor|zeig\w*|was)\b|\b(lies|zeig\w*)\b.*\btagebuch\b/i;
+  function lockedBlock(text) {
+    if (!MINI || !deviceLocked() || !PRIVATE_RE.test(text)) return false;
+    assistantSay("Das ist privat. Entsperr zuerst dein Handy, dann sag es nochmal.");
+    return true;
   }

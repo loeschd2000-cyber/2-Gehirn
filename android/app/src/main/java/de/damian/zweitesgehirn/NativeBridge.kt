@@ -325,6 +325,21 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             try { act.packageManager.getPackageInfo(act.packageName, 0).versionName ?: "" } catch (_: Throwable) { "" }
         @JavascriptInterface fun isMini(): Boolean = mini
 
+        // Sicherheit: Tresor für Schlüssel, App-Sperre, Sperrbildschirm-Erkennung
+        private fun okName(n: String) = n.length in 3..40 && n.startsWith("zg_") && n.all { it.isLetterOrDigit() || it == '_' }
+        @JavascriptInterface fun secretGet(name: String): String = if (okName(name)) Secure.vaultGet(act, name) else ""
+        @JavascriptInterface fun secretSet(name: String, value: String) { if (okName(name) && value.length < 4000) Secure.vaultSet(act, name, value) }
+        @JavascriptInterface fun deviceLocked(): Boolean = try { act.getSystemService(android.app.KeyguardManager::class.java).isKeyguardLocked } catch (_: Throwable) { false }
+        @JavascriptInterface fun appLockGet(): Boolean = Prefs.appLock(act)
+        /** Rückgabe: "ok" oder ein Grund, warum es nicht geht */
+        @JavascriptInterface fun appLockSet(on: Boolean): String {
+            if (on && !(try { act.getSystemService(android.app.KeyguardManager::class.java).isDeviceSecure } catch (_: Throwable) { false }))
+                return "Auf deinem Handy ist keine Bildschirmsperre eingerichtet. Richte zuerst PIN oder Fingerabdruck ein."
+            Prefs.setAppLock(act, on)
+            if (on) (act as? MainActivity)?.markUnlocked()
+            return "ok"
+        }
+
         // Spracherkennung
         @JavascriptInterface fun srStart(lang: String, interim: Boolean): Int {
             val sid = ++srSid

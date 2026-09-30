@@ -57,6 +57,24 @@
   const setDot = (id, cls) => { $(id).className = "dot" + (cls ? " " + cls : ""); };
   const lsGet = k => { try { return localStorage.getItem(k); } catch { return null; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+  // Geheimes (z. B. Gemini-Schlüssel): in der Android-App verschlüsselt im Handy-Tresor, am PC im Browser
+  function secGet(k) {
+    if (!(AND && AND.secretGet)) return lsGet(k) || "";
+    let v = ""; try { v = AND.secretGet(k) || ""; } catch {}
+    const old = lsGet(k);
+    if (old) {   // einmalig aus dem normalen Speicher in den Tresor umziehen
+      if (!v) { try { AND.secretSet(k, old); v = AND.secretGet(k) || ""; } catch {} }
+      if (v) try { localStorage.removeItem(k); } catch {}
+      else v = old;
+    }
+    return v;
+  }
+  function secSet(k, v) {
+    if (AND && AND.secretSet) { try { AND.secretSet(k, v || ""); try { localStorage.removeItem(k); } catch {} return; } catch {} }
+    lsSet(k, v || "");
+  }
+  // Auf dem Sperrbildschirm (kleiner Kreis) keine privaten Dinge zeigen
+  const deviceLocked = () => { try { return !!(AND && AND.deviceLocked && AND.deviceLocked()); } catch { return false; } };
   // fetch mit Zeitlimit (Standard 15 s), damit Wetter/Kurse/Wallet nie ewig hängen
   const fetchT = (url, opts = {}, ms = 15000) => fetch(url, { ...opts, signal: opts.signal || (AbortSignal.timeout ? AbortSignal.timeout(ms) : undefined) });
   const pad = n => String(n).padStart(2, "0");

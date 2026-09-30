@@ -90,6 +90,18 @@ object SpotifyApi {
      * Sucht und spielt ab. Muss in einem Hintergrund-Thread laufen.
      * [log] schreibt ins Protokoll. Rückgabe: (geklappt, Titel oder Fehlertext)
      */
+    /** Pause/Weiter/Nächstes/Vorheriges über die Spotify-Schnittstelle (klappt auch mit Bluetooth). Hintergrund-Thread! */
+    fun control(ctx: Context, cmd: String, log: (String) -> Unit): Boolean {
+        val tok = token(ctx) ?: return false
+        val (method, path) = when (cmd) {
+            "pause" -> "PUT" to "pause"; "play" -> "PUT" to "play"; "next" -> "POST" to "next"; "previous" -> "POST" to "previous"
+            else -> return false
+        }
+        val (c, r) = http(method, "https://api.spotify.com/v1/me/player/$path", tok, if (method == "PUT" && cmd == "play") "{}" else "")
+        log("Spotify-Schnittstelle: $cmd → $c" + if (c !in 200..299) " (${errText(r)})" else "")
+        return c in 200..299
+    }
+
     /** Was die Suche zuletzt gefunden hat (Spotify-Adresse, Anzeige) – für den Notweg über die Spotify-App */
     @Volatile var lastFound: Pair<String, String>? = null
 

@@ -142,13 +142,15 @@
     ["previous", "Vorheriges Lied.", [
       /^(?:(?:spiel|spiele|mach|nimm|geh\s+zu(?:rück)?)\s+)?(?:das\s+|zum\s+)?(?:vorherige[nmrs]?|letzte[nmrs]?)\s+(?:lied|song|titel|track)(?:\s+nochmal)?$/,
       /^(?:ein\s+)?(?:lied|song)\s+zurück$|^zurück\s*(?:spulen|springen)?$/,
-      /^(?:spiel|spiele|mach)\s+(?:das\s+)?(?:lied|song)\s+(?:nochmal|noch\s+einmal|von\s+vorne)$/]],
+      /^(?:spiel|spiele|mach)\s+(?:das\s+)?(?:lied|song)\s+(?:nochmal|noch\s+einmal|von\s+vorne)$/,
+      /^(?:(?:spiel|spiele|mach)\s+)?(?:das\s+|den\s+)?(?:lied|song|titel|track)\s+(?:davor|vorher)$/, /^(?:zurück|vorher|previous|back)$/]],
     ["pause", "Musik pausiert.", [
       /^(?:mach\s+)?(?:(?:eine?|mal)\s+)?pause$/,
       new RegExp("^(?:pausier\\w*|stopp\\w*|stop|halt\\w*|anhalten|beende\\w*|aus)(?:\\s+" + M_ART + "?" + M_OBJ + ")?(?:\\s+an)?$"),
       new RegExp("^(?:" + M_ART + ")?" + M_OBJ + "\\s+(?:aus|stopp\\w*|stop|anhalten|pausier\\w*|beenden|pause|halt)$"),
       new RegExp("^(?:mach|schalt\\w*|dreh\\w*)\\s+(?:" + M_ART + ")?" + M_OBJ + "\\s+aus$"),
-      new RegExp("^(?:halt\\w*|stopp\\w*|pausier\\w*)\\s+(?:" + M_ART + ")?" + M_OBJ + "(?:\\s+an)?$")]],
+      new RegExp("^(?:halt\\w*|stopp\\w*|pausier\\w*)\\s+(?:" + M_ART + ")?" + M_OBJ + "(?:\\s+an)?$"),
+      new RegExp("^(?:hör\\w*|hoer\\w*)\\s+(?:mal\\s+)?auf\\s+mit\\s+(?:der\\s+|dem\\s+|" + M_ART + ")?" + M_OBJ + "$")]],
     ["play", "Weiter geht's.", [
       /^(?:weiter|weiter\s*spielen|weiter\s*machen|fortsetzen|fortfahren|fort|resume|play|abspielen|los)$/,
       new RegExp("^(?:spiel|spiele|mach|lass|lasse|setz|setze|fahr|fahre|starte?)\\s+(?:" + M_ART + ")?(?:" + M_OBJ + "\\s+)?(?:wieder\\s+|mal\\s+)?(?:weiter|fort|an|ab|laufen|weiterlaufen|weiterspielen)$"),

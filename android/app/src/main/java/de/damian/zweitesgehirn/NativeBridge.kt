@@ -641,14 +641,21 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
         /** Protokoll des letzten Abspielversuchs (für die Einstellungsseite) */
         @JavascriptInterface fun musicLog(): String = Music.lastLog
         /** Steuert die gerade laufende Musik (Spotify oder jede andere App), ohne sie zu öffnen. */
+        @JavascriptInterface fun mediaLog(): String = Music.controlLog
         @JavascriptInterface fun media(cmd: String) {
             main.post {
                 val am = act.getSystemService(AudioManager::class.java)
                 when (cmd) {
-                    "louder" -> { am.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI)
-                                  am.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, 0) }
-                    "quieter" -> { am.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI)
-                                   am.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, 0) }
+                    "louder", "quieter" -> {
+                        releaseFocus()   // Musik nicht mehr „geduckt“, sonst hört man die Änderung nicht
+                        val before = am.getStreamVolume(AudioManager.STREAM_MUSIC)
+                        val dir = if (cmd == "louder") AudioManager.ADJUST_RAISE else AudioManager.ADJUST_LOWER
+                        am.adjustStreamVolume(AudioManager.STREAM_MUSIC, dir, AudioManager.FLAG_SHOW_UI)
+                        am.adjustStreamVolume(AudioManager.STREAM_MUSIC, dir, 0)
+                        val after = am.getStreamVolume(AudioManager.STREAM_MUSIC)
+                        Music.controlLog = "Befehl: $cmd\nLautstärke: $before → $after von ${am.getStreamMaxVolume(AudioManager.STREAM_MUSIC)}" +
+                            (if (before == after) "\n✗ hat sich nicht geändert (am Anschlag oder vom Gerät gesperrt)" else "\n✓ geändert")
+                    }
                     else -> Music.control(act.applicationContext, cmd)
                 }
             }

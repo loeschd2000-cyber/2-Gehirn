@@ -282,11 +282,40 @@ object Music {
         main.postDelayed({ back() }, if (access) 600 else 3500)
     }
 
-    /** Weiter, Pause, nächstes/vorheriges Lied – direkt an den Player, ohne ihn zu öffnen. */
+    /** Protokoll der letzten Musik-Steuerung (für „Musik testen“) */
+    @Volatile var controlLog = ""
+
+    /**
+     * Weiter, Pause, nächstes/vorheriges Lied. Reihenfolge: Spotify-Schnittstelle (klappt immer, auch mit Bluetooth),
+     * dann direkt an den Player, dann Medientaste.
+     */
     fun control(ctx: Context, cmd: String) {
+        val app = ctx.applicationContext
+        val sb = StringBuilder()
+        fun lg(t: String) { sb.append(t).append('\n'); controlLog = sb.toString() }
+        lg("Befehl: $cmd · Bluetooth: " + (if (btAudio(app)) "ja" else "nein"))
+        if (SpotifyApi.connected(app) && cmd in listOf("pause", "play", "next", "previous")) {
+            Thread {
+                val ok = try { SpotifyApi.control(app, cmd) { lg(it) } } catch (e: Throwable) { lg("Schnittstelle: ${e.javaClass.simpleName}"); false }
+                if (ok) lg("✓ erledigt über Spotify") else main.post { controlLocal(app, cmd, ::lg) }
+            }.start()
+            return
+        }
+        controlLocal(app, cmd, ::lg)
+    }
+
+    private fun btAudio(ctx: Context): Boolean = try {
+        ctx.getSystemService(AudioManager::class.java).getDevices(AudioManager.GET_DEVICES_OUTPUTS).any {
+            it.type == android.media.AudioDeviceInfo.TYPE_BLUETOOTH_A2DP || it.type == android.media.AudioDeviceInfo.TYPE_BLUETOOTH_SCO ||
+            (android.os.Build.VERSION.SDK_INT >= 31 && (it.type == android.media.AudioDeviceInfo.TYPE_BLE_HEADSET || it.type == android.media.AudioDeviceInfo.TYPE_BLE_SPEAKER))
+        }
+    } catch (_: Throwable) { false }
+
+    private fun controlLocal(ctx: Context, cmd: String, lg: (String) -> Unit) {
         val am = ctx.getSystemService(AudioManager::class.java)
         val c = current(ctx)
         if (c != null) {
+            lg("Player: ${c.packageName} (${stateName(c)})")
             val t = c.transportControls
             when (cmd) {
                 "next" -> t.skipToNext()
@@ -294,8 +323,10 @@ object Music {
                 "pause" -> t.pause()
                 "play" -> t.play()
             }
+            lg("✓ an den Player geschickt")
             return
         }
+        lg(if (accessGranted(ctx)) "Kein Player gefunden → Medientaste" else "Benachrichtigungszugriff fehlt → Medientaste")
         if (cmd == "play" && spotifyInstalled(ctx) && !am.isMusicActive) { wakeSpotify(ctx); return }
         val code = when (cmd) {
             "next" -> KeyEvent.KEYCODE_MEDIA_NEXT

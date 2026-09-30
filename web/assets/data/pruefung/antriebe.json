@@ -1,0 +1,551 @@
+{
+  "topic": "antriebe",
+  "title": "Antriebstechnik",
+  "icon": "⚙️",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "antriebe-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wodurch entsteht im Ständer eines Drehstrom-Asynchronmotors das magnetische Drehfeld?",
+      "options": [
+        "Durch Permanentmagnete im Läufer, die beim Einschalten vom Netzstrom in Drehung versetzt werden",
+        "Durch einen Kommutator, der die Stromrichtung in den Ständerwicklungen fortlaufend umschaltet",
+        "Durch drei räumlich um 120° versetzte Wicklungen, die von zeitlich um 120° phasenverschobenen Strömen durchflossen werden",
+        "Durch Gleichstrom, der über Schleifringe in die Läuferwicklung eingespeist wird"
+      ],
+      "answer": 2,
+      "explain": "Die drei um 120° versetzten Ständerwicklungen erzeugen mit den phasenverschobenen Strömen des Drehstromnetzes ein umlaufendes Magnetfeld. Kommutator und Permanentmagnete gehören zu Gleichstrom- bzw. Synchronmaschinen.",
+      "tags": [
+        "Asynchronmotor",
+        "Drehfeld"
+      ]
+    },
+    {
+      "id": "antriebe-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie ist der Läufer eines Käfigläufermotors aufgebaut?",
+      "options": [
+        "Aus einem geblechten Eisenpaket mit Stäben aus Aluminium oder Kupfer, die an beiden Enden durch Kurzschlussringe verbunden sind",
+        "Aus Permanentmagneten, die mit wechselnder Polung auf der Welle befestigt sind",
+        "Aus einer Wicklung im Blechpaket, die über Kommutator und Kohlebürsten gespeist wird",
+        "Aus massivem, ungeblechtem Stahl ohne elektrische Leiter, in dem nur Wirbelströme fließen"
+      ],
+      "answer": 0,
+      "explain": "Die Läuferstäbe bilden mit den Kurzschlussringen einen „Käfig“. Das Drehfeld induziert darin Ströme, die zusammen mit dem Feld das Drehmoment erzeugen. Die Blechung verringert die Wirbelstromverluste.",
+      "tags": [
+        "Asynchronmotor",
+        "Aufbau"
+      ]
+    },
+    {
+      "id": "antriebe-003",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie groß ist die synchrone Drehzahl (Drehfelddrehzahl) eines 2-poligen Drehstrommotors (Polpaarzahl p = 1) am 50-Hz-Netz?",
+      "options": [
+        "1500 1/min",
+        "2880 1/min",
+        "1000 1/min",
+        "3000 1/min"
+      ],
+      "answer": 3,
+      "explain": "n_s = f · 60 / p = 50 Hz · 60 s/min / 1 = 3000 1/min. 2880 1/min wäre eine typische Nenndrehzahl eines 2-poligen Motors unter Last (mit Schlupf), 1500 1/min gilt für p = 2.",
+      "tags": [
+        "Drehzahl"
+      ]
+    },
+    {
+      "id": "antriebe-004",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein 4-poliger Drehstrom-Asynchronmotor (Polpaarzahl p = 2) wird am 50-Hz-Netz betrieben. Laut Leistungsschild beträgt die Nenndrehzahl 1440 1/min. Wie groß ist der Schlupf in Prozent?",
+      "answer": "4 %",
+      "value": 4.0,
+      "unit": "%",
+      "tolerance": 0.03,
+      "explain": "Synchrone Drehzahl: n_s = f · 60 / p = 50 · 60 / 2 = 1500 1/min. Schlupf: s = (n_s − n) / n_s = (1500 − 1440) / 1500 = 0,04 = 4 %.",
+      "tags": [
+        "Schlupf",
+        "Drehzahl"
+      ]
+    },
+    {
+      "id": "antriebe-005",
+      "type": "open",
+      "level": 2,
+      "part": "AP1",
+      "q": "Warum kann ein Asynchronmotor im Motorbetrieb nie genau mit der Drehfelddrehzahl laufen?",
+      "answer": "Nur wenn der Läufer langsamer als das Drehfeld dreht, wird in den Läuferstäben eine Spannung induziert; es fließt Läuferstrom und es entsteht ein Drehmoment. Bei Synchronlauf gäbe es keine Induktion und damit kein Drehmoment.",
+      "keywords": [
+        "langsamer",
+        "induz",
+        "drehmoment"
+      ],
+      "explain": "Diese Drehzahldifferenz heißt Schlupf. Sie wächst mit der Belastung und beträgt bei Nennlast typischerweise wenige Prozent.",
+      "tags": [
+        "Schlupf",
+        "Asynchronmotor"
+      ]
+    },
+    {
+      "id": "antriebe-006",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Auf dem Leistungsschild eines Drehstrommotors steht 5,5 kW. Was gibt dieser Wert an?",
+      "options": [
+        "Die elektrische Wirkleistung, die der Motor im Nennbetrieb aus dem Netz aufnimmt",
+        "Die mechanische Leistung, die der Motor im Nennbetrieb an der Welle abgibt",
+        "Die Scheinleistung, die der Motor im Nennbetrieb aus dem Netz bezieht",
+        "Die Leistung, die der Motor beim Anlauf kurzzeitig aus dem Netz aufnehmen darf"
+      ],
+      "answer": 1,
+      "explain": "Die Nennleistung auf dem Leistungsschild ist immer die abgegebene mechanische Leistung. Die aufgenommene elektrische Leistung ist wegen der Verluste größer: P_auf = P_ab / η.",
+      "tags": [
+        "Leistungsschild"
+      ]
+    },
+    {
+      "id": "antriebe-007",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Was gibt der Wert cos φ = 0,82 auf dem Leistungsschild eines Motors an?",
+      "options": [
+        "Den Leistungsfaktor im Nennbetrieb, also das Verhältnis von Wirkleistung zu Scheinleistung",
+        "Den Wirkungsgrad, also das Verhältnis von abgegebener zu aufgenommener Leistung",
+        "Den Schlupf, also die relative Drehzahldifferenz zum Drehfeld bei Nennlast",
+        "Das Verhältnis von Nennstrom zu Anlaufstrom beim direkten Einschalten"
+      ],
+      "answer": 0,
+      "explain": "cos φ = P / S beschreibt die Phasenverschiebung zwischen Strom und Spannung. Der Wirkungsgrad η ist ein eigener Wert auf dem Leistungsschild.",
+      "tags": [
+        "Leistungsschild",
+        "Leistungsfaktor"
+      ]
+    },
+    {
+      "id": "antriebe-008",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Drehstrommotor hat laut Leistungsschild: P = 7,5 kW, U = 400 V, cos φ = 0,85, η = 0,88. Wie groß ist der Nennstrom (Leiterstrom)?",
+      "answer": "14,47 A",
+      "value": 14.47,
+      "unit": "A",
+      "tolerance": 0.03,
+      "explain": "Aufgenommene Wirkleistung: P₁ = P / η = 7500 W / 0,88 ≈ 8523 W. Strom: I = P₁ / (√3 · U · cos φ) = 8523 W / (1,732 · 400 V · 0,85) ≈ 14,47 A.",
+      "tags": [
+        "Leistungsschild",
+        "Leistung"
+      ]
+    },
+    {
+      "id": "antriebe-009",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein Motor mit der Angabe 230/400 V Δ/Y soll am Drehstromnetz 400 V betrieben werden. Wie muss er geschaltet werden?",
+      "options": [
+        "In Dreieck (Δ)",
+        "Wahlweise in Stern oder Dreieck, das spielt keine Rolle",
+        "In Stern (Y)",
+        "Gar nicht, er ist nur für 230-V-Netze geeignet"
+      ],
+      "answer": 2,
+      "explain": "Jeder Wicklungsstrang ist für 230 V ausgelegt. In Sternschaltung liegt an jedem Strang 400 V / √3 ≈ 230 V. In Dreieck läge an jedem Strang 400 V – die Wicklung würde überlastet.",
+      "tags": [
+        "Leistungsschild",
+        "Stern-Dreieck"
+      ]
+    },
+    {
+      "id": "antriebe-010",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welcher Motor kann am 400-V-Drehstromnetz mit einem Stern-Dreieck-Anlauf betrieben werden?",
+      "options": [
+        "Ein Motor mit der Angabe 230/400 V Δ/Y",
+        "Ein Motor mit der Angabe 400/690 V Δ/Y",
+        "Ein Motor mit der Angabe 400 V Y (nur Sternschaltung)",
+        "Jeder Drehstrommotor ab 4 kW, unabhängig von der Spannungsangabe"
+      ],
+      "answer": 1,
+      "explain": "Beim Stern-Dreieck-Anlauf läuft der Motor im Betrieb in Dreieck am 400-V-Netz. Das ist nur mit 400/690 V Δ/Y möglich (Strangspannung 400 V). Ein 230/400-V-Motor würde in Dreieck an 400 V überlastet.",
+      "tags": [
+        "Stern-Dreieck",
+        "Leistungsschild"
+      ]
+    },
+    {
+      "id": "antriebe-011",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Am Klemmbrett eines Drehstrommotors liegen oben W2, U2, V2 und unten U1, V1, W1. Wie werden die Brücken für die Sternschaltung gesetzt?",
+      "options": [
+        "Senkrecht: U1 mit W2, V1 mit U2 und W1 mit V2",
+        "Waagerecht in der unteren Reihe: U1, V1 und W1 werden miteinander verbunden",
+        "Senkrecht: U1 mit U2, V1 mit V2 und W1 mit W2",
+        "Waagerecht in der oberen Reihe: W2, U2 und V2 werden miteinander verbunden"
+      ],
+      "answer": 3,
+      "explain": "Bei Stern werden die drei Wicklungsenden W2, U2, V2 zum Sternpunkt verbunden, das Netz liegt an U1, V1, W1. Die drei senkrechten Brücken U1–W2, V1–U2, W1–V2 ergeben die Dreieckschaltung.",
+      "tags": [
+        "Klemmbrett",
+        "Stern-Dreieck"
+      ]
+    },
+    {
+      "id": "antriebe-012",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie wird die Drehrichtung eines Drehstrom-Asynchronmotors umgekehrt?",
+      "options": [
+        "Durch zyklisches Vertauschen aller drei Außenleiter (L1→L2, L2→L3, L3→L1)",
+        "Durch Umschalten der Wicklung von Stern auf Dreieck",
+        "Durch Vertauschen von Neutralleiter und Schutzleiter",
+        "Durch Vertauschen von zwei Außenleitern"
+      ],
+      "answer": 3,
+      "explain": "Durch Tausch zweier Außenleiter ändert sich die Phasenfolge und damit die Drehrichtung des Drehfeldes. Ein zyklisches Vertauschen aller drei Leiter lässt die Phasenfolge und damit die Drehrichtung unverändert.",
+      "tags": [
+        "Drehrichtung"
+      ]
+    },
+    {
+      "id": "antriebe-013",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Wie ändern sich beim Stern-Dreieck-Anlauf der Netzstrom und das Drehmoment in der Sternstufe im Vergleich zum direkten Einschalten in Dreieck?",
+      "options": [
+        "Anlaufstrom und Anlaufmoment sinken beide auf etwa ein Drittel",
+        "Der Anlaufstrom sinkt auf ein Drittel, das Anlaufmoment bleibt gleich",
+        "Der Anlaufstrom sinkt auf 1/√3, das Anlaufmoment auf ein Drittel",
+        "Anlaufstrom und Anlaufmoment sinken beide auf etwa die Hälfte"
+      ],
+      "answer": 0,
+      "explain": "In Stern liegt an jedem Strang nur die 1/√3-fache Spannung. Der Netzstrom sinkt gegenüber Dreieck insgesamt auf 1/3. Das Moment ist proportional zu U², also (1/√3)² = 1/3. Deshalb eignet sich dieser Anlauf nur für Leer- oder Teillastanlauf.",
+      "tags": [
+        "Stern-Dreieck",
+        "Anlauf"
+      ]
+    },
+    {
+      "id": "antriebe-014",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Wie arbeitet ein Sanftanlaufgerät (Softstarter) bei einem Drehstrom-Asynchronmotor?",
+      "options": [
+        "Es erhöht die Frequenz von 0 bis 50 Hz und hält dabei das Verhältnis U/f konstant",
+        "Es schaltet Anlasswiderstände in den Läuferkreis und überbrückt sie stufenweise",
+        "Es erhöht die Motorspannung über Thyristoren im Phasenanschnitt rampenförmig, die Frequenz bleibt bei 50 Hz",
+        "Es schaltet die Wicklung während des Anlaufs auf eine höhere Polpaarzahl um"
+      ],
+      "answer": 2,
+      "explain": "Der Softstarter verringert Anlaufstrom und Drehmomentstoß durch eine Spannungsrampe. Da die Frequenz gleich bleibt, ist keine Drehzahlverstellung im Betrieb möglich – das kann nur ein Frequenzumrichter.",
+      "tags": [
+        "Sanftanlauf",
+        "Anlauf"
+      ]
+    },
+    {
+      "id": "antriebe-015",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Warum wird bei einem Frequenzumrichter unterhalb der Nennfrequenz die Spannung proportional zur Frequenz verändert (U/f = konstant)?",
+      "options": [
+        "Damit der Motor ohne Schlupf und damit synchron zum Drehfeld läuft",
+        "Damit der magnetische Fluss und damit das verfügbare Drehmoment etwa konstant bleiben",
+        "Damit die Drehzahl über die Nenndrehzahl hinaus gesteigert werden kann",
+        "Damit der Motor keine Blindleistung mehr aus dem Umrichter aufnimmt"
+      ],
+      "answer": 1,
+      "explain": "Der Fluss ist proportional zu U/f. Bliebe bei kleinerer Frequenz die volle Spannung, ginge das Eisen in die Sättigung und der Strom stiege stark an. Bei zu kleiner Spannung sänke dagegen das Drehmoment.",
+      "tags": [
+        "Frequenzumrichter",
+        "U/f-Kennlinie"
+      ]
+    },
+    {
+      "id": "antriebe-016",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Motor mit der Bemessungsspannung 400 V bei 50 Hz wird an einem Frequenzumrichter mit linearer U/f-Kennlinie (ohne Spannungsanhebung/Boost) betrieben. Welche Spannung gibt der Umrichter bei 30 Hz aus?",
+      "answer": "240 V",
+      "value": 240.0,
+      "unit": "V",
+      "tolerance": 0.03,
+      "explain": "U/f = 400 V / 50 Hz = 8 V/Hz. U = 8 V/Hz · 30 Hz = 240 V.",
+      "tags": [
+        "Frequenzumrichter",
+        "U/f-Kennlinie"
+      ]
+    },
+    {
+      "id": "antriebe-017",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Aufgabe hat der Spannungszwischenkreis eines Frequenzumrichters?",
+      "options": [
+        "Er transformiert die Netzspannung mit einem Transformator auf die Motorspannung herunter",
+        "Er glättet und speichert die gleichgerichtete Spannung mit Kondensatoren; daraus erzeugt der Wechselrichter die Ausgangsspannung",
+        "Er begrenzt den Motorstrom, indem er Widerstände in die Motorleitungen schaltet",
+        "Er dient ausschließlich als Überspannungsschutz für das speisende Netz"
+      ],
+      "answer": 1,
+      "explain": "Aufbau eines Umrichters mit Spannungszwischenkreis: Gleichrichter → Gleichspannungszwischenkreis (Kondensatoren) → Wechselrichter (z. B. IGBTs mit Pulsweitenmodulation). Der Zwischenkreis entkoppelt Netz- und Motorseite.",
+      "tags": [
+        "Frequenzumrichter",
+        "Zwischenkreis"
+      ]
+    },
+    {
+      "id": "antriebe-018",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Wozu braucht ein Frequenzumrichter beim schnellen Abbremsen großer Schwungmassen einen Bremswiderstand?",
+      "answer": "Beim Bremsen arbeitet der Motor als Generator und speist Energie in den Zwischenkreis zurück, dessen Spannung steigt. Der Bremschopper schaltet dann den Bremswiderstand zu, der die Energie in Wärme umwandelt.",
+      "keywords": [
+        "generator",
+        "zwischenkreis",
+        "wärme"
+      ],
+      "explain": "Ohne Bremswiderstand (oder Rückspeiseeinheit) würde der Umrichter wegen Überspannung im Zwischenkreis abschalten und der Antrieb austrudeln.",
+      "tags": [
+        "Frequenzumrichter",
+        "Bremswiderstand"
+      ]
+    },
+    {
+      "id": "antriebe-019",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein eigenbelüfteter Normmotor (Lüfterrad auf der Motorwelle) soll am Frequenzumrichter längere Zeit mit 10 Hz und Nennmoment laufen. Welches Problem tritt auf?",
+      "options": [
+        "Die Drehrichtung des Motors kehrt sich bei niedriger Frequenz von selbst um",
+        "Der Motor nimmt bei 10 Hz praktisch keinen Strom mehr auf",
+        "Der Schlupf wird null, sodass der Motor kein Drehmoment mehr entwickelt",
+        "Die Kühlung reicht nicht mehr aus, weil der Lüfter langsamer dreht – der Motor kann überhitzen"
+      ],
+      "answer": 3,
+      "explain": "Bei kleiner Drehzahl sinkt die Kühlluftmenge stark, während für das Nennmoment weiterhin etwa der Nennstrom fließt. Abhilfe: Fremdlüfter, größerer Motor oder reduziertes Moment; ein Kaltleiter in der Wicklung schützt zusätzlich.",
+      "tags": [
+        "Frequenzumrichter",
+        "Kühlung"
+      ]
+    },
+    {
+      "id": "antriebe-020",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Motor gibt bei einer Drehzahl von 1460 1/min eine mechanische Leistung von 11 kW ab. Wie groß ist das Drehmoment an der Welle?",
+      "answer": "71,95 Nm",
+      "value": 71.95,
+      "unit": "Nm",
+      "tolerance": 0.03,
+      "explain": "Winkelgeschwindigkeit: ω = 2 · π · n = 2 · π · 1460 / 60 s ≈ 152,9 1/s. Drehmoment: M = P / ω = 11 000 W / 152,9 1/s ≈ 71,95 Nm (Faustformel: M = 9550 · P[kW] / n[1/min]).",
+      "tags": [
+        "Drehmoment"
+      ]
+    },
+    {
+      "id": "antriebe-021",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Auslöser enthält ein Motorschutzschalter üblicherweise?",
+      "options": [
+        "Einen thermischen Überlastauslöser (Bimetall) und einen elektromagnetischen Kurzschlussauslöser",
+        "Nur einen elektromagnetischen Kurzschlussauslöser ohne Überlastschutz",
+        "Einen Fehlerstromauslöser und einen Überspannungsauslöser",
+        "Nur einen Kaltleiter-Eingang für die Überwachung der Wicklungstemperatur"
+      ],
+      "answer": 0,
+      "explain": "Der Bimetallauslöser schützt stromabhängig verzögert gegen Überlast, der magnetische Auslöser schaltet bei Kurzschluss unverzögert ab. Der Überlastauslöser wird auf den Motornennstrom eingestellt.",
+      "tags": [
+        "Motorschutz"
+      ]
+    },
+    {
+      "id": "antriebe-022",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Auf welchen Wert wird das thermische Überlastrelais eines direkt eingeschalteten Motors eingestellt?",
+      "options": [
+        "Auf den Bemessungsstrom der vorgeschalteten Sicherung",
+        "Auf den Anlaufstrom des Motors",
+        "Auf den Motornennstrom laut Leistungsschild",
+        "Auf das Doppelte des Motornennstroms"
+      ],
+      "answer": 2,
+      "explain": "Das Überlastrelais schützt die Wicklung gegen zu hohen Dauerstrom und wird deshalb auf den Nennstrom eingestellt. Den kurzzeitigen Anlaufstrom überbrückt die Trägheit des Bimetalls. (Sonderfall Stern-Dreieck mit Relais im Wicklungsstrang: 0,58 · I_N.)",
+      "tags": [
+        "Motorschutz",
+        "Überlastrelais"
+      ]
+    },
+    {
+      "id": "antriebe-023",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welchen Vorteil bietet ein Kaltleiter-Motorschutz (PTC-Fühler in der Wicklung mit Auslösegerät) gegenüber einem reinen Überlastrelais?",
+      "options": [
+        "Er schützt die Zuleitung zusätzlich gegen Kurzschluss und ersetzt damit die Sicherung",
+        "Er begrenzt den Anlaufstrom des Motors auf etwa ein Drittel",
+        "Er erfasst die Wicklungstemperatur direkt und schützt auch bei behinderter Kühlung oder hoher Umgebungstemperatur",
+        "Er ersetzt den Fehlerstromschutzschalter (RCD) im Motorstromkreis"
+      ],
+      "answer": 2,
+      "explain": "Ein Überlastrelais misst nur den Strom. Der Kaltleiter erhöht beim Erreichen seiner Nennansprechtemperatur seinen Widerstand sprunghaft; das Auslösegerät schaltet dann ab – unabhängig davon, warum die Wicklung zu heiß wurde.",
+      "tags": [
+        "Motorschutz",
+        "Kaltleiter"
+      ]
+    },
+    {
+      "id": "antriebe-024",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein Hilfskontakt eines Schützes trägt die Anschlussbezeichnung 13–14. Um welche Kontaktart handelt es sich?",
+      "options": [
+        "Öffner",
+        "Schließer",
+        "Wechsler",
+        "Hauptkontakt für den Laststromkreis"
+      ],
+      "answer": 1,
+      "explain": "Bei Hilfskontakten ist die erste Ziffer die Ordnungsziffer, die zweite die Funktionsziffer: 3–4 = Schließer, 1–2 = Öffner (z. B. 21–22). Hauptkontakte sind einstellig mit 1–2, 3–4, 5–6 bezeichnet.",
+      "tags": [
+        "Schütz",
+        "Kontakte"
+      ]
+    },
+    {
+      "id": "antriebe-025",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Warum müssen die beiden Schütze einer Wendeschützschaltung gegeneinander verriegelt werden?",
+      "answer": "Damit nie beide Schütze gleichzeitig anziehen können; sonst entstünde über die Hauptkontakte ein Kurzschluss zwischen zwei Außenleitern.",
+      "keywords": [
+        "gleichzeitig",
+        "kurzschluss"
+      ],
+      "explain": "Üblich ist die Schützverriegelung (Öffner des jeweils anderen Schützes im Spulenstromkreis), oft ergänzt durch Tasterverriegelung und eine mechanische Verriegelung.",
+      "tags": [
+        "Schütz",
+        "Verriegelung"
+      ]
+    },
+    {
+      "id": "antriebe-026",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Wie kehrt man die Drehrichtung eines fremderregten Gleichstrommotors um?",
+      "options": [
+        "Durch gleichzeitiges Umpolen von Anker- und Erregerspannung",
+        "Durch Verringern des Erregerstroms",
+        "Durch Vertauschen von zwei Außenleitern der Zuleitung",
+        "Durch Umpolen der Ankerspannung bei gleichbleibender Erregung"
+      ],
+      "answer": 3,
+      "explain": "Die Drehrichtung hängt von der Richtung des Ankerstroms und des Erregerfeldes ab. Wird nur eines von beiden umgepolt, dreht der Motor andersherum; werden beide umgepolt, bleibt die Drehrichtung gleich. Weniger Erregerstrom erhöht die Drehzahl (Feldschwächung).",
+      "tags": [
+        "Gleichstrommotor",
+        "Drehrichtung"
+      ]
+    },
+    {
+      "id": "antriebe-027",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Schrittmotor hat einen Schrittwinkel von 1,8° (Vollschritt). Wie viele Vollschritte braucht er für eine Umdrehung?",
+      "options": [
+        "200",
+        "180",
+        "360",
+        "100"
+      ],
+      "answer": 0,
+      "explain": "Schritte pro Umdrehung = 360° / 1,8° = 200. Im Halbschrittbetrieb wären es 400.",
+      "tags": [
+        "Schrittmotor"
+      ]
+    },
+    {
+      "id": "antriebe-028",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was ist der wesentliche Unterschied zwischen einem Schrittmotor- und einem Servoantrieb bei der Positionierung?",
+      "answer": "Der Schrittmotor wird meist gesteuert betrieben: Die Position ergibt sich aus der Zahl der Schritte, Schrittverluste bleiben ohne Geber unbemerkt. Der Servoantrieb arbeitet im geschlossenen Regelkreis mit einem Geber (Encoder/Resolver), der Lage und Drehzahl zurückmeldet.",
+      "keywords": [
+        "geber",
+        "regel",
+        "schritt"
+      ],
+      "explain": "Servoantriebe sind dynamischer und kurzzeitig überlastfähig; Schrittmotoren sind einfach und günstig, verlieren bei Überlast aber Schritte.",
+      "tags": [
+        "Servomotor",
+        "Schrittmotor"
+      ]
+    },
+    {
+      "id": "antriebe-029",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein Getriebe hat die Übersetzung i = 10 (ins Langsame). Was gilt – verlustfrei betrachtet – an der Abtriebswelle im Vergleich zur Antriebswelle?",
+      "options": [
+        "Drehzahl zehnfach, Drehmoment ein Zehntel",
+        "Drehzahl ein Zehntel, Drehmoment zehnfach",
+        "Drehzahl ein Zehntel, Drehmoment unverändert",
+        "Drehzahl und Drehmoment jeweils ein Zehntel"
+      ],
+      "answer": 1,
+      "explain": "i = n_an / n_ab. Da die Leistung P = M · ω ohne Verluste gleich bleibt, steigt das Moment im selben Verhältnis, wie die Drehzahl sinkt: M_ab = M_an · i.",
+      "tags": [
+        "Getriebe"
+      ]
+    },
+    {
+      "id": "antriebe-030",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Getriebemotor hat eine Motordrehzahl von 1440 1/min und ein Motormoment von 26 Nm. Die Getriebeübersetzung beträgt i = 8, der Getriebewirkungsgrad η = 0,95. Wie groß ist das Drehmoment an der Abtriebswelle?",
+      "answer": "197,6 Nm",
+      "value": 197.6,
+      "unit": "Nm",
+      "tolerance": 0.03,
+      "explain": "M₂ = M₁ · i · η = 26 Nm · 8 · 0,95 = 197,6 Nm. (Abtriebsdrehzahl zum Vergleich: n₂ = 1440 / 8 = 180 1/min.)",
+      "tags": [
+        "Getriebe",
+        "Drehmoment"
+      ]
+    }
+  ]
+}

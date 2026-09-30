@@ -46,9 +46,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+}
+kotlin {
+    compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
 }
 
 dependencies {
@@ -58,5 +58,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.3.0")
     // Android Auto (Jarvis-Bildschirm im Auto)
     implementation("androidx.car.app:app:1.4.0")
+    // Handy-KI: Gemma 4 direkt auf dem Handy (LiteRT-LM, Nachfolger von MediaPipe LLM Inference)
+    implementation("com.google.ai.edge.litertlm:litertlm-android:0.17.1")
 }
 // Build-Auslöser: 2

@@ -1,0 +1,538 @@
+{
+  "topic": "wechselstrom",
+  "title": "Wechsel- und Drehstrom",
+  "icon": "〰️",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "wechselstrom-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Die Netzspannung beträgt 230 V (Effektivwert). Wie groß ist ihr Scheitelwert ungefähr?",
+      "options": [
+        "163 V",
+        "230 V",
+        "325 V",
+        "400 V"
+      ],
+      "answer": 2,
+      "explain": "Bei Sinusgrößen gilt û = √2 · U = 1,414 · 230 V ≈ 325 V. 163 V entsteht durch fälschliches Teilen durch √2.",
+      "tags": [
+        "Effektivwert",
+        "Scheitelwert"
+      ]
+    },
+    {
+      "id": "wechselstrom-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Eine Wechselspannung hat eine Periodendauer von 2 ms. Wie groß ist ihre Frequenz?",
+      "options": [
+        "500 Hz",
+        "50 Hz",
+        "200 Hz",
+        "5 kHz"
+      ],
+      "answer": 0,
+      "explain": "f = 1 / T = 1 / 0,002 s = 500 Hz.",
+      "tags": [
+        "Frequenz"
+      ]
+    },
+    {
+      "id": "wechselstrom-003",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie groß ist die Periodendauer einer Wechselspannung mit 50 Hz?",
+      "options": [
+        "2 ms",
+        "20 ms",
+        "50 ms",
+        "200 ms"
+      ],
+      "answer": 1,
+      "explain": "T = 1 / f = 1 / 50 Hz = 0,02 s = 20 ms.",
+      "tags": [
+        "Periodendauer"
+      ]
+    },
+    {
+      "id": "wechselstrom-004",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie ändert sich der induktive Blindwiderstand einer Spule, wenn die Frequenz verdoppelt wird?",
+      "options": [
+        "Er halbiert sich",
+        "Er bleibt gleich",
+        "Er vervierfacht sich",
+        "Er verdoppelt sich"
+      ],
+      "answer": 3,
+      "explain": "X_L = 2 · π · f · L. Der induktive Blindwiderstand ist proportional zur Frequenz.",
+      "tags": [
+        "Blindwiderstand",
+        "Spule"
+      ]
+    },
+    {
+      "id": "wechselstrom-005",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie ändert sich der kapazitive Blindwiderstand eines Kondensators, wenn die Frequenz steigt?",
+      "options": [
+        "Er sinkt",
+        "Er steigt",
+        "Er bleibt gleich",
+        "Er steigt quadratisch"
+      ],
+      "answer": 0,
+      "explain": "X_C = 1 / (2 · π · f · C). Der kapazitive Blindwiderstand ist umgekehrt proportional zur Frequenz; bei Gleichspannung (f = 0) sperrt der Kondensator.",
+      "tags": [
+        "Blindwiderstand",
+        "Kondensator"
+      ]
+    },
+    {
+      "id": "wechselstrom-006",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welche Phasenlage besteht an einer idealen Spule zwischen Strom und Spannung?",
+      "options": [
+        "Strom und Spannung sind phasengleich",
+        "Der Strom eilt der Spannung um 90° voraus",
+        "Der Strom eilt der Spannung um 90° nach",
+        "Der Strom eilt der Spannung um 180° nach"
+      ],
+      "answer": 2,
+      "explain": "An der idealen Induktivität eilt der Strom der Spannung um 90° nach (Merksatz: „Bei Induktivitäten die Ströme sich verspäten“).",
+      "tags": [
+        "Phasenverschiebung",
+        "Spule"
+      ]
+    },
+    {
+      "id": "wechselstrom-007",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welche Phasenlage besteht an einem idealen Kondensator zwischen Strom und Spannung?",
+      "options": [
+        "Strom und Spannung sind phasengleich",
+        "Der Strom eilt der Spannung um 90° voraus",
+        "Der Strom eilt der Spannung um 90° nach",
+        "Die Spannung eilt dem Strom um 180° voraus"
+      ],
+      "answer": 1,
+      "explain": "Am idealen Kondensator eilt der Strom der Spannung um 90° voraus, denn der Ladestrom ist am größten, wenn sich die Spannung am schnellsten ändert.",
+      "tags": [
+        "Phasenverschiebung",
+        "Kondensator"
+      ]
+    },
+    {
+      "id": "wechselstrom-008",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Zuordnung von Leistungsart und Einheit ist richtig?",
+      "options": [
+        "Wirkleistung in VA, Blindleistung in W, Scheinleistung in var",
+        "Wirkleistung in var, Blindleistung in VA, Scheinleistung in W",
+        "Wirkleistung in W, Blindleistung in VA, Scheinleistung in var",
+        "Wirkleistung in W, Blindleistung in var, Scheinleistung in VA"
+      ],
+      "answer": 3,
+      "explain": "Wirkleistung P in Watt (W), Blindleistung Q in Voltampere reaktiv (var), Scheinleistung S in Voltampere (VA).",
+      "tags": [
+        "Leistung",
+        "Einheiten"
+      ]
+    },
+    {
+      "id": "wechselstrom-009",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welcher Zusammenhang gilt zwischen Schein-, Wirk- und Blindleistung bei sinusförmigen Größen?",
+      "options": [
+        "S = P + Q",
+        "S² = P² + Q²",
+        "S = P · Q",
+        "S = P − Q"
+      ],
+      "answer": 1,
+      "explain": "Wirk- und Blindleistung stehen im Leistungsdreieck senkrecht aufeinander, die Scheinleistung ist die Hypotenuse: S = √(P² + Q²). Einfaches Addieren ist ein typischer Fehler.",
+      "tags": [
+        "Leistungsdreieck"
+      ]
+    },
+    {
+      "id": "wechselstrom-010",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie ist der Leistungsfaktor cos φ bei sinusförmigen Größen definiert?",
+      "options": [
+        "cos φ = P / S",
+        "cos φ = Q / S",
+        "cos φ = S / P",
+        "cos φ = Q / P"
+      ],
+      "answer": 0,
+      "explain": "cos φ = Wirkleistung / Scheinleistung. Q / S ist sin φ, Q / P ist tan φ.",
+      "tags": [
+        "cos φ"
+      ]
+    },
+    {
+      "id": "wechselstrom-011",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Womit wird die Blindleistung einer induktiven Last, z. B. von Motoren, üblicherweise kompensiert?",
+      "options": [
+        "Mit einer Drosselspule in Reihe zur Last",
+        "Mit einem ohmschen Widerstand parallel zur Last",
+        "Mit Kondensatoren parallel zur Last",
+        "Mit einem Gleichrichter vor der Last"
+      ],
+      "answer": 2,
+      "explain": "Kondensatoren nehmen kapazitive Blindleistung auf, die der induktiven Blindleistung entgegengesetzt ist. Parallel geschaltet decken sie den Blindleistungsbedarf der Last vor Ort, die Zuleitung wird entlastet.",
+      "tags": [
+        "Kompensation"
+      ]
+    },
+    {
+      "id": "wechselstrom-012",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Eine Motoranlage wird mit Kondensatoren von cos φ = 0,7 auf cos φ = 0,95 kompensiert. Welche Aussage ist richtig?",
+      "options": [
+        "Die Wirkleistung der Motoren steigt",
+        "Die Drehzahl der Motoren steigt",
+        "Der Strom in den Motorwicklungen sinkt",
+        "Der Strom in der Zuleitung sinkt bei gleicher Wirkleistung"
+      ],
+      "answer": 3,
+      "explain": "Die Kompensation verringert die Blindleistung, die über das Netz übertragen wird. Scheinleistung und Zuleitungsstrom sinken; Wirkleistung, Drehzahl und der Strom im Motor selbst bleiben unverändert.",
+      "tags": [
+        "Kompensation",
+        "cos φ"
+      ]
+    },
+    {
+      "id": "wechselstrom-013",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein Verbraucher in Sternschaltung liegt am 400-V-Drehstromnetz. Welche Spannung liegt an jedem Strang?",
+      "options": [
+        "230 V",
+        "400 V",
+        "693 V",
+        "133 V"
+      ],
+      "answer": 0,
+      "explain": "In Sternschaltung gilt U_Strang = U_Leiter / √3 = 400 V / 1,732 ≈ 230 V.",
+      "tags": [
+        "Sternschaltung"
+      ]
+    },
+    {
+      "id": "wechselstrom-014",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein Verbraucher in Dreieckschaltung liegt am 400-V-Drehstromnetz. Welche Spannung liegt an jedem Strang?",
+      "options": [
+        "230 V",
+        "400 V",
+        "693 V",
+        "133 V"
+      ],
+      "answer": 1,
+      "explain": "In Dreieckschaltung liegt jeder Strang direkt zwischen zwei Außenleitern, also an der vollen Leiterspannung von 400 V.",
+      "tags": [
+        "Dreieckschaltung"
+      ]
+    },
+    {
+      "id": "wechselstrom-015",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welcher Zusammenhang gilt bei symmetrischer Dreieckschaltung zwischen Leiterstrom und Strangstrom?",
+      "options": [
+        "I_Leiter = I_Strang",
+        "I_Leiter = I_Strang / √3",
+        "I_Leiter = √3 · I_Strang",
+        "I_Leiter = 3 · I_Strang"
+      ],
+      "answer": 2,
+      "explain": "Im Dreieck teilt sich jeder Leiterstrom auf zwei Stränge auf; durch die Phasenverschiebung von 120° gilt I_Leiter = √3 · I_Strang. In Sternschaltung sind Leiter- und Strangstrom gleich.",
+      "tags": [
+        "Dreieckschaltung"
+      ]
+    },
+    {
+      "id": "wechselstrom-016",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Wie groß ist der Strom im Neutralleiter bei symmetrischer, linearer Belastung einer Sternschaltung?",
+      "options": [
+        "Dreimal so groß wie ein Leiterstrom",
+        "Gleich einem Leiterstrom",
+        "√3-mal so groß wie ein Leiterstrom",
+        "Null"
+      ],
+      "answer": 3,
+      "explain": "Die drei gleich großen, um 120° verschobenen Ströme heben sich im Sternpunkt auf, der Neutralleiter ist stromlos. Erst bei unsymmetrischer Last (oder Oberschwingungen nichtlinearer Verbraucher) fließt ein N-Leiterstrom.",
+      "tags": [
+        "Neutralleiter",
+        "Sternschaltung"
+      ]
+    },
+    {
+      "id": "wechselstrom-017",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Auf welchen Anteil sinken Netzanlaufstrom und Anlaufmoment beim Stern-Dreieck-Anlauf im Vergleich zum direkten Einschalten in Dreieck?",
+      "options": [
+        "auf etwa 1/3",
+        "auf etwa 1/√3 (ca. 58 %)",
+        "auf etwa 1/2",
+        "Sie bleiben gleich"
+      ],
+      "answer": 0,
+      "explain": "In Sternschaltung liegt an jeder Wicklung nur die um √3 kleinere Spannung. Strangstrom und Leistung sinken, der Netzstrom geht auf 1/3 und das Moment (∼ U²) ebenfalls auf 1/3 zurück.",
+      "tags": [
+        "Stern-Dreieck-Anlauf"
+      ]
+    },
+    {
+      "id": "wechselstrom-018",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Auf dem Leistungsschild eines Drehstrommotors steht „Δ/Y 230/400 V“. Wie wird er am 400-V-Drehstromnetz geschaltet?",
+      "options": [
+        "In Dreieck",
+        "In Stern",
+        "Wahlweise, beide Schaltungen sind gleichwertig",
+        "Er ist für dieses Netz nicht geeignet"
+      ],
+      "answer": 1,
+      "explain": "Jede Wicklung ist für 230 V ausgelegt. Am 400-V-Netz liegt in Sternschaltung 400 V / √3 = 230 V am Strang an. In Dreieck bekäme die Wicklung 400 V und würde überlastet.",
+      "tags": [
+        "Motor",
+        "Sternschaltung"
+      ]
+    },
+    {
+      "id": "wechselstrom-019",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Drei gleiche Heizwiderstände am 400-V-Netz werden von Stern auf Dreieck umgeschaltet. Wie ändert sich die Gesamtleistung?",
+      "options": [
+        "Sie bleibt gleich",
+        "Sie steigt auf das √3-Fache",
+        "Sie steigt auf das Dreifache",
+        "Sie sinkt auf ein Drittel"
+      ],
+      "answer": 2,
+      "explain": "Die Strangspannung steigt von 230 V auf 400 V, also um √3. Wegen P = U² / R steigt die Leistung um (√3)² = 3.",
+      "tags": [
+        "Drehstromleistung"
+      ]
+    },
+    {
+      "id": "wechselstrom-020",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein idealer Transformator hat N₁ = 1200 und N₂ = 72 Windungen. Primär liegen 400 V an. Wie groß ist die Sekundärspannung im Leerlauf?",
+      "options": [
+        "6667 V",
+        "48 V",
+        "12 V",
+        "24 V"
+      ],
+      "answer": 3,
+      "explain": "U₁ / U₂ = N₁ / N₂ → U₂ = U₁ · N₂ / N₁ = 400 V · 72 / 1200 = 24 V. Das Übersetzungsverhältnis beträgt ü = 1200 / 72 ≈ 16,7.",
+      "tags": [
+        "Transformator"
+      ]
+    },
+    {
+      "id": "wechselstrom-021",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Warum kann ein Transformator keine Gleichspannung übertragen?",
+      "options": [
+        "Weil Gleichstrom den Eisenkern dauerhaft entmagnetisiert",
+        "Weil ein konstanter Strom kein sich änderndes Magnetfeld erzeugt und daher keine Spannung induziert wird",
+        "Weil die Primärwicklung für Gleichstrom einen unendlich großen Widerstand hat",
+        "Weil die Isolation der Wicklungen nur für Wechselspannung ausgelegt ist"
+      ],
+      "answer": 1,
+      "explain": "Induktion setzt eine Änderung des magnetischen Flusses voraus. Bei Gleichstrom ist der Fluss konstant; zudem würde nur der kleine Wicklungswiderstand den Strom begrenzen und die Primärwicklung überlasten.",
+      "tags": [
+        "Transformator"
+      ]
+    },
+    {
+      "id": "wechselstrom-022",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Eine Spule mit L = 0,4 H (Wicklungswiderstand vernachlässigbar) liegt an 230 V / 50 Hz. Wie groß ist der Strom?",
+      "answer": "1,83 A",
+      "value": 1.83,
+      "unit": "A",
+      "tolerance": 0.03,
+      "explain": "X_L = 2 · π · f · L = 2 · π · 50 Hz · 0,4 H ≈ 125,7 Ω. I = U / X_L = 230 V / 125,7 Ω ≈ 1,83 A.",
+      "tags": [
+        "Blindwiderstand",
+        "Spule"
+      ]
+    },
+    {
+      "id": "wechselstrom-023",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Wie groß ist der kapazitive Blindwiderstand eines Kondensators mit C = 10 µF bei 50 Hz?",
+      "answer": "318,3 Ω",
+      "value": 318.3,
+      "unit": "Ω",
+      "tolerance": 0.03,
+      "explain": "X_C = 1 / (2 · π · f · C) = 1 / (2 · π · 50 Hz · 10 · 10⁻⁶ F) ≈ 318,3 Ω.",
+      "tags": [
+        "Blindwiderstand",
+        "Kondensator"
+      ]
+    },
+    {
+      "id": "wechselstrom-024",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Wechselstrommotor nimmt an 230 V einen Strom von 6 A auf, cos φ = 0,8. Wie groß ist die Blindleistung?",
+      "answer": "828 var",
+      "value": 828.0,
+      "unit": "var",
+      "tolerance": 0.03,
+      "explain": "S = U · I = 230 V · 6 A = 1380 VA. sin φ = √(1 − 0,8²) = 0,6. Q = S · sin φ = 1380 VA · 0,6 = 828 var (Wirkleistung P = 1104 W).",
+      "tags": [
+        "Blindleistung"
+      ]
+    },
+    {
+      "id": "wechselstrom-025",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Drehstrommotor am 400-V-Netz gibt 7,5 kW mechanische Leistung ab. Wirkungsgrad η = 0,88, cos φ = 0,85. Wie groß ist der Leiterstrom?",
+      "answer": "14,47 A",
+      "value": 14.47,
+      "unit": "A",
+      "tolerance": 0.03,
+      "explain": "P_zu = P_ab / η = 7500 W / 0,88 ≈ 8523 W. I = P_zu / (√3 · U · cos φ) = 8523 W / (1,732 · 400 V · 0,85) ≈ 14,47 A.",
+      "tags": [
+        "Drehstromleistung",
+        "Motor"
+      ]
+    },
+    {
+      "id": "wechselstrom-026",
+      "type": "calc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Eine Anlage nimmt 10 kW Wirkleistung bei cos φ₁ = 0,7 auf und soll auf cos φ₂ = 0,95 kompensiert werden. Welche kapazitive Blindleistung ist nötig (in kvar)?",
+      "answer": "6,92 kvar",
+      "value": 6.92,
+      "unit": "kvar",
+      "tolerance": 0.03,
+      "explain": "tan φ₁ = tan(arccos 0,7) ≈ 1,020; tan φ₂ = tan(arccos 0,95) ≈ 0,329. Q_C = P · (tan φ₁ − tan φ₂) = 10 kW · (1,020 − 0,329) ≈ 6,92 kvar.",
+      "tags": [
+        "Kompensation"
+      ]
+    },
+    {
+      "id": "wechselstrom-027",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was versteht man unter dem Effektivwert einer Wechselspannung?",
+      "answer": "Der Effektivwert ist der Wert, bei dem eine Wechselspannung in einem ohmschen Widerstand die gleiche Wärmewirkung erzeugt wie eine gleich große Gleichspannung.",
+      "keywords": [
+        "wärme",
+        "gleich"
+      ],
+      "explain": "Bei Sinusgrößen gilt U = û / √2. Messgeräte und Typenschilder geben üblicherweise Effektivwerte an (z. B. 230 V).",
+      "tags": [
+        "Effektivwert"
+      ]
+    },
+    {
+      "id": "wechselstrom-028",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Warum wird in Industrieanlagen die Blindleistung kompensiert?",
+      "answer": "Blindleistung belastet Leitungen, Transformatoren und Generatoren mit zusätzlichem Strom; die Kompensation senkt den Strom, die Verluste und die Kosten für Blindarbeit.",
+      "keywords": [
+        "strom",
+        "verlust"
+      ],
+      "explain": "Netzbetreiber verlangen einen Mindest-Leistungsfaktor und berechnen darüber hinausgehende Blindarbeit. Kleinere Ströme erlauben außerdem kleinere Querschnitte und verringern den Spannungsfall.",
+      "tags": [
+        "Kompensation"
+      ]
+    },
+    {
+      "id": "wechselstrom-029",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Spannung liegt am 400-V-Drehstromnetz an einem Strang in Stern- und in Dreieckschaltung?",
+      "answer": "In Sternschaltung liegen am Strang 230 V (Leiterspannung geteilt durch √3), in Dreieckschaltung die volle Leiterspannung von 400 V.",
+      "keywords": [
+        "230",
+        "400"
+      ],
+      "explain": "Stern: U_Strang = U_Leiter / √3, I_Leiter = I_Strang. Dreieck: U_Strang = U_Leiter, I_Leiter = √3 · I_Strang.",
+      "tags": [
+        "Sternschaltung",
+        "Dreieckschaltung"
+      ]
+    },
+    {
+      "id": "wechselstrom-030",
+      "type": "open",
+      "level": 2,
+      "part": "AP1",
+      "q": "Warum besteht der Eisenkern eines Transformators aus gegeneinander isolierten Blechen?",
+      "answer": "Die isolierten Bleche unterbrechen die Strombahnen im Kern und verringern so die Wirbelströme und damit die Wirbelstromverluste.",
+      "keywords": [
+        "wirbelstr",
+        "verlust"
+      ],
+      "explain": "Ein massiver Kern würde sich durch Wirbelströme stark erwärmen. Die Hystereseverluste werden durch weichmagnetisches Kernmaterial klein gehalten.",
+      "tags": [
+        "Transformator"
+      ]
+    }
+  ]
+}

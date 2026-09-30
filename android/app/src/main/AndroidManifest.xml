@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Handy-KI (LiteRT-LM): falls die Bibliothek ein höheres Mindest-Android verlangt, wird sie erst ab dort benutzt -->
+    <uses-sdk tools:overrideLibrary="com.google.ai.edge.litertlm" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -53,6 +57,10 @@
         android:label="Zweites Gehirn"
         android:theme="@style/ZG"
         android:usesCleartextTraffic="false">
+
+        <!-- Handy-KI auf dem Grafikchip (GPU) -->
+        <uses-native-library android:name="libvndksupport.so" android:required="false" />
+        <uses-native-library android:name="libOpenCL.so" android:required="false" />
 
         <activity
             android:name=".MainActivity"

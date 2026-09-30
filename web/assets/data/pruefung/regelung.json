@@ -1,0 +1,541 @@
+{
+  "topic": "regelung",
+  "title": "Regelungstechnik",
+  "icon": "🎛️",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "regelung-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was kennzeichnet eine Regelung im Unterschied zu einer Steuerung?",
+      "options": [
+        "Die Stellgröße wird nur nach festen Zeiten geändert, ohne Rückmeldung",
+        "Die Regelgröße wird fortlaufend gemessen, mit der Führungsgröße verglichen und zurückgeführt (geschlossener Wirkungskreis)",
+        "Eine Regelung kommt ohne Stellglied aus",
+        "Eine Regelung wirkt nur auf vorher bekannte Störgrößen"
+      ],
+      "answer": 1,
+      "explain": "Bei der Regelung wirkt das Ergebnis über die Messung wieder auf den Regler zurück – dadurch werden auch unbekannte Störungen ausgeglichen. Die Steuerung ist eine offene Wirkungskette ohne Rückführung.",
+      "tags": [
+        "Steuern/Regeln"
+      ]
+    },
+    {
+      "id": "regelung-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welches der folgenden Beispiele ist eine Steuerung und keine Regelung?",
+      "options": [
+        "Ein Thermostat hält die Raumtemperatur auf 21 °C",
+        "Ein Tempomat hält die Geschwindigkeit eines Autos konstant",
+        "Eine Pumpe hält den gemessenen Füllstand eines Behälters konstant",
+        "Ein Rollladen fährt per Zeitschaltuhr um 20 Uhr herunter"
+      ],
+      "answer": 3,
+      "explain": "Beim Rollladen wird nicht gemessen, ob das gewünschte Ergebnis erreicht ist – es gibt keine Rückführung. Bei den anderen Beispielen wird die Regelgröße gemessen und nachgeführt.",
+      "tags": [
+        "Steuern/Regeln"
+      ]
+    },
+    {
+      "id": "regelung-003",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie heißt die Größe, die in einem Regelkreis gemessen und auf einen gewünschten Wert gebracht bzw. gehalten werden soll?",
+      "options": [
+        "Regelgröße x",
+        "Führungsgröße w",
+        "Stellgröße y",
+        "Störgröße z"
+      ],
+      "answer": 0,
+      "explain": "Die Regelgröße x ist der Istwert (z. B. Temperatur, Füllstand, Drehzahl). Die Führungsgröße w gibt den Sollwert vor, die Stellgröße y ist die Ausgangsgröße des Reglers.",
+      "tags": [
+        "Begriffe"
+      ]
+    },
+    {
+      "id": "regelung-004",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie wird die Regeldifferenz e berechnet?",
+      "options": [
+        "e = x − w",
+        "e = y − x",
+        "e = w − x",
+        "e = w + z"
+      ],
+      "answer": 2,
+      "explain": "Die Regeldifferenz ist Führungsgröße (Sollwert) minus Regelgröße (Istwert). Ist der Istwert zu klein, ist e positiv und der Regler erhöht in der Regel die Stellgröße.",
+      "tags": [
+        "Begriffe"
+      ]
+    },
+    {
+      "id": "regelung-005",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Bei einer Raumtemperaturregelung verstellt der Regler das Heizungsventil. Was ist hier die Stellgröße?",
+      "options": [
+        "Die gemessene Raumtemperatur",
+        "Die am Thermostat eingestellte Solltemperatur",
+        "Das Stellsignal an das Heizungsventil (Ventilstellung)",
+        "Die Außentemperatur"
+      ],
+      "answer": 2,
+      "explain": "Die Stellgröße y ist die Ausgangsgröße des Reglers, die über das Stellglied (Ventil) auf die Strecke wirkt. Raumtemperatur = Regelgröße, Solltemperatur = Führungsgröße, Außentemperatur = Störgröße.",
+      "tags": [
+        "Begriffe",
+        "Temperatur"
+      ]
+    },
+    {
+      "id": "regelung-006",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Bei einer Füllstandsregelung wird das Zulaufventil verstellt und der Füllstand gemessen. Der Abfluss hängt von wechselnden Verbrauchern ab. Was ist die Störgröße?",
+      "options": [
+        "Die schwankende Abflussmenge durch die Verbraucher",
+        "Der gemessene Füllstand",
+        "Die Stellung des Zulaufventils",
+        "Der gewünschte Füllstand"
+      ],
+      "answer": 0,
+      "explain": "Störgrößen wirken von außen ungewollt auf die Regelstrecke. Der Füllstand ist die Regelgröße, die Ventilstellung die Stellgröße, der gewünschte Füllstand die Führungsgröße.",
+      "tags": [
+        "Begriffe",
+        "Füllstand"
+      ]
+    },
+    {
+      "id": "regelung-007",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Regelstrecke zeigt typisch I-Verhalten (Strecke ohne Ausgleich)?",
+      "options": [
+        "Die Temperatur eines beheizten Raums",
+        "Die Drehzahl eines Motors bei konstanter Belastung",
+        "Die Spannung an einem Spannungsteiler",
+        "Der Füllstand eines Behälters, dessen Abfluss von einer Pumpe mit konstantem Förderstrom bestimmt wird"
+      ],
+      "answer": 3,
+      "explain": "Ist der Zufluss größer als der konstante Abfluss, steigt der Füllstand immer weiter, ohne sich auf einen neuen Beharrungswert einzustellen – die Strecke integriert. Die anderen Strecken erreichen einen neuen Endwert (mit Ausgleich).",
+      "tags": [
+        "Regelstrecken",
+        "I-Strecke"
+      ]
+    },
+    {
+      "id": "regelung-008",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Eine PT1-Strecke mit der Zeitkonstante T erhält einen Eingangssprung. Welchen Anteil ihrer gesamten Änderung hat die Ausgangsgröße nach der Zeit t = T erreicht?",
+      "options": [
+        "ca. 37 %",
+        "ca. 63 %",
+        "ca. 50 %",
+        "ca. 99 %"
+      ],
+      "answer": 1,
+      "explain": "Für die PT1-Sprungantwort gilt x(t) = x∞ · (1 − e^(−t/T)). Bei t = T ergibt sich 1 − e^(−1) ≈ 0,63. Nach etwa 5 T ist der Endwert praktisch (> 99 %) erreicht.",
+      "tags": [
+        "Regelstrecken",
+        "PT1"
+      ]
+    },
+    {
+      "id": "regelung-009",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Schüttgut wird über ein Förderband transportiert. Die Bandwaage am Ende meldet eine Änderung der Dosiermenge erst nach 20 s, dann aber sofort in voller Höhe. Welches Streckenverhalten liegt vor?",
+      "options": [
+        "Totzeitverhalten",
+        "I-Verhalten",
+        "PT1-Verhalten",
+        "D-Verhalten"
+      ],
+      "answer": 0,
+      "explain": "Bei einer Totzeit kommt die Änderung unverändert, aber zeitlich verschoben am Ausgang an – hier durch die Transportzeit auf dem Band. Eine PT1-Strecke würde dagegen sofort, aber verzögert ansteigend reagieren.",
+      "tags": [
+        "Regelstrecken",
+        "Totzeit"
+      ]
+    },
+    {
+      "id": "regelung-010",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was versteht man unter der Sprungantwort einer Regelstrecke?",
+      "options": [
+        "Die größtmögliche Stellgröße des Reglers",
+        "Die Zeit, bis der Regler abschaltet",
+        "Den zeitlichen Verlauf der Ausgangsgröße, wenn die Eingangsgröße sprunghaft verändert wird",
+        "Die Reaktion der Strecke auf eine sinusförmige Eingangsgröße"
+      ],
+      "answer": 2,
+      "explain": "Mit der Sprungantwort untersucht man das Zeitverhalten einer Strecke (z. B. P, I, PT1, Totzeit) und kann daraus Kennwerte für die Reglereinstellung ablesen.",
+      "tags": [
+        "Sprungantwort"
+      ]
+    },
+    {
+      "id": "regelung-011",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Aussage über einen Zweipunktregler trifft zu?",
+      "options": [
+        "Er hält die Regelgröße ohne jede Schwankung exakt auf dem Sollwert",
+        "Er benötigt immer einen stetigen Stellantrieb (0–100 %)",
+        "Er ist ein stetiger Regler mit P-Verhalten",
+        "Die Stellgröße kennt nur zwei Zustände, z. B. Heizung EIN oder AUS"
+      ],
+      "answer": 3,
+      "explain": "Zweipunktregler sind unstetige Regler (z. B. Bimetall-Thermostat). Die Regelgröße pendelt deshalb immer um den Sollwert.",
+      "tags": [
+        "Zweipunktregler"
+      ]
+    },
+    {
+      "id": "regelung-012",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Bei einem Zweipunktregler für eine Heizung wird die Schaltdifferenz (Hysterese) vergrößert. Was ist die Folge?",
+      "options": [
+        "Die Heizung schaltet häufiger, die Temperatur schwankt weniger",
+        "Die Heizung schaltet seltener, die Temperatur schwankt aber stärker",
+        "Schalthäufigkeit und Temperaturschwankung bleiben gleich",
+        "Die Temperatur schwankt nicht mehr, weil die Hysterese Störungen ausgleicht"
+      ],
+      "answer": 1,
+      "explain": "Die Schaltdifferenz ist der Abstand zwischen Ein- und Ausschaltpunkt. Ein größerer Abstand schont das Stellglied (weniger Schaltspiele), erhöht aber die Schwankungsbreite der Regelgröße.",
+      "tags": [
+        "Zweipunktregler",
+        "Hysterese"
+      ]
+    },
+    {
+      "id": "regelung-013",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welche typische Eigenschaft hat ein P-Regler an einer Regelstrecke mit Ausgleich?",
+      "options": [
+        "Die Regelabweichung wird immer vollständig null",
+        "Es bleibt eine bleibende Regelabweichung",
+        "Er reagiert nur auf die Änderungsgeschwindigkeit der Regeldifferenz",
+        "Er arbeitet nur mit zwei Schaltzuständen"
+      ],
+      "answer": 1,
+      "explain": "Der P-Regler bildet y = Kp · e. Um eine Stellgröße ungleich null auszugeben, muss eine Regeldifferenz vorhanden sein – deshalb bleibt eine Abweichung bestehen.",
+      "tags": [
+        "P-Regler"
+      ]
+    },
+    {
+      "id": "regelung-014",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Aussage trifft auf den I-Anteil eines Reglers zu?",
+      "options": [
+        "Er reagiert sofort mit einem Sprung proportional zur Regeldifferenz",
+        "Er reagiert nur auf Änderungen der Regeldifferenz",
+        "Er macht jeden Regelkreis schneller und stabiler",
+        "Er verändert die Stellgröße so lange, wie eine Regeldifferenz besteht, und beseitigt so die bleibende Regelabweichung"
+      ],
+      "answer": 3,
+      "explain": "Der I-Anteil summiert (integriert) die Regeldifferenz über die Zeit. Das beseitigt die bleibende Abweichung, macht den Regler aber langsamer und kann Schwingneigung erhöhen.",
+      "tags": [
+        "I-Regler"
+      ]
+    },
+    {
+      "id": "regelung-015",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was gibt die Nachstellzeit Tn eines PI-Reglers an?",
+      "options": [
+        "Die Zeit, die der I-Anteil bei konstanter Regeldifferenz braucht, um dieselbe Stellgrößenänderung zu erzeugen wie der P-Anteil",
+        "Die Zeit, bis die Regelgröße den Sollwert erreicht",
+        "Die Totzeit der Regelstrecke",
+        "Die Zeit, um die der D-Anteil dem P-Anteil vorauseilt"
+      ],
+      "answer": 0,
+      "explain": "In der Sprungantwort des PI-Reglers springt y zuerst um Kp · e (P-Anteil); nach der Zeit Tn hat der I-Anteil denselben Betrag noch einmal hinzugefügt.",
+      "tags": [
+        "PI-Regler",
+        "Tn"
+      ]
+    },
+    {
+      "id": "regelung-016",
+      "type": "mc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Wie wirkt sich eine kleinere Nachstellzeit Tn bei einem PI-Regler aus?",
+      "options": [
+        "Der I-Anteil wirkt schwächer; der Regler wird träger",
+        "Nur der P-Anteil wird größer",
+        "Der I-Anteil wirkt stärker; der Regler wird schneller, neigt aber eher zum Schwingen",
+        "Die bleibende Regelabweichung nimmt zu"
+      ],
+      "answer": 2,
+      "explain": "Der I-Anteil ist proportional zu 1/Tn. Kleines Tn bedeutet schnelles Aufintegrieren – die Abweichung wird schneller abgebaut, aber es kann zu Überschwingen und Schwingen kommen.",
+      "tags": [
+        "PI-Regler",
+        "Tn"
+      ]
+    },
+    {
+      "id": "regelung-017",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Warum wird ein reiner D-Regler in der Praxis nicht eingesetzt?",
+      "options": [
+        "Bei konstanter Regeldifferenz liefert der D-Anteil keine Stellgrößenänderung, er reagiert nur auf Änderungen",
+        "Weil er zu langsam reagiert",
+        "Weil er nur zwei Schaltzustände hat",
+        "Weil er immer eine bleibende Regelabweichung von genau 50 % erzeugt"
+      ],
+      "answer": 0,
+      "explain": "Der D-Anteil bewertet die Änderungsgeschwindigkeit von e. Bleibt e konstant, ist sein Beitrag null. Deshalb wird er nur in Kombination verwendet (PD, PID).",
+      "tags": [
+        "D-Anteil"
+      ]
+    },
+    {
+      "id": "regelung-018",
+      "type": "mc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Was gibt die Vorhaltzeit Tv eines PD-Reglers an?",
+      "options": [
+        "Die Zeit, die der I-Anteil braucht, um den P-Anteil einzuholen",
+        "Die Totzeit, um die die Strecke verzögert reagiert",
+        "Die Zeit, nach der der Regler automatisch abschaltet",
+        "Die Zeit, um die ein PD-Regler bei anstiegsförmiger Regeldifferenz einen bestimmten Stellwert früher erreicht als ein reiner P-Regler"
+      ],
+      "answer": 3,
+      "explain": "Durch den D-Anteil „eilt“ der Regler voraus: Bei einer Rampe von e ist die Stellgröße des PD-Reglers der des P-Reglers um Tv voraus. Die Zeit für den I-Anteil ist dagegen die Nachstellzeit Tn.",
+      "tags": [
+        "PD-Regler",
+        "Tv"
+      ]
+    },
+    {
+      "id": "regelung-019",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Was passiert typischerweise, wenn bei einem P-Regler die Verstärkung Kp stark erhöht wird?",
+      "options": [
+        "Die bleibende Regelabweichung wird größer",
+        "Der Regelkreis wird dadurch immer stabiler",
+        "Die bleibende Regelabweichung wird kleiner, der Regelkreis neigt aber zum Schwingen bis zur Instabilität",
+        "Die Regelung wird zu einer Steuerung"
+      ],
+      "answer": 2,
+      "explain": "Ein größeres Kp erzeugt bei gleicher Abweichung eine größere Stellgröße – die Abweichung sinkt. Zu große Verstärkung führt aber zu Überschwingen und Dauerschwingungen.",
+      "tags": [
+        "P-Regler",
+        "Kp"
+      ]
+    },
+    {
+      "id": "regelung-020",
+      "type": "mc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Was wird bei der Schwingungsmethode nach Ziegler/Nichols zunächst ermittelt?",
+      "options": [
+        "Die Anzahl der Schaltspiele eines Zweipunktreglers pro Stunde",
+        "Die kritische Verstärkung Kp,krit und die Periodendauer Tkrit, bei der der Regelkreis im reinen P-Betrieb dauerhaft schwingt",
+        "Die Vorhaltzeit, die auf dem Typenschild des Stellglieds steht",
+        "Der Messbereich des Sensors"
+      ],
+      "answer": 1,
+      "explain": "Man erhöht Kp im geschlossenen Kreis (ohne I- und D-Anteil), bis eine Dauerschwingung entsteht. Aus Kp,krit und Tkrit berechnet man mit Tabellenwerten Kp, Tn und Tv.",
+      "tags": [
+        "Einstellregeln"
+      ]
+    },
+    {
+      "id": "regelung-021",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Bei einer Drehzahlregelung eines Motors muss die Istdrehzahl erfasst werden. Welcher Sensor eignet sich dafür?",
+      "options": [
+        "Ein Pt100-Widerstandsthermometer",
+        "Ein Drucktransmitter",
+        "Ein Thermoelement",
+        "Ein Drehgeber (Inkrementalgeber) oder Tachogenerator"
+      ],
+      "answer": 3,
+      "explain": "Die Regelgröße ist die Drehzahl. Drehgeber liefern Impulse pro Umdrehung, Tachogeneratoren eine drehzahlproportionale Spannung. Pt100 und Thermoelement messen Temperatur.",
+      "tags": [
+        "Drehzahl",
+        "Sensoren"
+      ]
+    },
+    {
+      "id": "regelung-022",
+      "type": "calc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Bei einer Temperaturregelung beträgt der Sollwert w = 80 °C, der gemessene Istwert x = 74,5 °C. Wie groß ist die Regeldifferenz e?",
+      "answer": "5,5 K",
+      "value": 5.5,
+      "unit": "K",
+      "tolerance": 0.02,
+      "explain": "e = w − x = 80 °C − 74,5 °C = 5,5 K (Temperaturdifferenzen werden in Kelvin angegeben).",
+      "tags": [
+        "Begriffe",
+        "Temperatur"
+      ]
+    },
+    {
+      "id": "regelung-023",
+      "type": "calc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Ein P-Regler hat die Verstärkung Kp = 4. Die Regeldifferenz beträgt e = 3,5 %. Um wie viel Prozent ändert sich die Stellgröße?",
+      "answer": "14 %",
+      "value": 14.0,
+      "unit": "%",
+      "tolerance": 0.02,
+      "explain": "Beim P-Regler gilt Δy = Kp · e = 4 · 3,5 % = 14 %.",
+      "tags": [
+        "P-Regler"
+      ]
+    },
+    {
+      "id": "regelung-024",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Ofen verhält sich wie eine PT1-Strecke mit der Zeitkonstante T = 12 min. Seine Temperatur beträgt 20 °C. Nach einem Heizleistungssprung würde sie sich auf 80 °C einstellen. Welche Temperatur hat der Ofen nach 12 min?",
+      "answer": "≈ 57,9 °C",
+      "value": 57.93,
+      "unit": "°C",
+      "tolerance": 0.02,
+      "explain": "Nach t = T ist 1 − e^(−1) ≈ 63,2 % der Änderung erreicht. Änderung: 80 °C − 20 °C = 60 K. 0,632 · 60 K ≈ 37,9 K. Temperatur: 20 °C + 37,9 K ≈ 57,9 °C.",
+      "tags": [
+        "PT1",
+        "Sprungantwort"
+      ]
+    },
+    {
+      "id": "regelung-025",
+      "type": "calc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Ein PI-Regler hat Kp = 2 und Tn = 4 s. Die Regeldifferenz springt auf e = 5 % und bleibt konstant. Wie groß ist die Stellgrößenänderung 6 s nach dem Sprung?",
+      "answer": "25 %",
+      "value": 25.0,
+      "unit": "%",
+      "tolerance": 0.02,
+      "explain": "P-Anteil: Kp · e = 2 · 5 % = 10 %. I-Anteil: Kp · e · t / Tn = 2 · 5 % · 6 s / 4 s = 15 %. Gesamt: 10 % + 15 % = 25 %.",
+      "tags": [
+        "PI-Regler",
+        "Tn"
+      ]
+    },
+    {
+      "id": "regelung-026",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Zweipunktregler regelt eine Warmwassertemperatur auf den Sollwert 60 °C. Die Schaltdifferenz beträgt 4 K und liegt symmetrisch um den Sollwert. Bei welcher Temperatur schaltet die Heizung wieder ein?",
+      "answer": "58 °C",
+      "value": 58.0,
+      "unit": "°C",
+      "tolerance": 0.02,
+      "explain": "Die Schaltdifferenz 4 K teilt sich symmetrisch auf: ± 2 K. Einschaltpunkt: 60 °C − 2 K = 58 °C, Ausschaltpunkt: 60 °C + 2 K = 62 °C.",
+      "tags": [
+        "Zweipunktregler",
+        "Hysterese"
+      ]
+    },
+    {
+      "id": "regelung-027",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Worin besteht der grundlegende Unterschied zwischen Steuern und Regeln?",
+      "answer": "Beim Regeln wird die Regelgröße gemessen und über eine Rückführung mit dem Sollwert verglichen (geschlossener Kreis); beim Steuern gibt es keine Rückführung (offene Wirkungskette).",
+      "keywords": [
+        "mess",
+        "rück"
+      ],
+      "explain": "Deshalb kann eine Regelung unbekannte Störungen ausgleichen, eine Steuerung nicht.",
+      "tags": [
+        "Steuern/Regeln"
+      ]
+    },
+    {
+      "id": "regelung-028",
+      "type": "open",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Warum bleibt bei einem P-Regler an einer Strecke mit Ausgleich eine bleibende Regelabweichung?",
+      "answer": "Weil der P-Regler nur dann eine Stellgröße ausgibt, wenn eine Abweichung vorhanden ist; für die benötigte Stellgröße muss also immer eine Abweichung bestehen bleiben.",
+      "keywords": [
+        "abweich",
+        "stellgr"
+      ],
+      "explain": "Aus y = Kp · e folgt: Für y ≠ 0 muss e ≠ 0 sein. Abhilfe schafft ein I-Anteil (PI- oder PID-Regler).",
+      "tags": [
+        "P-Regler"
+      ]
+    },
+    {
+      "id": "regelung-029",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was versteht man unter der Totzeit einer Regelstrecke?",
+      "answer": "Die Zeit, in der die Strecke nach einer Änderung am Eingang am Ausgang noch überhaupt nicht reagiert, z. B. die Transportzeit auf einem Förderband.",
+      "keywords": [
+        "zeit",
+        "reagier"
+      ],
+      "explain": "Totzeiten erschweren die Regelung stark, weil der Regler die Wirkung seines Eingriffs erst verspätet sieht.",
+      "tags": [
+        "Totzeit"
+      ]
+    },
+    {
+      "id": "regelung-030",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was ist die Schaltdifferenz (Hysterese) bei einem Zweipunktregler?",
+      "answer": "Der Abstand zwischen Einschaltpunkt und Ausschaltpunkt; sie verhindert, dass das Stellglied zu häufig schaltet.",
+      "keywords": [
+        "einschalt",
+        "ausschalt"
+      ],
+      "explain": "Ohne Schaltdifferenz würde der Regler um den Sollwert herum sehr schnell ein- und ausschalten (Flattern).",
+      "tags": [
+        "Zweipunktregler",
+        "Hysterese"
+      ]
+    }
+  ]
+}

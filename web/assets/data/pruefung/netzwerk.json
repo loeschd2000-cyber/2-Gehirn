@@ -1,0 +1,531 @@
+{
+  "topic": "netzwerk",
+  "title": "Netzwerke & Bussysteme",
+  "icon": "🌐",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "netzwerk-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "In welcher Schicht des OSI-Modells arbeitet das Internet Protocol (IP)?",
+      "options": [
+        "Schicht 2 – Sicherungsschicht (Data Link Layer)",
+        "Schicht 3 – Vermittlungsschicht (Network Layer)",
+        "Schicht 4 – Transportschicht (Transport Layer)",
+        "Schicht 7 – Anwendungsschicht (Application Layer)"
+      ],
+      "answer": 1,
+      "explain": "IP ist für die logische Adressierung und die Wegfindung (Routing) zwischen Netzen zuständig – Aufgaben der Vermittlungsschicht (Schicht 3). TCP und UDP liegen in Schicht 4, Ethernet in den Schichten 1 und 2.",
+      "tags": [
+        "OSI-Modell"
+      ]
+    },
+    {
+      "id": "netzwerk-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Wie lang ist eine Ethernet-MAC-Adresse?",
+      "options": [
+        "32 Bit (4 Byte)",
+        "64 Bit (8 Byte)",
+        "48 Bit (6 Byte)",
+        "128 Bit (16 Byte)"
+      ],
+      "answer": 2,
+      "explain": "Die MAC-Adresse ist die physische Adresse einer Netzwerkschnittstelle mit 48 Bit, meist als 6 hexadezimale Bytes geschrieben (z. B. 00:1B:1B:12:34:56). 32 Bit hat eine IPv4-Adresse, 128 Bit eine IPv6-Adresse.",
+      "tags": [
+        "MAC-Adresse",
+        "Ethernet"
+      ]
+    },
+    {
+      "id": "netzwerk-003",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Wie viele Bit hat eine IPv4-Adresse und wie viele eine IPv6-Adresse?",
+      "options": [
+        "32 Bit und 64 Bit",
+        "48 Bit und 128 Bit",
+        "16 Bit und 64 Bit",
+        "32 Bit und 128 Bit"
+      ],
+      "answer": 3,
+      "explain": "IPv4-Adressen sind 32 Bit lang (4 Oktette in Dezimalschreibweise), IPv6-Adressen 128 Bit (8 Blöcke zu je 16 Bit in Hexadezimalschreibweise).",
+      "tags": [
+        "IPv4",
+        "IPv6"
+      ]
+    },
+    {
+      "id": "netzwerk-004",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welche Subnetzmaske entspricht dem Präfix /25?",
+      "options": [
+        "255.255.255.0",
+        "255.255.255.128",
+        "255.255.255.192",
+        "255.255.128.0"
+      ],
+      "answer": 1,
+      "explain": "/25 bedeutet 25 Einsen in der Maske: 3 volle Oktette (24 Bit = 255.255.255) plus 1 Bit im vierten Oktett (1000 0000 = 128). 255.255.255.0 wäre /24, 255.255.255.192 wäre /26.",
+      "tags": [
+        "Subnetting"
+      ]
+    },
+    {
+      "id": "netzwerk-005",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welche Adresse liegt im selben Subnetz wie der Host 192.168.0.100/25?",
+      "options": [
+        "192.168.0.130",
+        "192.168.0.20",
+        "192.168.1.100",
+        "192.168.0.200"
+      ],
+      "answer": 1,
+      "explain": "Bei /25 wird das letzte Oktett in zwei Hälften geteilt: 0–127 und 128–255. 192.168.0.100 liegt im Netz 192.168.0.0/25 (Hosts .1 bis .126), ebenso 192.168.0.20. Die Adressen .130 und .200 liegen im Netz 192.168.0.128/25, 192.168.1.100 in einem anderen Netz.",
+      "tags": [
+        "Subnetting"
+      ]
+    },
+    {
+      "id": "netzwerk-006",
+      "type": "mc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Wie lautet die Netzadresse des Hosts 172.16.5.77/26?",
+      "options": [
+        "172.16.5.64",
+        "172.16.5.0",
+        "172.16.5.127",
+        "172.16.0.0"
+      ],
+      "answer": 0,
+      "explain": "/26 ergibt Blöcke zu 64 Adressen im letzten Oktett: 0, 64, 128, 192. Die 77 liegt im Block 64–127, also ist die Netzadresse 172.16.5.64 und die Broadcastadresse 172.16.5.127.",
+      "tags": [
+        "Subnetting"
+      ]
+    },
+    {
+      "id": "netzwerk-007",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Welche Aufgabe hat ein DHCP-Server?",
+      "options": [
+        "Er vergibt automatisch IP-Adresse, Subnetzmaske, Standard-Gateway und DNS-Server an die Clients.",
+        "Er übersetzt Domainnamen in IP-Adressen.",
+        "Er ermittelt zu einer IP-Adresse die passende MAC-Adresse.",
+        "Er leitet Datenpakete zwischen verschiedenen Netzen weiter."
+      ],
+      "answer": 0,
+      "explain": "DHCP (Dynamic Host Configuration Protocol) konfiguriert Netzwerkteilnehmer automatisch. Namensauflösung ist Aufgabe von DNS, die Zuordnung IP → MAC übernimmt ARP, die Weiterleitung zwischen Netzen ein Router.",
+      "tags": [
+        "DHCP"
+      ]
+    },
+    {
+      "id": "netzwerk-008",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Wofür wird DNS verwendet?",
+      "options": [
+        "Zur automatischen Vergabe von IP-Adressen",
+        "Zur Auflösung von Namen (z. B. www.beispiel.de) in IP-Adressen",
+        "Zur Verschlüsselung von Webseiten",
+        "Zur Ermittlung der MAC-Adresse zu einer IP-Adresse"
+      ],
+      "answer": 1,
+      "explain": "DNS (Domain Name System) funktioniert wie ein Telefonbuch: Es liefert zu einem Namen die zugehörige IP-Adresse. Die automatische Adressvergabe übernimmt DHCP, die MAC-Ermittlung ARP.",
+      "tags": [
+        "DNS"
+      ]
+    },
+    {
+      "id": "netzwerk-009",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Welches Gerät verbindet unterschiedliche IP-Netze und leitet Pakete anhand der Ziel-IP-Adresse weiter?",
+      "options": [
+        "Hub",
+        "Switch (Layer 2)",
+        "Router",
+        "Repeater"
+      ],
+      "answer": 2,
+      "explain": "Ein Router arbeitet auf OSI-Schicht 3 und verbindet verschiedene IP-Netze. Ein Layer-2-Switch arbeitet mit MAC-Adressen innerhalb eines Netzes, Hub und Repeater arbeiten nur auf Schicht 1 (Signalweitergabe).",
+      "tags": [
+        "Netzwerkgeräte"
+      ]
+    },
+    {
+      "id": "netzwerk-010",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welche Aussage zu TCP und UDP ist richtig?",
+      "options": [
+        "UDP ist verbindungsorientiert und bestätigt den Empfang, TCP ist verbindungslos.",
+        "UDP garantiert die richtige Reihenfolge der Pakete, TCP nicht.",
+        "TCP und UDP arbeiten beide auf OSI-Schicht 3 und unterscheiden sich nur in der Adresslänge.",
+        "TCP ist verbindungsorientiert und bestätigt den Empfang, UDP ist verbindungslos und ohne Empfangsbestätigung."
+      ],
+      "answer": 3,
+      "explain": "TCP baut eine Verbindung auf, bestätigt Pakete, wiederholt verlorene und sortiert die Reihenfolge – dafür mit mehr Overhead. UDP sendet ohne Verbindung und Bestätigung und ist dadurch schneller und schlanker. Beide gehören zur Transportschicht (Schicht 4).",
+      "tags": [
+        "TCP/UDP"
+      ]
+    },
+    {
+      "id": "netzwerk-011",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Welchen Standard-Port verwendet HTTPS?",
+      "options": [
+        "80",
+        "21",
+        "443",
+        "502"
+      ],
+      "answer": 2,
+      "explain": "Ports kennzeichnen den Dienst auf einem Rechner. HTTPS nutzt standardmäßig Port 443, unverschlüsseltes HTTP Port 80, FTP Port 21 und Modbus TCP Port 502.",
+      "tags": [
+        "Ports"
+      ]
+    },
+    {
+      "id": "netzwerk-012",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Was ist ein typisches Merkmal der Sterntopologie?",
+      "options": [
+        "Alle Teilnehmer hängen an einer gemeinsamen Leitung, die an beiden Enden abgeschlossen wird.",
+        "Jeder Teilnehmer ist mit genau zwei Nachbarn verbunden, sodass ein geschlossener Kreis entsteht.",
+        "Jeder Teilnehmer ist einzeln an eine zentrale Komponente (z. B. Switch) angeschlossen; fällt ein Endgerät aus, bleiben die anderen erreichbar.",
+        "Fällt der zentrale Switch aus, arbeiten die übrigen Teilnehmer ungestört weiter."
+      ],
+      "answer": 2,
+      "explain": "Bei der Sterntopologie hat jedes Gerät eine eigene Leitung zum Sternpunkt. Ausfall eines Endgeräts oder Kabels betrifft nur dieses Gerät; fällt der Sternpunkt aus, ist allerdings das ganze Netz gestört. Die anderen Beschreibungen passen zu Linie (Bus) und Ring.",
+      "tags": [
+        "Topologien"
+      ]
+    },
+    {
+      "id": "netzwerk-013",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Übertragungstechnik nutzt PROFIBUS DP standardmäßig auf Kupferleitungen?",
+      "options": [
+        "Ethernet nach IEEE 802.3",
+        "RS-232 als Punkt-zu-Punkt-Verbindung",
+        "RS-485 über eine geschirmte, verdrillte Zweidrahtleitung",
+        "Industrial WLAN"
+      ],
+      "answer": 2,
+      "explain": "PROFIBUS DP arbeitet mit RS-485 in Linientopologie; die Leitung ist typischerweise violett, geschirmt und verdrillt. Ethernet-basiert ist dagegen PROFINET.",
+      "tags": [
+        "PROFIBUS"
+      ]
+    },
+    {
+      "id": "netzwerk-014",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Wie werden bei PROFINET IO die Steuerung und die dezentralen Feldgeräte bezeichnet?",
+      "options": [
+        "IO-Controller und IO-Device",
+        "Master und Slave",
+        "Client und Server",
+        "Publisher und Subscriber"
+      ],
+      "answer": 0,
+      "explain": "Bei PROFINET IO tauscht der IO-Controller (meist die SPS) zyklisch Daten mit den IO-Devices (z. B. dezentrale Peripherie, Antriebe) aus. Die Begriffe Master und Slave stammen von PROFIBUS DP.",
+      "tags": [
+        "PROFINET"
+      ]
+    },
+    {
+      "id": "netzwerk-015",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was ist typisch für AS-Interface (AS-i)?",
+      "options": [
+        "Jeder Sensor benötigt eine eigene geschirmte Ethernet-Leitung.",
+        "Es ist ein Lichtwellenleiter-Bus für große Datenmengen zwischen Steuerungen.",
+        "Es verbindet ausschließlich Steuerungen untereinander, nicht Sensoren und Aktoren.",
+        "Daten und Energie werden über dieselbe ungeschirmte Zweidrahtleitung (gelbes Profilkabel) übertragen."
+      ],
+      "answer": 3,
+      "explain": "AS-i ist ein einfaches Bussystem für die unterste Feldebene (binäre Sensoren/Aktoren). Das gelbe Flachkabel wird per Durchdringungstechnik kontaktiert und überträgt Daten und Versorgung gemeinsam.",
+      "tags": [
+        "AS-Interface"
+      ]
+    },
+    {
+      "id": "netzwerk-016",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Aussage zu IO-Link ist richtig?",
+      "options": [
+        "IO-Link ist ein Feldbus, an dem viele Sensoren gemeinsam an einer Leitung hängen.",
+        "IO-Link benötigt geschirmte Ethernet-Kabel der Kategorie 6A.",
+        "IO-Link ist ein reiner Funkstandard für mobile Sensoren.",
+        "IO-Link ist eine Punkt-zu-Punkt-Verbindung zwischen einem IO-Link-Master und einem Sensor oder Aktor über eine ungeschirmte Standardleitung."
+      ],
+      "answer": 3,
+      "explain": "IO-Link ist kein Feldbus, sondern eine digitale Punkt-zu-Punkt-Schnittstelle (IEC 61131-9). Der Sensor wird über eine ungeschirmte 3- oder 5-adrige Leitung mit M12-Stecker am Master angeschlossen; der Master ist seinerseits an einen Feldbus wie PROFINET angebunden.",
+      "tags": [
+        "IO-Link"
+      ]
+    },
+    {
+      "id": "netzwerk-017",
+      "type": "mc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Wodurch erreicht EtherCAT sehr kurze Zykluszeiten?",
+      "options": [
+        "Die Slaves lesen und schreiben ihre Daten im Durchlauf des Telegramms („processing on the fly“).",
+        "Jeder Slave erhält vom Master ein eigenes Telegramm und antwortet einzeln darauf.",
+        "Die Daten werden per Funk statt über Kabel übertragen.",
+        "EtherCAT verzichtet auf Ethernet-Hardware und nutzt RS-485."
+      ],
+      "answer": 0,
+      "explain": "Bei EtherCAT schickt der Master ein Telegramm durch alle Slaves; jeder Slave entnimmt und ergänzt seine Daten, während das Telegramm durchläuft. So werden viele Teilnehmer mit einem einzigen Telegramm bedient.",
+      "tags": [
+        "EtherCAT",
+        "Echtzeit"
+      ]
+    },
+    {
+      "id": "netzwerk-018",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Nach welchem Zugriffsprinzip arbeitet Modbus RTU?",
+      "options": [
+        "Token-Passing: Eine Sendeberechtigung wird reihum weitergegeben.",
+        "Jeder Teilnehmer darf jederzeit senden, Kollisionen werden erkannt.",
+        "Die Slaves senden zyklisch ohne Anfrage an alle anderen Teilnehmer.",
+        "Master-Slave: Nur der Master stellt Anfragen, die Slaves antworten darauf."
+      ],
+      "answer": 3,
+      "explain": "Bei Modbus RTU (meist über RS-485) fragt ein Master die Slaves nacheinander über ihre Adresse ab; ein Slave sendet nur als Antwort. Bei Modbus TCP spricht man entsprechend von Client und Server.",
+      "tags": [
+        "Modbus"
+      ]
+    },
+    {
+      "id": "netzwerk-019",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Warum sind die Adern von Twisted-Pair-Kabeln paarweise miteinander verdrillt?",
+      "options": [
+        "Um das Kabel mechanisch biegsamer zu machen",
+        "Um die Einkopplung von Störungen und das Übersprechen zwischen den Adernpaaren zu verringern",
+        "Um den Leitungswiderstand zu halbieren",
+        "Damit mehr Adern in den Kabelmantel passen"
+      ],
+      "answer": 1,
+      "explain": "Durch das Verdrillen heben sich eingekoppelte Störungen in den beiden Adern eines Paares weitgehend auf, weil die Signale symmetrisch (differenziell) übertragen werden. Zusätzlich sinkt das Übersprechen zwischen den Paaren.",
+      "tags": [
+        "Kabel"
+      ]
+    },
+    {
+      "id": "netzwerk-020",
+      "type": "mc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Welche Kodierung haben die 4-poligen M12-Steckverbinder, die typischerweise für PROFINET mit 100 Mbit/s verwendet werden?",
+      "options": [
+        "A-kodiert",
+        "D-kodiert",
+        "B-kodiert",
+        "X-kodiert"
+      ],
+      "answer": 1,
+      "explain": "Für Industrial Ethernet/PROFINET mit 100 Mbit/s werden 4-polige D-kodierte M12-Stecker verwendet. A-Kodierung ist typisch für Sensoren und IO-Link, B-Kodierung für PROFIBUS, X-Kodierung (8-polig) für Gigabit-Ethernet.",
+      "tags": [
+        "Kabel",
+        "PROFINET"
+      ]
+    },
+    {
+      "id": "netzwerk-021",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Wie lautet die korrekte Kurzschreibweise der IPv6-Adresse 2001:0db8:0000:0000:0000:0000:0000:0001?",
+      "options": [
+        "2001:db8::1",
+        "2001:db8:1",
+        "2001::db8::1",
+        "21:db8::1"
+      ],
+      "answer": 0,
+      "explain": "Führende Nullen in einem Block dürfen entfallen (0db8 → db8), und genau eine Folge von Null-Blöcken darf durch „::“ ersetzt werden. „::“ zweimal ist unzulässig, nachgestellte Nullen (2001 → 21) dürfen nicht weggelassen werden.",
+      "tags": [
+        "IPv6"
+      ]
+    },
+    {
+      "id": "netzwerk-022",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Wie viele Hosts können in einem Subnetz mit dem Präfix /26 maximal adressiert werden?",
+      "answer": "62 Hosts",
+      "value": 62,
+      "unit": "Hosts",
+      "tolerance": 0.02,
+      "explain": "Hostanteil = 32 − 26 = 6 Bit. Anzahl Adressen = 2⁶ = 64. Abzüglich Netzadresse und Broadcastadresse: 64 − 2 = 62 nutzbare Hostadressen.",
+      "tags": [
+        "Subnetting"
+      ]
+    },
+    {
+      "id": "netzwerk-023",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Netz hat die Subnetzmaske 255.255.252.0. Wie viele Hosts können darin maximal adressiert werden?",
+      "answer": "1022 Hosts",
+      "value": 1022,
+      "unit": "Hosts",
+      "tolerance": 0.02,
+      "explain": "255.255.252.0 entspricht /22 (252 = 1111 1100). Hostanteil = 32 − 22 = 10 Bit. 2¹⁰ = 1024 Adressen, abzüglich Netz- und Broadcastadresse: 1024 − 2 = 1022 Hosts.",
+      "tags": [
+        "Subnetting"
+      ]
+    },
+    {
+      "id": "netzwerk-024",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Das Netz 192.168.1.0/24 soll in gleich große Subnetze mit dem Präfix /27 aufgeteilt werden. Wie viele Subnetze entstehen?",
+      "answer": "8 Subnetze",
+      "value": 8,
+      "unit": "Subnetze",
+      "tolerance": 0.02,
+      "explain": "Vom /24 zum /27 werden 27 − 24 = 3 zusätzliche Bit für das Subnetz verwendet. 2³ = 8 Subnetze mit je 32 Adressen (30 nutzbare Hosts).",
+      "tags": [
+        "Subnetting"
+      ]
+    },
+    {
+      "id": "netzwerk-025",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Eine Datei mit 250 MB (Megabyte) wird über eine Verbindung mit 1 Gbit/s übertragen. Wie lange dauert die Übertragung mindestens (Protokoll-Overhead vernachlässigt, 1 MB = 10⁶ Byte)?",
+      "answer": "2 s",
+      "value": 2.0,
+      "unit": "s",
+      "tolerance": 0.02,
+      "explain": "Datenmenge in Bit: 250 · 10⁶ Byte · 8 bit/Byte = 2 · 10⁹ bit. t = Datenmenge / Datenrate = 2 · 10⁹ bit / 1 · 10⁹ bit/s = 2 s.",
+      "tags": [
+        "Ethernet",
+        "Datenrate"
+      ]
+    },
+    {
+      "id": "netzwerk-026",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Ethernet-Datenpaket mit 1500 Byte wird mit 100 Mbit/s übertragen. Wie lange dauert das reine Senden der Daten (ohne Overhead)?",
+      "answer": "120 µs",
+      "value": 120.0,
+      "unit": "µs",
+      "tolerance": 0.02,
+      "explain": "1500 Byte · 8 bit/Byte = 12 000 bit. t = 12 000 bit / (100 · 10⁶ bit/s) = 0,00012 s = 120 µs.",
+      "tags": [
+        "Ethernet",
+        "Datenrate"
+      ]
+    },
+    {
+      "id": "netzwerk-027",
+      "type": "open",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Was ist der Unterschied zwischen einem Hub und einem Switch?",
+      "answer": "Ein Hub leitet ein empfangenes Signal an alle Ports weiter, ein Switch lernt die MAC-Adressen und leitet Frames gezielt nur an den Port des Empfängers weiter.",
+      "keywords": [
+        "alle",
+        "mac"
+      ],
+      "explain": "Der Hub arbeitet auf OSI-Schicht 1, der Switch auf Schicht 2. Durch die gezielte Weiterleitung entstehen beim Switch keine Kollisionen und die Netzlast sinkt.",
+      "tags": [
+        "Netzwerkgeräte"
+      ]
+    },
+    {
+      "id": "netzwerk-028",
+      "type": "open",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Welche Aufgabe hat das Standard-Gateway in einem IP-Netz?",
+      "answer": "Das Standard-Gateway ist der Router, an den ein Gerät alle Pakete schickt, deren Ziel außerhalb des eigenen Netzes liegt.",
+      "keywords": [
+        "router",
+        "netz"
+      ],
+      "explain": "Liegt die Ziel-IP im eigenen Subnetz, wird direkt zugestellt; sonst geht das Paket ans Gateway. Ohne eingetragenes Gateway ist ein Gerät nur im eigenen Subnetz erreichbar.",
+      "tags": [
+        "Gateway"
+      ]
+    },
+    {
+      "id": "netzwerk-029",
+      "type": "open",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Wozu dient die Subnetzmaske?",
+      "answer": "Die Subnetzmaske legt fest, welcher Teil der IP-Adresse den Netzanteil und welcher den Hostanteil bildet.",
+      "keywords": [
+        "netzanteil",
+        "host"
+      ],
+      "explain": "Die Einsen der Maske markieren den Netzanteil, die Nullen den Hostanteil. Zwei Geräte können nur direkt miteinander kommunizieren, wenn ihr Netzanteil gleich ist.",
+      "tags": [
+        "Subnetting"
+      ]
+    },
+    {
+      "id": "netzwerk-030",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was bedeutet Echtzeitfähigkeit bei industriellen Bussystemen?",
+      "answer": "Echtzeit bedeutet, dass Daten garantiert innerhalb einer festgelegten Zeit übertragen werden, das Zeitverhalten also vorhersehbar (deterministisch) ist.",
+      "keywords": [
+        "garantiert",
+        "zeit"
+      ],
+      "explain": "Entscheidend ist nicht „möglichst schnell“, sondern eine sicher eingehaltene maximale Reaktionszeit. PROFINET RT/IRT oder EtherCAT sind Beispiele für echtzeitfähige Industrial-Ethernet-Systeme.",
+      "tags": [
+        "Echtzeit"
+      ]
+    }
+  ]
+}

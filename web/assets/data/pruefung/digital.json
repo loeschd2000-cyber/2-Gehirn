@@ -1,0 +1,541 @@
+{
+  "topic": "digital",
+  "title": "Digitaltechnik & Zahlensysteme",
+  "icon": "🔢",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "digital-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein Gatter mit zwei Eingängen liefert nur dann eine 1, wenn beide Eingänge 0 sind. Um welches Gatter handelt es sich?",
+      "options": [
+        "NAND",
+        "ODER",
+        "NOR",
+        "XOR"
+      ],
+      "answer": 2,
+      "explain": "NOR ist ein negiertes ODER: Sobald ein Eingang 1 ist, wird der Ausgang 0. Nur bei 0/0 ist der Ausgang 1. Ein NAND liefert dagegen bei drei Kombinationen eine 1.",
+      "tags": [
+        "Grundverknüpfungen"
+      ]
+    },
+    {
+      "id": "digital-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Aussage beschreibt die XOR-Verknüpfung (Exklusiv-ODER) mit zwei Eingängen?",
+      "options": [
+        "Der Ausgang ist 1, wenn die beiden Eingänge unterschiedliche Werte haben.",
+        "Der Ausgang ist 1, wenn mindestens ein Eingang 1 ist.",
+        "Der Ausgang ist 1, wenn beide Eingänge gleich sind.",
+        "Der Ausgang ist 1, wenn beide Eingänge 1 sind."
+      ],
+      "answer": 0,
+      "explain": "XOR liefert bei 01 und 10 eine 1, bei 00 und 11 eine 0. „Mindestens einer“ beschreibt ODER, „beide gleich“ beschreibt die Äquivalenz (XNOR).",
+      "tags": [
+        "Grundverknüpfungen",
+        "XOR"
+      ]
+    },
+    {
+      "id": "digital-003",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Ausgangsfolge hat ein NAND-Gatter für die Eingangskombinationen AB = 00, 01, 10, 11?",
+      "options": [
+        "0, 0, 0, 1",
+        "1, 1, 1, 0",
+        "0, 1, 1, 1",
+        "1, 0, 0, 0"
+      ],
+      "answer": 1,
+      "explain": "NAND ist ein negiertes UND: Nur wenn alle Eingänge 1 sind, ist der Ausgang 0. 0, 0, 0, 1 wäre UND, 0, 1, 1, 1 wäre ODER, 1, 0, 0, 0 wäre NOR.",
+      "tags": [
+        "Wahrheitstabelle",
+        "NAND"
+      ]
+    },
+    {
+      "id": "digital-004",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welcher Ausdruck ist nach dem Gesetz von De Morgan gleichwertig zu ¬(A ∧ B)?",
+      "options": [
+        "¬A ∧ ¬B",
+        "A ∨ B",
+        "¬A ∧ B",
+        "¬A ∨ ¬B"
+      ],
+      "answer": 3,
+      "explain": "De Morgan: Eine negierte UND-Verknüpfung entspricht der ODER-Verknüpfung der negierten Variablen. ¬A ∧ ¬B wäre dagegen gleich ¬(A ∨ B).",
+      "tags": [
+        "De Morgan"
+      ]
+    },
+    {
+      "id": "digital-005",
+      "type": "mc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Welche Schaltung ist nach De Morgan gleichwertig zu einem NOR-Gatter?",
+      "options": [
+        "Ein ODER-Gatter mit negierten Eingängen",
+        "Ein UND-Gatter mit negiertem Ausgang",
+        "Ein XOR-Gatter mit negiertem Ausgang",
+        "Ein UND-Gatter mit negierten Eingängen"
+      ],
+      "answer": 3,
+      "explain": "¬(A ∨ B) = ¬A ∧ ¬B, also UND mit negierten Eingängen. Ein ODER mit negierten Eingängen und ein UND mit negiertem Ausgang ergeben jeweils ein NAND.",
+      "tags": [
+        "De Morgan",
+        "NOR"
+      ]
+    },
+    {
+      "id": "digital-006",
+      "type": "open",
+      "level": 2,
+      "part": "AP1",
+      "q": "Was besagen die Gesetze von De Morgan?",
+      "answer": "Eine negierte UND-Verknüpfung ist gleich der ODER-Verknüpfung der negierten Variablen und umgekehrt: ¬(A ∧ B) = ¬A ∨ ¬B und ¬(A ∨ B) = ¬A ∧ ¬B.",
+      "keywords": [
+        "neg",
+        "und",
+        "oder"
+      ],
+      "explain": "Merkregel: Negationsstrich teilen und das Verknüpfungszeichen tauschen. Damit lassen sich alle Funktionen nur mit NAND- oder nur mit NOR-Gattern aufbauen.",
+      "tags": [
+        "De Morgan"
+      ]
+    },
+    {
+      "id": "digital-007",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Wie lässt sich der Ausdruck A ∨ (A ∧ B) vereinfachen?",
+      "options": [
+        "A ∧ B",
+        "B",
+        "A",
+        "A ∨ B"
+      ],
+      "answer": 2,
+      "explain": "Absorptionsgesetz: Ist A = 1, ist der Ausdruck 1; ist A = 0, ist auch A ∧ B = 0. Das Ergebnis hängt also nur von A ab.",
+      "tags": [
+        "Boolesche Algebra"
+      ]
+    },
+    {
+      "id": "digital-008",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie viele Felder hat ein KV-Diagramm für eine Funktion mit drei Eingangsvariablen?",
+      "options": [
+        "6",
+        "8",
+        "9",
+        "16"
+      ],
+      "answer": 1,
+      "explain": "Jedes Feld entspricht einer Eingangskombination. Bei n Variablen gibt es 2^n Kombinationen, bei drei Variablen also 2³ = 8 Felder.",
+      "tags": [
+        "KV-Diagramm"
+      ]
+    },
+    {
+      "id": "digital-009",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was ergibt sich, wenn im KV-Diagramm zwei benachbarte Einsen zu einem Zweierblock zusammengefasst werden?",
+      "options": [
+        "Zwei Variablen fallen weg.",
+        "Der zugehörige Term wird negiert.",
+        "Es entsteht eine ODER-Verknüpfung der beiden Felder mit allen Variablen.",
+        "Eine Variable fällt weg, weil sie innerhalb des Blocks ihren Wert ändert."
+      ],
+      "answer": 3,
+      "explain": "Benachbarte Felder unterscheiden sich in genau einer Variablen. Diese kann im Block 0 oder 1 sein und entfällt daher. Ein Viererblock lässt zwei Variablen wegfallen.",
+      "tags": [
+        "KV-Diagramm"
+      ]
+    },
+    {
+      "id": "digital-010",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "In einem KV-Diagramm mit den Variablen A und B stehen Einsen nur in den Feldern A = 1/B = 0 und A = 1/B = 1. Wie lautet die vereinfachte Funktion?",
+      "options": [
+        "Y = A",
+        "Y = B",
+        "Y = A ∧ B",
+        "Y = A ∨ B"
+      ],
+      "answer": 0,
+      "explain": "Die beiden Einsen bilden einen Zweierblock, in dem B beide Werte annimmt. B entfällt, übrig bleibt Y = A.",
+      "tags": [
+        "KV-Diagramm"
+      ]
+    },
+    {
+      "id": "digital-011",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Eingangskombination ist bei einem einfachen RS-Flipflop mit aktiv-high Eingängen und ohne Vorrang unzulässig?",
+      "options": [
+        "S = 0 und R = 0",
+        "S = 1 und R = 0",
+        "S = 1 und R = 1",
+        "S = 0 und R = 1"
+      ],
+      "answer": 2,
+      "explain": "Bei gleichzeitigem Setzen und Rücksetzen ist der Folgezustand nicht eindeutig. S = 0, R = 0 bedeutet Speichern, S = 1 Setzen, R = 1 Rücksetzen.",
+      "tags": [
+        "Flipflop",
+        "RS"
+      ]
+    },
+    {
+      "id": "digital-012",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welchen Ausgangszustand hat ein rücksetzdominantes Flipflop, wenn S und R gleichzeitig 1 sind?",
+      "options": [
+        "Q = 1",
+        "Q = 0",
+        "Der vorherige Zustand bleibt gespeichert.",
+        "Q wechselt ständig zwischen 0 und 1."
+      ],
+      "answer": 1,
+      "explain": "Beim rücksetzdominanten Flipflop hat der Rücksetzeingang Vorrang, der Ausgang wird 0. In der SPS entspricht das dem RS-Baustein nach IEC 61131-3, der SR-Baustein ist setzdominant.",
+      "tags": [
+        "Flipflop",
+        "SPS"
+      ]
+    },
+    {
+      "id": "digital-013",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was versteht man unter einem Flipflop?",
+      "answer": "Eine bistabile Kippschaltung, die ein Bit speichert; sie behält ihren Zustand, bis sie über ihre Eingänge umgeschaltet wird.",
+      "keywords": [
+        "bistabil",
+        "speicher"
+      ],
+      "explain": "Flipflops sind die Grundbausteine von Speichern, Registern und Zählern.",
+      "tags": [
+        "Flipflop"
+      ]
+    },
+    {
+      "id": "digital-014",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Wie verhält sich ein flankengesteuertes D-Flipflop?",
+      "options": [
+        "Der Ausgang Q folgt dem D-Eingang ständig, unabhängig vom Takt.",
+        "Mit jeder Taktflanke wechselt Q seinen Zustand, unabhängig von D.",
+        "Mit der aktiven Taktflanke wird der Wert am D-Eingang auf den Ausgang Q übernommen und bis zur nächsten aktiven Flanke gespeichert.",
+        "Der Wert von D wird negiert auf Q ausgegeben, sobald D sich ändert."
+      ],
+      "answer": 2,
+      "explain": "Das D-Flipflop (Data/Delay) speichert den Wert von D zum Zeitpunkt der Taktflanke. Das Wechseln bei jedem Takt ist das Verhalten eines T- bzw. JK-Flipflops mit J = K = 1.",
+      "tags": [
+        "Flipflop",
+        "D-Flipflop"
+      ]
+    },
+    {
+      "id": "digital-015",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Wie verhält sich ein JK-Flipflop, wenn J = 1 und K = 1 sind?",
+      "options": [
+        "Der Ausgang wechselt bei jeder aktiven Taktflanke seinen Zustand (Toggeln).",
+        "Der Ausgang wird auf 1 gesetzt.",
+        "Der Ausgang wird auf 0 zurückgesetzt.",
+        "Der bisherige Zustand bleibt gespeichert."
+      ],
+      "answer": 0,
+      "explain": "Beim JK-Flipflop ist J = K = 1 kein verbotener Zustand, sondern bewirkt Kippen. Damit eignet es sich für Frequenzteiler und Zähler. J = K = 0 bedeutet Speichern.",
+      "tags": [
+        "Flipflop",
+        "JK-Flipflop"
+      ]
+    },
+    {
+      "id": "digital-016",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Wie viele Flipflops benötigt ein Dualzähler mindestens, um von 0 bis 99 (dezimal) zählen zu können?",
+      "options": [
+        "6",
+        "8",
+        "10",
+        "7"
+      ],
+      "answer": 3,
+      "explain": "Mit n Flipflops lassen sich 2^n Zustände darstellen. 2⁶ = 64 reicht nicht, 2⁷ = 128 reicht. 8 Flipflops bräuchte ein BCD-Zähler für zwei Dezimalstellen.",
+      "tags": [
+        "Zähler"
+      ]
+    },
+    {
+      "id": "digital-017",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Taktsignal mit 1 kHz durchläuft drei hintereinandergeschaltete T-Flipflops (Frequenzteiler). Welche Frequenz liegt am Ausgang des dritten Flipflops?",
+      "options": [
+        "333 Hz",
+        "250 Hz",
+        "500 Hz",
+        "125 Hz"
+      ],
+      "answer": 3,
+      "explain": "Jedes T-Flipflop halbiert die Frequenz: 1000 Hz : 2 : 2 : 2 = 1000 Hz : 8 = 125 Hz.",
+      "tags": [
+        "Zähler",
+        "Frequenzteiler"
+      ]
+    },
+    {
+      "id": "digital-018",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was ist der Unterschied zwischen einem synchronen und einem asynchronen Zähler?",
+      "answer": "Beim Synchronzähler erhalten alle Flipflops gleichzeitig denselben Takt; beim Asynchronzähler taktet jedes Flipflop das nächste, dadurch addieren sich die Laufzeiten.",
+      "keywords": [
+        "takt",
+        "gleichzeitig"
+      ],
+      "explain": "Asynchronzähler sind einfacher aufgebaut, zeigen aber kurzzeitig falsche Zwischenzustände. Synchronzähler sind schneller und störsicherer.",
+      "tags": [
+        "Zähler"
+      ]
+    },
+    {
+      "id": "digital-019",
+      "type": "calc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Rechne die Dualzahl 1011 0101 in eine Dezimalzahl um.",
+      "answer": "181",
+      "value": 181,
+      "unit": "",
+      "tolerance": 0.02,
+      "explain": "Stellenwerte der Einsen addieren: 128 + 32 + 16 + 4 + 1 = 181.",
+      "tags": [
+        "Zahlensysteme",
+        "Dualzahl"
+      ]
+    },
+    {
+      "id": "digital-020",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Rechne die Hexadezimalzahl 1F4 (16#1F4) in eine Dezimalzahl um.",
+      "answer": "500",
+      "value": 500,
+      "unit": "",
+      "tolerance": 0.02,
+      "explain": "1 · 16² + 15 · 16¹ + 4 · 16⁰ = 256 + 240 + 4 = 500.",
+      "tags": [
+        "Zahlensysteme",
+        "Hexadezimal"
+      ]
+    },
+    {
+      "id": "digital-021",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welche Aussage zum BCD-Code (8-4-2-1-Code) ist richtig?",
+      "options": [
+        "Die gesamte Dezimalzahl wird als eine Dualzahl dargestellt.",
+        "Jede Dezimalziffer wird einzeln mit 4 Bit dargestellt; die Kombinationen 1010 bis 1111 sind ungültig.",
+        "Jede Dezimalziffer wird mit 3 Bit dargestellt.",
+        "Alle 16 Kombinationen einer Tetrade werden als Ziffern verwendet."
+      ],
+      "answer": 1,
+      "explain": "Im BCD-Code steht jede Tetrade (4 Bit) für eine Ziffer 0 bis 9. Die sechs Kombinationen 1010 bis 1111 heißen Pseudotetraden und kommen nicht vor.",
+      "tags": [
+        "BCD",
+        "Zahlensysteme"
+      ]
+    },
+    {
+      "id": "digital-022",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welche Dezimalzahl ist im BCD-Code als 0100 0111 1001 dargestellt?",
+      "answer": "479",
+      "value": 479,
+      "unit": "",
+      "tolerance": 0.02,
+      "explain": "Jede Tetrade einzeln umrechnen: 0100 = 4, 0111 = 7, 1001 = 9. Ergebnis: 479.",
+      "tags": [
+        "BCD",
+        "Zahlensysteme"
+      ]
+    },
+    {
+      "id": "digital-023",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie viele Bit umfasst ein Wort (WORD) nach IEC 61131-3?",
+      "options": [
+        "16",
+        "8",
+        "32",
+        "4"
+      ],
+      "answer": 0,
+      "explain": "Nach IEC 61131-3 gilt: BYTE = 8 Bit, WORD = 16 Bit, DWORD = 32 Bit, LWORD = 64 Bit.",
+      "tags": [
+        "Datentypen"
+      ]
+    },
+    {
+      "id": "digital-024",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie viele Byte umfasst ein Doppelwort (DWORD)?",
+      "options": [
+        "2",
+        "8",
+        "4",
+        "32"
+      ],
+      "answer": 2,
+      "explain": "Ein Doppelwort hat 32 Bit. Bei 8 Bit pro Byte sind das 32 : 8 = 4 Byte.",
+      "tags": [
+        "Datentypen"
+      ]
+    },
+    {
+      "id": "digital-025",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Analogeingang wandelt mit 12 Bit Auflösung (vorzeichenlos). Welcher ist der größte darstellbare Digitalwert (dezimal)?",
+      "answer": "4095",
+      "value": 4095,
+      "unit": "",
+      "tolerance": 0.02,
+      "explain": "Mit 12 Bit gibt es 2¹² = 4096 Kombinationen von 0 bis 2¹² − 1 = 4095.",
+      "tags": [
+        "Dualzahl",
+        "Auflösung"
+      ]
+    },
+    {
+      "id": "digital-026",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welchen Wertebereich hat eine vorzeichenbehaftete 8-Bit-Zahl im Zweierkomplement?",
+      "options": [
+        "−128 bis +127",
+        "−127 bis +127",
+        "0 bis 255",
+        "−255 bis +255"
+      ],
+      "answer": 0,
+      "explain": "Mit 8 Bit gibt es 256 Kombinationen. Im Zweierkomplement gibt es nur eine Null, daher reicht der Bereich von −2⁷ = −128 bis 2⁷ − 1 = +127.",
+      "tags": [
+        "Zweierkomplement"
+      ]
+    },
+    {
+      "id": "digital-027",
+      "type": "calc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Das Byte 1110 1100 ist eine vorzeichenbehaftete Zahl im Zweierkomplement. Welchen Dezimalwert hat es?",
+      "answer": "−20",
+      "value": -20,
+      "unit": "",
+      "tolerance": 0.02,
+      "explain": "Das höchste Bit ist 1, also ist die Zahl negativ. Betrag über Zweierkomplement: invertieren ergibt 0001 0011 (19), plus 1 ergibt 0001 0100 = 20. Ergebnis: −20.",
+      "tags": [
+        "Zweierkomplement"
+      ]
+    },
+    {
+      "id": "digital-028",
+      "type": "open",
+      "level": 2,
+      "part": "AP1",
+      "q": "Wie bildet man das Zweierkomplement einer Dualzahl?",
+      "answer": "Alle Bits invertieren (Einerkomplement bilden) und anschließend 1 addieren.",
+      "keywords": [
+        "invert",
+        "addier"
+      ],
+      "explain": "Beispiel mit 8 Bit: +5 = 0000 0101 → invertiert 1111 1010 → +1 = 1111 1011 = −5.",
+      "tags": [
+        "Zweierkomplement"
+      ]
+    },
+    {
+      "id": "digital-029",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein rechteckiges Schaltzeichen nach DIN EN 60617 trägt die Kennzeichnung „=1“ und hat keinen Negationskreis. Welche Funktion stellt es dar?",
+      "options": [
+        "ODER",
+        "Exklusiv-ODER (XOR)",
+        "Äquivalenz (XNOR)",
+        "NICHT"
+      ],
+      "answer": 1,
+      "explain": "„=1“ bedeutet: Der Ausgang ist 1, wenn genau ein Eingang 1 ist (XOR). Das ODER-Gatter trägt „≥1“, das NICHT-Gatter „1“ mit Negationskreis am Ausgang.",
+      "tags": [
+        "Schaltzeichen",
+        "XOR"
+      ]
+    },
+    {
+      "id": "digital-030",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Woran erkennt man im Schaltzeichen nach DIN EN 60617 ein NAND-Gatter?",
+      "options": [
+        "Am Zeichen „≥1“ im Rechteck und einem Negationskreis am Ausgang",
+        "Am Zeichen „&“ im Rechteck und Negationskreisen an allen Eingängen",
+        "Am Zeichen „=1“ im Rechteck und einem Negationskreis am Ausgang",
+        "Am Zeichen „&“ im Rechteck und einem Negationskreis am Ausgang"
+      ],
+      "answer": 3,
+      "explain": "„&“ steht für UND, der Kreis am Ausgang für die Negation. „≥1“ mit Kreis ist NOR; „&“ mit negierten Eingängen entspricht nach De Morgan ebenfalls einem NOR.",
+      "tags": [
+        "Schaltzeichen",
+        "NAND"
+      ]
+    }
+  ]
+}

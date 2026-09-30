@@ -1,0 +1,542 @@
+{
+  "topic": "schutz",
+  "title": "Schutzmaßnahmen & Netzsysteme",
+  "icon": "🛡️",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "schutz-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche der fünf Sicherheitsregeln nach DIN VDE 0105-100 wird als erste angewendet?",
+      "options": [
+        "Spannungsfreiheit feststellen",
+        "Erden und kurzschließen",
+        "Freischalten",
+        "Gegen Wiedereinschalten sichern"
+      ],
+      "answer": 2,
+      "explain": "Die Reihenfolge lautet: 1. Freischalten, 2. Gegen Wiedereinschalten sichern, 3. Spannungsfreiheit feststellen, 4. Erden und kurzschließen, 5. Benachbarte, unter Spannung stehende Teile abdecken oder abschranken.",
+      "tags": [
+        "Sicherheitsregeln"
+      ]
+    },
+    {
+      "id": "schutz-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ab welcher Größenordnung eines Wechselstroms (50 Hz) durch den Körper kann ein Erwachsener eine umfasste Leitung typischerweise nicht mehr loslassen (Loslassschwelle)?",
+      "options": [
+        "ca. 10 mA",
+        "ca. 0,05 mA",
+        "ca. 500 mA",
+        "ca. 1 A"
+      ],
+      "answer": 0,
+      "explain": "Die Loslassschwelle liegt bei Wechselstrom 50 Hz bei etwa 10 mA. Darüber verkrampfen die Muskeln, sodass die Person sich nicht mehr selbst befreien kann; die Wahrnehmungsschwelle liegt deutlich niedriger (ca. 0,5 mA).",
+      "tags": [
+        "Stromwirkung"
+      ]
+    },
+    {
+      "id": "schutz-003",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welche Wirkung ist bei einem Wechselstrom von einigen zehn Milliampere über das Herz und längerer Einwirkdauer besonders lebensgefährlich?",
+      "options": [
+        "Ein leichtes Kribbeln in den Fingern",
+        "Verbrennungen ausschließlich an der Hautoberfläche ohne innere Folgen",
+        "Die sofortige Unterbrechung des Stroms durch den Hautwiderstand",
+        "Herzkammerflimmern"
+      ],
+      "answer": 3,
+      "explain": "Fließt Wechselstrom über das Herz, kann er den Herzrhythmus stören und Herzkammerflimmern auslösen. Das Herz pumpt dann praktisch kein Blut mehr – ohne sofortige Hilfe (Defibrillator) führt das zum Tod.",
+      "tags": [
+        "Stromwirkung"
+      ]
+    },
+    {
+      "id": "schutz-004",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wodurch unterscheidet sich das TN-C-System vom TN-S-System?",
+      "options": [
+        "Im TN-C-System ist der Sternpunkt des Transformators isoliert",
+        "Im TN-C-System sind Neutralleiter- und Schutzleiterfunktion in einem PEN-Leiter vereint",
+        "Im TN-C-System sind die Körper über eigene Erder unabhängig vom Betriebserder geerdet",
+        "Im TN-C-System ist ein RCD für alle Stromkreise vorgeschrieben"
+      ],
+      "answer": 1,
+      "explain": "„C“ steht für combined: N- und PE-Funktion laufen gemeinsam im PEN-Leiter. Im TN-S-System („separated“) sind N und PE im gesamten System getrennt. Ein RCD funktioniert im TN-C-System gar nicht, weil der Fehlerstrom über den PEN durch den Wandler zurückfließt.",
+      "tags": [
+        "Netzsysteme"
+      ]
+    },
+    {
+      "id": "schutz-005",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Was kennzeichnet ein TT-System?",
+      "options": [
+        "Sternpunkt isoliert, Körper über den PEN-Leiter verbunden",
+        "Sternpunkt direkt geerdet, Körper über einen vom Betriebserder unabhängigen Anlagenerder geerdet",
+        "Sternpunkt und Körper über denselben PEN-Leiter verbunden",
+        "Kein Schutzleiter vorhanden, der Schutz erfolgt nur durch Isolierung"
+      ],
+      "answer": 1,
+      "explain": "Im TT-System ist der Sternpunkt beim Netzbetreiber geerdet (Betriebserder), die Körper der Anlage sind über einen eigenen Anlagenerder geerdet. Der Fehlerstrom fließt über das Erdreich zurück und ist deshalb klein – daher wird meist mit RCD abgeschaltet.",
+      "tags": [
+        "Netzsysteme"
+      ]
+    },
+    {
+      "id": "schutz-006",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Aussage zum IT-System ist richtig?",
+      "options": [
+        "Beim ersten Körperschluss muss wie im TN-System innerhalb von 0,4 s abgeschaltet werden",
+        "Der Sternpunkt ist direkt mit dem Schutzleiter verbunden",
+        "Das IT-System ist das übliche Netzsystem in Wohngebäuden",
+        "Ein erster Isolationsfehler muss nicht zur Abschaltung führen, er wird z. B. durch eine Isolationsüberwachungseinrichtung gemeldet"
+      ],
+      "answer": 3,
+      "explain": "Im IT-System ist die Stromquelle gegen Erde isoliert (oder hochohmig geerdet). Beim ersten Fehler fließt nur ein sehr kleiner Strom, der Betrieb kann weiterlaufen – der Fehler muss aber gemeldet und schnell beseitigt werden. Einsatz z. B. in Krankenhaus-OPs und Industrieanlagen mit hoher Verfügbarkeit.",
+      "tags": [
+        "Netzsysteme",
+        "IT-System"
+      ]
+    },
+    {
+      "id": "schutz-007",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welche Aussage zum PEN-Leiter ist richtig?",
+      "options": [
+        "Der PEN-Leiter darf weder geschaltet noch durch eine Überstrom-Schutzeinrichtung unterbrochen werden",
+        "Der PEN-Leiter darf mit einem LS-Schalter abgesichert werden",
+        "Der PEN-Leiter wird blau ohne weitere Kennzeichnung ausgeführt",
+        "N und PE dürfen nach der Aufteilung wieder zu einem PEN zusammengeführt werden"
+      ],
+      "answer": 0,
+      "explain": "Wird der PEN unterbrochen, kann an allen angeschlossenen Körpern gefährliche Spannung anliegen. Deshalb darf er nicht geschaltet oder abgesichert werden. Nach der Aufteilung in N und PE dürfen diese nicht wieder verbunden werden; gekennzeichnet wird der PEN grün-gelb mit blauer Markierung an den Enden (oder umgekehrt).",
+      "tags": [
+        "PEN-Leiter"
+      ]
+    },
+    {
+      "id": "schutz-008",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welchen Mindestquerschnitt muss ein PEN-Leiter aus Kupfer in fester Verlegung nach DIN VDE 0100-540 haben?",
+      "options": [
+        "1,5 mm²",
+        "4 mm²",
+        "10 mm²",
+        "6 mm²"
+      ],
+      "answer": 2,
+      "explain": "Ein PEN-Leiter muss in fester Verlegung mindestens 10 mm² Cu (bzw. 16 mm² Al) haben. Kleinere Querschnitte sind mechanisch zu empfindlich – eine Unterbrechung des PEN wäre gefährlich.",
+      "tags": [
+        "PEN-Leiter",
+        "Querschnitt"
+      ]
+    },
+    {
+      "id": "schutz-009",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Maßnahme gehört zum Basisschutz (Schutz gegen direktes Berühren)?",
+      "options": [
+        "Automatische Abschaltung der Stromversorgung",
+        "Schutzpotentialausgleich",
+        "Schutzleiteranschluss des Gehäuses",
+        "Isolierung aktiver Teile"
+      ],
+      "answer": 3,
+      "explain": "Basisschutz verhindert das Berühren aktiver Teile im fehlerfreien Betrieb, z. B. durch Isolierung, Abdeckungen oder Umhüllungen. Abschaltung, Schutzleiter und Potentialausgleich gehören zum Fehlerschutz.",
+      "tags": [
+        "Basisschutz"
+      ]
+    },
+    {
+      "id": "schutz-010",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Maßnahme gehört zum Fehlerschutz (Schutz bei indirektem Berühren)?",
+      "options": [
+        "Abdeckungen und Umhüllungen",
+        "Automatische Abschaltung der Stromversorgung im Fehlerfall",
+        "Isolierung der Leiter",
+        "Anbringen von Hindernissen"
+      ],
+      "answer": 1,
+      "explain": "Fehlerschutz wirkt, wenn im Fehlerfall (z. B. Körperschluss) ein leitfähiges Gehäuse Spannung annimmt. Die Schutzeinrichtung schaltet dann automatisch ab. Isolierung, Abdeckungen und Hindernisse sind Maßnahmen des Basisschutzes.",
+      "tags": [
+        "Fehlerschutz"
+      ]
+    },
+    {
+      "id": "schutz-011",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welche maximale Abschaltzeit gilt nach DIN VDE 0100-410 im TN-System mit U0 = 230 V für Endstromkreise bis 32 A?",
+      "options": [
+        "0,2 s",
+        "1 s",
+        "0,4 s",
+        "5 s"
+      ],
+      "answer": 2,
+      "explain": "Für Endstromkreise bis 32 A im TN-System (U0 = 230 V AC) gilt 0,4 s. 0,2 s gilt für das TT-System, 5 s für Verteilerstromkreise und Stromkreise über 32 A im TN-System.",
+      "tags": [
+        "Abschaltung",
+        "TN-System"
+      ]
+    },
+    {
+      "id": "schutz-012",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welcher Bemessungsdifferenzstrom IΔn ist für den zusätzlichen Schutz (z. B. Steckdosenstromkreise bis 32 A) gefordert?",
+      "options": [
+        "≤ 30 mA",
+        "≤ 100 mA",
+        "≤ 300 mA",
+        "≤ 500 mA"
+      ],
+      "answer": 0,
+      "explain": "Für den Zusatzschutz sind RCDs mit IΔn ≤ 30 mA vorgeschrieben. Sie schalten so früh ab, dass ein Körperstrom in der Regel kein Herzkammerflimmern auslöst. RCDs mit 300 mA dienen vor allem dem Brandschutz.",
+      "tags": [
+        "RCD",
+        "Zusatzschutz"
+      ]
+    },
+    {
+      "id": "schutz-013",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welcher RCD-Typ ist für glatte Gleichfehlerströme geeignet, wie sie z. B. bei dreiphasigen Frequenzumrichtern auftreten können?",
+      "options": [
+        "Typ B",
+        "Typ AC",
+        "Typ A",
+        "Typ F"
+      ],
+      "answer": 0,
+      "explain": "Typ B ist allstromsensitiv und erfasst auch glatte Gleichfehlerströme. Typ AC erfasst nur sinusförmige Wechselfehlerströme, Typ A zusätzlich pulsierende Gleichfehlerströme, Typ F zusätzlich Mischfrequenzen.",
+      "tags": [
+        "RCD",
+        "RCD-Typen"
+      ]
+    },
+    {
+      "id": "schutz-014",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was kann ein RCD vom Typ F zusätzlich zu einem RCD vom Typ A erfassen?",
+      "options": [
+        "Glatte Gleichfehlerströme von dreiphasigen Frequenzumrichtern",
+        "Überlastströme in der Leitung",
+        "Fehlerströme mit Mischfrequenzen, z. B. von einphasigen Frequenzumrichtern",
+        "Kurzschlussströme zwischen Außenleiter und Neutralleiter"
+      ],
+      "answer": 2,
+      "explain": "Typ F erkennt wie Typ A Wechsel- und pulsierende Gleichfehlerströme und zusätzlich Fehlerströme mit Mischfrequenzen, wie sie bei einphasig gespeisten Frequenzumrichtern entstehen. Glatte Gleichfehlerströme erfasst erst Typ B; Überlast und Kurzschluss L–N erkennt ein RCD nicht.",
+      "tags": [
+        "RCD",
+        "RCD-Typen"
+      ]
+    },
+    {
+      "id": "schutz-015",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Woran erkennt man ein Gerät der Schutzklasse II?",
+      "options": [
+        "Am Schutzleiteranschluss mit Erdungszeichen",
+        "Am Symbol mit zwei ineinanderliegenden Quadraten (doppelte oder verstärkte Isolierung)",
+        "Am Symbol einer Raute mit römischer III",
+        "An der Kennzeichnung IP20 auf dem Typschild"
+      ],
+      "answer": 1,
+      "explain": "Schutzklasse II bedeutet doppelte oder verstärkte Isolierung, ein Schutzleiter wird nicht angeschlossen. Das Erdungszeichen gehört zu Schutzklasse I, die Raute mit III zu Schutzklasse III (Schutzkleinspannung).",
+      "tags": [
+        "Schutzklassen"
+      ]
+    },
+    {
+      "id": "schutz-016",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Worin unterscheidet sich PELV von SELV?",
+      "options": [
+        "PELV darf Spannungen bis 230 V AC führen",
+        "PELV benötigt keine sichere Trennung vom Netz",
+        "SELV ist nur für Gleichspannung zulässig",
+        "Bei PELV ist der Stromkreis geerdet bzw. darf geerdet werden, bei SELV nicht"
+      ],
+      "answer": 3,
+      "explain": "SELV und PELV sind beide Kleinspannung mit sicherer Trennung (z. B. Sicherheitstransformator). Der Unterschied: SELV-Stromkreise sind ungeerdet, PELV-Stromkreise dürfen bzw. sind geerdet (z. B. aus EMV- oder Funktionsgründen).",
+      "tags": [
+        "SELV/PELV"
+      ]
+    },
+    {
+      "id": "schutz-017",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Spannungsgrenzen gelten für die Kleinspannung bei SELV und PELV?",
+      "options": [
+        "≤ 25 V AC bzw. ≤ 60 V DC",
+        "≤ 120 V AC bzw. ≤ 50 V DC",
+        "≤ 50 V AC bzw. ≤ 120 V DC",
+        "≤ 230 V AC bzw. ≤ 400 V DC"
+      ],
+      "answer": 2,
+      "explain": "Kleinspannung (ELV) liegt bei höchstens 50 V Wechselspannung bzw. 120 V oberschwingungsfreier Gleichspannung. Werte wie 25 V AC / 60 V DC sind Grenzen, unter denen unter bestimmten Bedingungen auf Basisschutz verzichtet werden kann.",
+      "tags": [
+        "SELV/PELV"
+      ]
+    },
+    {
+      "id": "schutz-018",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was bedeutet die Schutzart IP67?",
+      "options": [
+        "Staubgeschützt, geschützt gegen Spritzwasser",
+        "Staubdicht, geschützt gegen dauerndes Untertauchen",
+        "Geschützt gegen Fremdkörper ab 12,5 mm, geschützt gegen Tropfwasser",
+        "Staubdicht, geschützt gegen zeitweiliges Untertauchen"
+      ],
+      "answer": 3,
+      "explain": "Die erste Kennziffer gibt den Schutz gegen Fremdkörper/Berührung an (6 = staubdicht), die zweite den Wasserschutz (7 = zeitweiliges Untertauchen, 8 = dauerndes Untertauchen, 4 = Spritzwasser).",
+      "tags": [
+        "IP-Schutzart"
+      ]
+    },
+    {
+      "id": "schutz-019",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Welche Teile werden über die Haupterdungsschiene in den Schutzpotentialausgleich einbezogen?",
+      "options": [
+        "Schutzleiter, Erdungsleiter und metallene Rohrleitungen (z. B. Wasser, Gas, Heizung)",
+        "Nur die Außenleiter der Hauptleitung",
+        "Nur der Neutralleiter",
+        "Kunststoffrohre der Wasserinstallation"
+      ],
+      "answer": 0,
+      "explain": "Der Schutzpotentialausgleich verbindet alle fremden leitfähigen Teile (z. B. metallene Rohrleitungen, Gebäudekonstruktion) mit Schutzleiter und Erder an der Haupterdungsschiene. So können zwischen diesen Teilen keine gefährlichen Spannungsunterschiede entstehen. Nichtleitende Kunststoffrohre werden nicht angeschlossen.",
+      "tags": [
+        "Potentialausgleich"
+      ]
+    },
+    {
+      "id": "schutz-020",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Bedingung muss für den Überlastschutz einer Leitung nach DIN VDE 0100-430 erfüllt sein (IB = Betriebsstrom, In = Bemessungsstrom der Schutzeinrichtung, Iz = zulässige Strombelastbarkeit der Leitung)?",
+      "options": [
+        "Iz ≤ In ≤ IB",
+        "IB ≤ In ≤ Iz",
+        "In ≤ IB ≤ Iz",
+        "IB ≤ Iz ≤ In"
+      ],
+      "answer": 1,
+      "explain": "Die Schutzeinrichtung muss mindestens den Betriebsstrom führen können (IB ≤ In), darf aber nicht größer sein als die Belastbarkeit der Leitung (In ≤ Iz). Zusätzlich gilt I2 ≤ 1,45 · Iz; bei LS-Schaltern ist das durch In ≤ Iz erfüllt.",
+      "tags": [
+        "Leitungsschutz",
+        "Überlast"
+      ]
+    },
+    {
+      "id": "schutz-021",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "In welchem Bereich löst ein LS-Schalter der Charakteristik C unverzögert (magnetisch) aus?",
+      "options": [
+        "Beim 3- bis 5-fachen Bemessungsstrom",
+        "Beim 10- bis 20-fachen Bemessungsstrom",
+        "Beim 5- bis 10-fachen Bemessungsstrom",
+        "Beim 1,13- bis 1,45-fachen Bemessungsstrom"
+      ],
+      "answer": 2,
+      "explain": "Kurzschlussauslösung: B = 3–5 · In, C = 5–10 · In, D = 10–20 · In. C und D werden für Verbraucher mit hohem Einschaltstrom (z. B. Motoren, Transformatoren) verwendet. 1,13 · In / 1,45 · In sind die Prüfströme des thermischen Überlastauslösers.",
+      "tags": [
+        "Leitungsschutz",
+        "LS-Charakteristik"
+      ]
+    },
+    {
+      "id": "schutz-022",
+      "type": "calc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Eine Person berührt ein fehlerhaftes Gehäuse, an dem eine Berührungsspannung von 115 V anliegt. Der Körperwiderstand beträgt 1150 Ω. Wie groß ist der Körperstrom in mA?",
+      "answer": "100 mA",
+      "value": 100,
+      "unit": "mA",
+      "tolerance": 0.03,
+      "explain": "I = U / R = 115 V / 1150 Ω = 0,1 A = 100 mA. Ein solcher Strom kann über das Herz lebensgefährlich sein (Herzkammerflimmern).",
+      "tags": [
+        "Stromwirkung"
+      ]
+    },
+    {
+      "id": "schutz-023",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "In einem TT-System wird ein RCD mit IΔn = 30 mA eingesetzt. Die zulässige dauernde Berührungsspannung beträgt UL = 50 V. Wie groß darf der Erdungswiderstand RA des Anlagenerders höchstens sein?",
+      "answer": "1667 Ω",
+      "value": 1666.7,
+      "unit": "Ω",
+      "tolerance": 0.02,
+      "explain": "Bedingung im TT-System: RA · IΔn ≤ UL. RA ≤ UL / IΔn = 50 V / 0,03 A ≈ 1667 Ω.",
+      "tags": [
+        "TT-System",
+        "RCD"
+      ]
+    },
+    {
+      "id": "schutz-024",
+      "type": "calc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Ein Stromkreis im TN-System (U0 = 230 V) ist mit einem LS-Schalter C16 geschützt. Wie groß darf die Schleifenimpedanz Zs höchstens sein, damit die Abschaltbedingung erfüllt ist? (Vereinfacht, ohne Korrekturfaktoren; Ia = oberer Grenzwert der magnetischen Auslösung.)",
+      "answer": "1,44 Ω",
+      "value": 1.4375,
+      "unit": "Ω",
+      "tolerance": 0.02,
+      "explain": "Abschaltbedingung: Zs · Ia ≤ U0. Für C16 gilt Ia = 10 · In = 10 · 16 A = 160 A. Zs ≤ 230 V / 160 A ≈ 1,44 Ω.",
+      "tags": [
+        "Abschaltung",
+        "TN-System"
+      ]
+    },
+    {
+      "id": "schutz-025",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Ein ohmscher Drehstrom-Heizkörper (P = 9 kW) wird an 400 V angeschlossen. Wie groß ist der Betriebsstrom IB je Außenleiter?",
+      "answer": "13,0 A",
+      "value": 12.99,
+      "unit": "A",
+      "tolerance": 0.02,
+      "explain": "Bei ohmscher Last ist cos φ = 1: IB = P / (√3 · U) = 9000 W / (1,732 · 400 V) ≈ 13,0 A. Danach wird die Schutzeinrichtung gewählt (IB ≤ In ≤ Iz), z. B. 16 A.",
+      "tags": [
+        "Leitungsschutz",
+        "Überlast"
+      ]
+    },
+    {
+      "id": "schutz-026",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Im TN-System fließt bei einem Körperschluss ein Fehlerstrom von 250 A. Der Widerstand des Schutzleiters vom Gerätegehäuse bis zur Haupterdungsschiene beträgt 0,24 Ω. Welche Berührungsspannung liegt vereinfacht am Gehäuse gegenüber dem Potentialausgleich an?",
+      "answer": "60 V",
+      "value": 60,
+      "unit": "V",
+      "tolerance": 0.02,
+      "explain": "Die Berührungsspannung entspricht dem Spannungsfall am Schutzleiter: UB = IF · RPE = 250 A · 0,24 Ω = 60 V. Das ist mehr als 50 V – deshalb muss die Schutzeinrichtung schnell abschalten.",
+      "tags": [
+        "Fehlerschutz",
+        "Berührungsspannung"
+      ]
+    },
+    {
+      "id": "schutz-027",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Nennen Sie die fünf Sicherheitsregeln in der richtigen Reihenfolge.",
+      "answer": "Freischalten, gegen Wiedereinschalten sichern, Spannungsfreiheit feststellen, erden und kurzschließen, benachbarte unter Spannung stehende Teile abdecken oder abschranken.",
+      "keywords": [
+        "freischalten",
+        "sichern",
+        "spannungsfreiheit",
+        "erden"
+      ],
+      "explain": "Die fünf Sicherheitsregeln stehen in DIN VDE 0105-100. Die Spannungsfreiheit wird allpolig mit einem geeigneten zweipoligen Spannungsprüfer festgestellt.",
+      "tags": [
+        "Sicherheitsregeln"
+      ]
+    },
+    {
+      "id": "schutz-028",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wozu dient der Schutzpotentialausgleich?",
+      "answer": "Er verbindet Schutzleiter und fremde leitfähige Teile wie metallene Rohrleitungen, damit zwischen ihnen keine gefährlichen Spannungsunterschiede entstehen.",
+      "keywords": [
+        "potential",
+        "leitfähig",
+        "spannung"
+      ],
+      "explain": "Die Verbindung erfolgt an der Haupterdungsschiene. Wer gleichzeitig ein fehlerhaftes Gerät und z. B. ein Wasserrohr berührt, ist so vor einer hohen Spannungsdifferenz geschützt.",
+      "tags": [
+        "Potentialausgleich"
+      ]
+    },
+    {
+      "id": "schutz-029",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was versteht man unter Schutzklasse III?",
+      "answer": "Betriebsmittel der Schutzklasse III werden mit Schutzkleinspannung (SELV oder PELV) betrieben und haben keinen Schutzleiteranschluss.",
+      "keywords": [
+        "kleinspannung",
+        "schutzleiter"
+      ],
+      "explain": "Symbol ist eine Raute mit römischer III. Die Kleinspannung wird z. B. über einen Sicherheitstransformator erzeugt.",
+      "tags": [
+        "Schutzklassen"
+      ]
+    },
+    {
+      "id": "schutz-030",
+      "type": "open",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Was ist mit „Zusatzschutz“ gemeint und womit wird er erreicht?",
+      "answer": "Zusatzschutz ist ein zusätzlicher Schutz, falls Basis- und/oder Fehlerschutz versagen oder bei Sorglosigkeit; er wird durch eine Fehlerstrom-Schutzeinrichtung (RCD) mit IΔn ≤ 30 mA erreicht.",
+      "keywords": [
+        "fehlerstrom",
+        "30",
+        "versagen"
+      ],
+      "explain": "Der Zusatzschutz ist in DIN VDE 0100-410 u. a. für Steckdosenstromkreise bis 32 A gefordert. Er ersetzt nicht Basis- oder Fehlerschutz, sondern ergänzt sie.",
+      "tags": [
+        "Zusatzschutz",
+        "RCD"
+      ]
+    }
+  ]
+}

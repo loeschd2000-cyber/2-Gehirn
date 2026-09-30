@@ -641,6 +641,18 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
         @JavascriptInterface fun amazonCart(asin: String, qty: Int) {
             main.post { Amazon.addToCart(act, asin, qty) { ok, msg -> emit("__zgShop", JSONObject().put("type", "cart").put("ok", ok).put("msg", msg)) } }
         }
+        // ---------- Handy-KI (Gemma 4 auf dem Handy, offline) ----------
+        @JavascriptInterface fun llmState(): String = try { LocalLlm.state(act).toString() } catch (e: Throwable) { JSONObject().put("state", "none").put("error", e.message ?: "").toString() }
+        @JavascriptInterface fun llmDownload(mobile: Boolean): String = LocalLlm.download(act, mobile)
+        @JavascriptInterface fun llmDelete() { LocalLlm.delete(act) }
+        @JavascriptInterface fun llmWarm() { LocalLlm.warm(act) }
+        @JavascriptInterface fun llmCancel(id: String) { LocalLlm.cancel(id) }
+        @JavascriptInterface fun llmGenerate(id: String, system: String, prompt: String, temperature: Double) {
+            LocalLlm.generate(act, id, system.take(20000), prompt.take(20000), temperature.coerceIn(0.0, 1.5),
+                { piece -> emit("__zgLLM", JSONObject().put("id", id).put("piece", piece)) },
+                { err -> emit("__zgLLM", JSONObject().put("id", id).put("done", true).apply { if (err != null) put("error", err) }) })
+        }
+
         // ---------- Neue Dienste (Untis, Müll, Tanken, News, DHL, SmartThings …) ----------
         /** Internet-Anfrage an einen erlaubten Dienst; Antwort als __zgNet-Ereignis {id, status, body} */
         @JavascriptInterface fun http(id: String, method: String, url: String, headers: String, body: String) {

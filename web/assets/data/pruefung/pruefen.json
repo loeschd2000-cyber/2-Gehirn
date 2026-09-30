@@ -1,0 +1,543 @@
+{
+  "topic": "pruefen",
+  "title": "Prüfen & Messen",
+  "icon": "📏",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "pruefen-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Aus welchen Teilen besteht die Erstprüfung einer elektrischen Anlage nach DIN VDE 0100-600?",
+      "options": [
+        "Freischalten, Sichern, Erden",
+        "Besichtigen, Erproben, Messen",
+        "Nur Messen des Isolationswiderstands",
+        "Planen, Installieren, Abrechnen"
+      ],
+      "answer": 1,
+      "explain": "Die Erstprüfung besteht aus Besichtigen, Erproben und Messen; das Ergebnis wird dokumentiert (Prüfprotokoll). Das Besichtigen erfolgt vor dem Erproben und Messen.",
+      "tags": [
+        "Erstprüfung"
+      ]
+    },
+    {
+      "id": "pruefen-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Welche Tätigkeit gehört bei der Erstprüfung zum Besichtigen?",
+      "options": [
+        "Messen der Auslösezeit des RCD",
+        "Messen der Schleifenimpedanz",
+        "Betätigen der Not-Halt-Einrichtung",
+        "Kontrolle von Auswahl, Kennzeichnung und Beschädigungsfreiheit der Betriebsmittel"
+      ],
+      "answer": 3,
+      "explain": "Beim Besichtigen wird ohne Messgerät geprüft, ob die Betriebsmittel richtig ausgewählt, gekennzeichnet, fachgerecht errichtet und unbeschädigt sind. Das Betätigen von Einrichtungen gehört zum Erproben, Auslösezeit und Schleifenimpedanz zum Messen.",
+      "tags": [
+        "Erstprüfung",
+        "Besichtigen"
+      ]
+    },
+    {
+      "id": "pruefen-003",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Welche Tätigkeit gehört bei der Erstprüfung zum Erproben?",
+      "options": [
+        "Funktionsprüfung von Schutz-, Melde- und Not-Halt-Einrichtungen durch Betätigen",
+        "Messen des Isolationswiderstands",
+        "Kontrolle der Leiterfarben",
+        "Ablesen der Typschilder"
+      ],
+      "answer": 0,
+      "explain": "Beim Erproben wird geprüft, ob Einrichtungen funktionieren, z. B. RCD-Prüftaste, Not-Halt, Verriegelungen, Meldeleuchten. Isolationsmessung gehört zum Messen, Leiterfarben und Typschilder zum Besichtigen.",
+      "tags": [
+        "Erstprüfung",
+        "Erproben"
+      ]
+    },
+    {
+      "id": "pruefen-004",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Nach welcher Norm werden wiederkehrende Prüfungen (Wiederholungsprüfungen) ortsfester elektrischer Anlagen durchgeführt?",
+      "options": [
+        "DIN VDE 0100-600",
+        "DIN VDE 0701-0702",
+        "DIN VDE 0105-100",
+        "DIN VDE 0100-410"
+      ],
+      "answer": 2,
+      "explain": "DIN VDE 0105-100 regelt den Betrieb elektrischer Anlagen einschließlich wiederkehrender Prüfungen. DIN VDE 0100-600 gilt für die Erstprüfung, DIN VDE 0701-0702 für die Prüfung elektrischer Geräte.",
+      "tags": [
+        "Wiederholungsprüfung"
+      ]
+    },
+    {
+      "id": "pruefen-005",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Was regelt die DGUV Vorschrift 3?",
+      "options": [
+        "Die Farbkennzeichnung von Leitern",
+        "Die IP-Schutzarten von Gehäusen",
+        "Die Unfallverhütung bei elektrischen Anlagen und Betriebsmitteln, u. a. die Pflicht des Unternehmers zu regelmäßigen Prüfungen",
+        "Die Bemessung von Leitungsquerschnitten in Wohngebäuden"
+      ],
+      "answer": 2,
+      "explain": "Die DGUV Vorschrift 3 ist die Unfallverhütungsvorschrift „Elektrische Anlagen und Betriebsmittel“. Der Unternehmer muss dafür sorgen, dass Anlagen und Betriebsmittel vor der ersten Inbetriebnahme und in bestimmten Zeitabständen von einer Elektrofachkraft (oder unter deren Leitung und Aufsicht) geprüft werden.",
+      "tags": [
+        "DGUV V3"
+      ]
+    },
+    {
+      "id": "pruefen-006",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welchen Richtwert für die Prüffrist nennt die DGUV Vorschrift 3 für elektrische Anlagen und ortsfeste Betriebsmittel?",
+      "options": [
+        "4 Jahre",
+        "6 Monate",
+        "1 Jahr",
+        "10 Jahre"
+      ],
+      "answer": 0,
+      "explain": "Für elektrische Anlagen und ortsfeste Betriebsmittel nennt die DGUV Vorschrift 3 einen Richtwert von 4 Jahren. Ortsveränderliche Betriebsmittel werden meist deutlich häufiger geprüft, abhängig von der Beanspruchung.",
+      "tags": [
+        "DGUV V3",
+        "Prüffristen"
+      ]
+    },
+    {
+      "id": "pruefen-007",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Womit beginnt die Prüfung eines ortsveränderlichen Geräts nach DIN VDE 0701-0702?",
+      "options": [
+        "Mit der Isolationswiderstandsmessung",
+        "Mit der Funktionsprüfung",
+        "Mit der Schutzleiterstrommessung",
+        "Mit der Sichtprüfung"
+      ],
+      "answer": 3,
+      "explain": "Zuerst wird besichtigt (z. B. Gehäuse, Anschlussleitung, Knickschutz, Stecker). Viele Mängel sind schon so erkennbar; ein beschädigtes Gerät wird nicht weiter unter Spannung geprüft. Danach folgen die Messungen und zuletzt die Funktionsprüfung.",
+      "tags": [
+        "DIN VDE 0701-0702"
+      ]
+    },
+    {
+      "id": "pruefen-008",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welcher Grenzwert gilt nach DIN VDE 0701-0702 für den Schutzleiterwiderstand eines Geräts mit einer Anschlussleitung bis 5 m Länge?",
+      "options": [
+        "≤ 3 Ω",
+        "≤ 0,3 Ω",
+        "≤ 30 Ω",
+        "≥ 1 MΩ"
+      ],
+      "answer": 1,
+      "explain": "Bis 5 m Leitungslänge gilt ≤ 0,3 Ω, für jede weiteren 7,5 m kommen 0,1 Ω hinzu (höchstens 1 Ω). ≥ 1 MΩ ist ein Mindestwert für den Isolationswiderstand, nicht für den Schutzleiter.",
+      "tags": [
+        "DIN VDE 0701-0702",
+        "Schutzleiter"
+      ]
+    },
+    {
+      "id": "pruefen-009",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Warum wird bei der Messung des Schutzleiterwiderstands die Anschlussleitung abschnittsweise bewegt?",
+      "options": [
+        "Um Unterbrechungen oder Wackelkontakte im Schutzleiter zu erkennen",
+        "Um die Leitung vor der Messung zu entladen",
+        "Um den Isolationswiderstand zu erhöhen",
+        "Damit der Prüfstrom kleiner wird"
+      ],
+      "answer": 0,
+      "explain": "Ein angebrochener Schutzleiter kann in Ruhelage noch Kontakt haben. Durch Bewegen der Leitung zeigt sich ein schwankender oder zu hoher Messwert.",
+      "tags": [
+        "Schutzleiter"
+      ]
+    },
+    {
+      "id": "pruefen-010",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welcher Mindestwert gilt nach DIN VDE 0701-0702 für den Isolationswiderstand eines Geräts der Schutzklasse I (ohne Heizelemente)?",
+      "options": [
+        "≥ 1 kΩ",
+        "≥ 0,3 Ω",
+        "≥ 1 MΩ",
+        "≥ 100 MΩ"
+      ],
+      "answer": 2,
+      "explain": "Für Schutzklasse I gilt ≥ 1 MΩ, für Schutzklasse II ≥ 2 MΩ. Gemessen wird mit 500 V Gleichspannung zwischen den kurzgeschlossenen aktiven Leitern und dem Schutzleiter bzw. berührbaren leitfähigen Teilen.",
+      "tags": [
+        "DIN VDE 0701-0702",
+        "Isolationswiderstand"
+      ]
+    },
+    {
+      "id": "pruefen-011",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Mit welcher Messspannung wird bei der Erstprüfung der Isolationswiderstand eines 230/400-V-Stromkreises gemessen?",
+      "options": [
+        "230 V AC",
+        "500 V DC",
+        "50 V DC",
+        "1000 V AC"
+      ],
+      "answer": 1,
+      "explain": "Nach DIN VDE 0100-600 wird für Stromkreise bis 500 V Nennspannung mit 500 V Gleichspannung gemessen; der Isolationswiderstand muss mindestens 1 MΩ betragen.",
+      "tags": [
+        "Isolationswiderstand"
+      ]
+    },
+    {
+      "id": "pruefen-012",
+      "type": "mc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Welche Messspannung und welcher Mindestwert gelten nach DIN VDE 0100-600 für die Isolationsmessung von SELV- und PELV-Stromkreisen?",
+      "options": [
+        "500 V DC und ≥ 1 MΩ",
+        "1000 V DC und ≥ 1 MΩ",
+        "50 V AC und ≥ 0,5 kΩ",
+        "250 V DC und ≥ 0,5 MΩ"
+      ],
+      "answer": 3,
+      "explain": "SELV/PELV: 250 V DC, ≥ 0,5 MΩ. Stromkreise bis 500 V: 500 V DC, ≥ 1 MΩ. Über 500 V: 1000 V DC, ≥ 1 MΩ.",
+      "tags": [
+        "Isolationswiderstand",
+        "SELV/PELV"
+      ]
+    },
+    {
+      "id": "pruefen-013",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Was ist vor einer Isolationswiderstandsmessung in einer Anlage zu beachten?",
+      "options": [
+        "Alle Verbraucher bleiben eingeschaltet, damit der Messstrom fließen kann",
+        "Die Messung wird unter Netzspannung durchgeführt",
+        "Der Schutzleiter wird vor der Messung dauerhaft entfernt",
+        "Der Stromkreis muss spannungsfrei sein, empfindliche Verbraucher (z. B. Elektronik) sind abzuklemmen"
+      ],
+      "answer": 3,
+      "explain": "Die Isolationsmessung erfolgt am freigeschalteten Stromkreis mit hoher Gleichspannung. Angeschlossene Elektronik kann dadurch beschädigt werden oder das Messergebnis verfälschen.",
+      "tags": [
+        "Isolationswiderstand"
+      ]
+    },
+    {
+      "id": "pruefen-014",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welcher Grenzwert gilt nach DIN VDE 0701-0702 allgemein für den Schutzleiterstrom eines Geräts der Schutzklasse I?",
+      "options": [
+        "0,5 mA",
+        "3,5 mA",
+        "10 mA",
+        "30 mA"
+      ],
+      "answer": 1,
+      "explain": "Allgemein gilt für den Schutzleiterstrom ≤ 3,5 mA (Ausnahmen z. B. für Geräte mit großer Heizleistung). 0,5 mA ist der Grenzwert für den Berührungsstrom an berührbaren leitfähigen Teilen, z. B. bei Schutzklasse II.",
+      "tags": [
+        "DIN VDE 0701-0702",
+        "Schutzleiterstrom"
+      ]
+    },
+    {
+      "id": "pruefen-015",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Warum wird bei der Erstprüfung die Schleifenimpedanz gemessen?",
+      "options": [
+        "Um nachzuweisen, dass im Fehlerfall ein ausreichend großer Strom fließt, damit die Schutzeinrichtung rechtzeitig abschaltet",
+        "Um den Isolationswiderstand der Leitung zu bestimmen",
+        "Um die Auslösezeit des RCD zu ermitteln",
+        "Um die Leistung der angeschlossenen Verbraucher zu bestimmen"
+      ],
+      "answer": 0,
+      "explain": "Aus der Schleifenimpedanz Zs ergibt sich der Kurzschlussstrom Ik = U0 / Zs. Ist Ik mindestens so groß wie der Abschaltstrom Ia der Schutzeinrichtung, wird in der geforderten Zeit abgeschaltet.",
+      "tags": [
+        "Schleifenimpedanz"
+      ]
+    },
+    {
+      "id": "pruefen-016",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welche maximale Auslösezeit darf ein unverzögerter RCD (allgemeiner Typ) bei der Prüfung mit dem Bemessungsdifferenzstrom IΔn haben?",
+      "options": [
+        "40 ms",
+        "1 s",
+        "300 ms",
+        "5 s"
+      ],
+      "answer": 2,
+      "explain": "Bei IΔn muss ein unverzögerter RCD innerhalb von 300 ms auslösen. 40 ms gilt beim Fünffachen von IΔn.",
+      "tags": [
+        "RCD-Prüfung"
+      ]
+    },
+    {
+      "id": "pruefen-017",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "In welchem Bereich muss der tatsächliche Auslösestrom eines RCD liegen?",
+      "options": [
+        "Zwischen 1,0 · IΔn und 2,0 · IΔn",
+        "Zwischen 0,5 · IΔn und 1,0 · IΔn",
+        "Unter 0,5 · IΔn",
+        "Zwischen 5 · IΔn und 10 · IΔn"
+      ],
+      "answer": 1,
+      "explain": "Ein RCD darf unter 0,5 · IΔn nicht auslösen (sonst Fehlauslösungen durch Ableitströme) und muss spätestens bei IΔn auslösen. Bei einem 30-mA-RCD liegt der Auslösestrom also zwischen 15 mA und 30 mA.",
+      "tags": [
+        "RCD-Prüfung"
+      ]
+    },
+    {
+      "id": "pruefen-018",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie wird ein Strommesser (Amperemeter) richtig angeschlossen?",
+      "options": [
+        "In Reihe zum Verbraucher; der Innenwiderstand soll möglichst klein sein",
+        "Parallel zum Verbraucher; der Innenwiderstand soll möglichst groß sein",
+        "In Reihe zum Verbraucher; der Innenwiderstand soll möglichst groß sein",
+        "Parallel zum Verbraucher; der Innenwiderstand soll möglichst klein sein"
+      ],
+      "answer": 0,
+      "explain": "Der Strom muss durch das Messgerät fließen, also Reihenschaltung. Ein kleiner Innenwiderstand beeinflusst den Stromkreis kaum. Ein Spannungsmesser wird dagegen parallel geschaltet und soll einen großen Innenwiderstand haben.",
+      "tags": [
+        "Strommessung",
+        "Multimeter"
+      ]
+    },
+    {
+      "id": "pruefen-019",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Zangenamperemeter wird um die komplette Anschlussleitung (L und N) eines einphasigen Verbrauchers gelegt. Was zeigt es im fehlerfreien Betrieb an?",
+      "options": [
+        "Den doppelten Laststrom",
+        "Den Laststrom",
+        "Die Netzspannung",
+        "Ungefähr 0 A"
+      ],
+      "answer": 3,
+      "explain": "Hin- und Rückstrom sind gleich groß und entgegengesetzt, ihre Magnetfelder heben sich auf. Für die Laststrommessung darf nur ein Leiter umfasst werden. Ein Restwert zeigt einen Differenzstrom (z. B. Ableitstrom) an.",
+      "tags": [
+        "Zangenamperemeter"
+      ]
+    },
+    {
+      "id": "pruefen-020",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welcher Messkategorie ist eine Messung am Hausanschlusskasten bzw. am Zählerplatz zuzuordnen?",
+      "options": [
+        "CAT I",
+        "CAT II",
+        "CAT IV",
+        "CAT III"
+      ],
+      "answer": 2,
+      "explain": "CAT IV gilt für die Quelle der Niederspannungsinstallation (Hausanschluss, Zähler). CAT III gilt für die Gebäudeinstallation (z. B. Verteiler), CAT II für Geräte an Steckdosen. Das Messgerät muss mindestens für die Kategorie der Messstelle ausgelegt sein.",
+      "tags": [
+        "Messkategorien"
+      ]
+    },
+    {
+      "id": "pruefen-021",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Warum sollte zur Messung nicht sinusförmiger Ströme (z. B. von Schaltnetzteilen) ein TRMS-Messgerät verwendet werden?",
+      "options": [
+        "Weil es den echten Effektivwert auch bei verzerrten Kurvenformen richtig anzeigt",
+        "Weil es automatisch eine höhere Messkategorie hat",
+        "Weil es nur Gleichströme messen kann",
+        "Weil einfache Messgeräte schon bei reinem Sinus falsch anzeigen"
+      ],
+      "answer": 0,
+      "explain": "Einfache Geräte messen den Mittelwert und rechnen mit dem Formfaktor des Sinus auf den Effektivwert um. Bei verzerrten Kurvenformen stimmt das nicht mehr. TRMS (True RMS) bildet den echten Effektivwert.",
+      "tags": [
+        "Multimeter",
+        "Effektivwert"
+      ]
+    },
+    {
+      "id": "pruefen-022",
+      "type": "calc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Bei einer Messung wurde eine Schleifenimpedanz Zs = 0,92 Ω ermittelt (U0 = 230 V). Wie groß ist der Kurzschlussstrom Ik?",
+      "answer": "250 A",
+      "value": 250,
+      "unit": "A",
+      "tolerance": 0.02,
+      "explain": "Ik = U0 / Zs = 230 V / 0,92 Ω = 250 A. Ein LS B16 (Ia = 5 · 16 A = 80 A) würde damit sicher magnetisch auslösen.",
+      "tags": [
+        "Schleifenimpedanz",
+        "Kurzschlussstrom"
+      ]
+    },
+    {
+      "id": "pruefen-023",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Der Schutzleiter einer Geräteanschlussleitung ist 10 m lang und hat einen Querschnitt von 1,5 mm² Kupfer (κ = 56 m/(Ω·mm²)). Wie groß ist sein Widerstand?",
+      "answer": "0,119 Ω",
+      "value": 0.119,
+      "unit": "Ω",
+      "tolerance": 0.03,
+      "explain": "R = l / (κ · A) = 10 m / (56 m/(Ω·mm²) · 1,5 mm²) ≈ 0,119 Ω.",
+      "tags": [
+        "Schutzleiter",
+        "Leitungswiderstand"
+      ]
+    },
+    {
+      "id": "pruefen-024",
+      "type": "calc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Ein Digitalmultimeter zeigt im 400-V-Bereich 230,0 V an (Auflösung 0,1 V). Die Messunsicherheit ist mit ±(0,5 % vom Messwert + 3 Digit) angegeben. Wie groß ist der maximale absolute Messfehler?",
+      "answer": "1,45 V",
+      "value": 1.45,
+      "unit": "V",
+      "tolerance": 0.02,
+      "explain": "0,5 % von 230,0 V = 1,15 V; 3 Digit = 3 · 0,1 V = 0,3 V. Gesamt: 1,15 V + 0,3 V = 1,45 V. Der wahre Wert liegt also zwischen 228,55 V und 231,45 V.",
+      "tags": [
+        "Messfehler"
+      ]
+    },
+    {
+      "id": "pruefen-025",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Ein analoger Spannungsmesser der Genauigkeitsklasse 1,5 hat den Messbereich 300 V und zeigt 100 V an. Wie groß ist der mögliche relative Fehler bezogen auf den angezeigten Wert?",
+      "answer": "4,5 %",
+      "value": 4.5,
+      "unit": "%",
+      "tolerance": 0.02,
+      "explain": "Die Klasse bezieht sich auf den Messbereichsendwert: 1,5 % · 300 V = 4,5 V. Bezogen auf 100 V: 4,5 V / 100 V = 4,5 %. Deshalb sollte der Messbereich so gewählt werden, dass der Zeiger möglichst im oberen Drittel steht.",
+      "tags": [
+        "Messfehler",
+        "Messbereich"
+      ]
+    },
+    {
+      "id": "pruefen-026",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Auf einem Oszilloskop hat eine sinusförmige Spannung einen Spitze-Spitze-Wert von 6,5 Kästchen. Die Y-Ablenkung beträgt 100 V/Div (Tastkopf bereits berücksichtigt). Wie groß ist der Effektivwert?",
+      "answer": "229,8 V",
+      "value": 229.8,
+      "unit": "V",
+      "tolerance": 0.02,
+      "explain": "Uss = 6,5 Div · 100 V/Div = 650 V; Scheitelwert Û = Uss / 2 = 325 V; Ueff = Û / √2 = 325 V / 1,414 ≈ 229,8 V.",
+      "tags": [
+        "Oszilloskop",
+        "Effektivwert"
+      ]
+    },
+    {
+      "id": "pruefen-027",
+      "type": "open",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Warum wird der Isolationswiderstand mit Gleichspannung und nicht mit Wechselspannung gemessen?",
+      "answer": "Bei Gleichspannung fließt nach dem Aufladen der Leitungskapazitäten kein kapazitiver Strom mehr, sodass nur der ohmsche Isolationswiderstand gemessen wird.",
+      "keywords": [
+        "gleichspannung",
+        "kapazit"
+      ],
+      "explain": "Mit Wechselspannung würde ständig ein Blindstrom über die Kapazität zwischen den Leitern fließen und einen zu kleinen Isolationswiderstand vortäuschen.",
+      "tags": [
+        "Isolationswiderstand"
+      ]
+    },
+    {
+      "id": "pruefen-028",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was muss man beim Multimeter beachten, bevor man nach einer Strommessung eine Spannung misst?",
+      "answer": "Die Messleitung muss von der Strombuchse (A/mA) in die Spannungsbuchse (V) umgesteckt und der Messbereich umgeschaltet werden, sonst entsteht über den niederohmigen Strompfad ein Kurzschluss.",
+      "keywords": [
+        "buchse",
+        "umstecken",
+        "kurzschluss"
+      ],
+      "explain": "Der Strompfad hat einen sehr kleinen Widerstand (Shunt). Parallel an eine Spannung gelegt, fließt ein Kurzschlussstrom – Sicherung, Messgerät oder im schlimmsten Fall der Anwender werden gefährdet.",
+      "tags": [
+        "Multimeter",
+        "Strommessung"
+      ]
+    },
+    {
+      "id": "pruefen-029",
+      "type": "open",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Nennen Sie die wichtigsten Prüfschritte nach DIN VDE 0701-0702 für ein Gerät der Schutzklasse I.",
+      "answer": "Sichtprüfung, Messung des Schutzleiterwiderstands, Messung des Isolationswiderstands, Messung des Schutzleiterstroms, Funktionsprüfung und Dokumentation.",
+      "keywords": [
+        "sicht",
+        "schutzleiter",
+        "isolation",
+        "funktion"
+      ],
+      "explain": "Bei Schutzklasse II entfällt die Schutzleiterwiderstandsmessung; statt des Schutzleiterstroms wird der Berührungsstrom an berührbaren leitfähigen Teilen gemessen.",
+      "tags": [
+        "DIN VDE 0701-0702"
+      ]
+    },
+    {
+      "id": "pruefen-030",
+      "type": "open",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Was bedeutet die Angabe CAT III auf einem Messgerät?",
+      "answer": "Das Messgerät ist für Messungen in der Gebäudeinstallation, z. B. in Verteilern und an fest angeschlossenen Betriebsmitteln, ausgelegt und hält die dort möglichen Überspannungen aus.",
+      "keywords": [
+        "gebäude",
+        "installation",
+        "überspannung"
+      ],
+      "explain": "Je höher die Kategorie, desto näher an der Einspeisung darf gemessen werden: CAT II Geräte an Steckdosen, CAT III Gebäudeinstallation, CAT IV Hausanschluss/Zähler.",
+      "tags": [
+        "Messkategorien"
+      ]
+    }
+  ]
+}

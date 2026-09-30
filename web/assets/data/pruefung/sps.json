@@ -1,0 +1,544 @@
+{
+  "topic": "sps",
+  "title": "SPS-Technik",
+  "icon": "🧮",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "sps-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "In welcher Reihenfolge läuft ein SPS-Zyklus typischerweise ab?",
+      "options": [
+        "Programm bearbeiten – Eingänge lesen – Ausgänge schreiben",
+        "Eingänge lesen – Ausgänge schreiben – Programm bearbeiten",
+        "Eingänge ins Prozessabbild der Eingänge (PAE) lesen – Programm bearbeiten – Prozessabbild der Ausgänge (PAA) an die Ausgänge übertragen",
+        "Jede Eingangsänderung wird sofort einzeln bearbeitet, einen festen Zyklus gibt es nicht"
+      ],
+      "answer": 2,
+      "explain": "Die SPS liest zu Zyklusbeginn alle Eingänge ins PAE, bearbeitet dann das Programm mit diesen Werten und überträgt am Ende das PAA an die Ausgänge. Danach beginnt der nächste Zyklus.",
+      "tags": [
+        "Zyklus",
+        "Prozessabbild"
+      ]
+    },
+    {
+      "id": "sps-002",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Warum arbeitet eine SPS mit einem Prozessabbild der Eingänge (PAE)?",
+      "options": [
+        "Damit alle Eingangssignale während eines Programmdurchlaufs einen einheitlichen, gleichbleibenden Zustand haben",
+        "Damit die Eingangszustände bei Spannungsausfall gespeichert bleiben",
+        "Damit Eingangssignale schneller als die Zykluszeit erfasst werden",
+        "Damit Eingänge die Ausgänge direkt ohne Programm schalten können"
+      ],
+      "answer": 0,
+      "explain": "Das PAE ist eine Momentaufnahme der Eingänge zu Zyklusbeginn. Ändert sich ein Eingang mitten im Zyklus, arbeitet das Programm trotzdem bis zum Zyklusende mit dem gleichen Wert – das verhindert widersprüchliche Ergebnisse.",
+      "tags": [
+        "Prozessabbild"
+      ]
+    },
+    {
+      "id": "sps-003",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Programmiersprache nach IEC 61131-3 ist eine textuelle Hochsprache mit Anweisungen wie IF, CASE und FOR?",
+      "options": [
+        "FUP / FBD (Funktionsplan)",
+        "KOP / LD (Kontaktplan)",
+        "AS / SFC (Ablaufsprache)",
+        "ST (Strukturierter Text)"
+      ],
+      "answer": 3,
+      "explain": "ST ist an Pascal angelehnt und eignet sich gut für Berechnungen und Algorithmen. FUP, KOP und AS sind grafische Sprachen.",
+      "tags": [
+        "IEC 61131-3",
+        "ST"
+      ]
+    },
+    {
+      "id": "sps-004",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Sprache nach IEC 61131-3 ist an den Stromlaufplan angelehnt und stellt Verknüpfungen mit Kontakten und Spulen dar?",
+      "options": [
+        "FUP / FBD (Funktionsplan)",
+        "KOP / LD (Kontaktplan)",
+        "ST (Strukturierter Text)",
+        "AWL / IL (Anweisungsliste)"
+      ],
+      "answer": 1,
+      "explain": "Im Kontaktplan (Ladder Diagram) werden Schließer- und Öffnerkontakte sowie Spulen zwischen zwei senkrechten Stromschienen angeordnet – ähnlich einem um 90° gedrehten Stromlaufplan.",
+      "tags": [
+        "IEC 61131-3",
+        "KOP"
+      ]
+    },
+    {
+      "id": "sps-005",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Wofür ist die Ablaufsprache AS (SFC) nach IEC 61131-3 besonders geeignet?",
+      "options": [
+        "Für mathematische Berechnungen mit Gleitpunktzahlen",
+        "Für Schrittketten, also Abläufe aus Schritten und Weiterschaltbedingungen",
+        "Für die Parametrierung von Feldbus-Netzwerken",
+        "Ausschließlich für einfache UND-/ODER-Verknüpfungen"
+      ],
+      "answer": 1,
+      "explain": "AS/SFC beschreibt Ablaufsteuerungen grafisch mit Schritten, Transitionen und Aktionen – ähnlich wie GRAFCET. Berechnungen löst man besser in ST.",
+      "tags": [
+        "IEC 61131-3",
+        "Ablaufsteuerung"
+      ]
+    },
+    {
+      "id": "sps-006",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welche Eingangsbytes belegt das Eingangswort %IW64 (Siemens: EW64)?",
+      "options": [
+        "Nur %IB64",
+        "%IB64 bis %IB67",
+        "%IB63 und %IB64",
+        "%IB64 und %IB65"
+      ],
+      "answer": 3,
+      "explain": "Ein Wort umfasst 16 Bit = 2 Byte. %IW64 besteht aus dem Byte 64 und dem folgenden Byte 65. Vier Byte (64–67) wären ein Doppelwort (%ID64).",
+      "tags": [
+        "Adressierung",
+        "Wort"
+      ]
+    },
+    {
+      "id": "sps-007",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was bedeutet die Adresse %I1.3 (Siemens-Schreibweise: E1.3)?",
+      "options": [
+        "Eingang, Byte 1, Bit 3",
+        "Eingang Nummer 13",
+        "Eingang, Bit 1, Byte 3",
+        "Ausgang, Byte 1, Bit 3"
+      ],
+      "answer": 0,
+      "explain": "Bei der Bitadressierung steht vor dem Punkt die Bytenummer und dahinter die Bitnummer (0 bis 7). %I bzw. E kennzeichnet einen Eingang, %Q bzw. A einen Ausgang.",
+      "tags": [
+        "Adressierung"
+      ]
+    },
+    {
+      "id": "sps-008",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was ist ein Merker (z. B. %M10.0, Siemens: M10.0)?",
+      "options": [
+        "Ein digitaler Ausgang für Meldeleuchten",
+        "Ein Eingang, an den ein Taster angeschlossen wird",
+        "Ein interner Speicherbereich der SPS für Zwischenergebnisse, ohne direkte Verbindung zur Peripherie",
+        "Ein Kommentar, der im Programm angezeigt wird"
+      ],
+      "answer": 2,
+      "explain": "Merker sind Speicherbits/-bytes/-wörter in der CPU. Sie speichern Zwischenergebnisse und werden nicht direkt an Klemmen ausgegeben.",
+      "tags": [
+        "Adressierung",
+        "Merker"
+      ]
+    },
+    {
+      "id": "sps-009",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Aus-Taster ist als Öffner an einem SPS-Eingang angeschlossen. Wie wird dieser Eingang im KOP in der Selbsthaltung für den Motor abgefragt?",
+      "options": [
+        "Als Öffnerkontakt (Abfrage auf 0), weil der Taster ein Öffner ist",
+        "Er wird nicht abgefragt, sondern direkt auf den Ausgang verdrahtet",
+        "Als positive Flanke, damit der Motor nur einen Zyklus lang ausgeschaltet wird",
+        "Als Schließerkontakt (Abfrage auf 1): Im Ruhezustand liefert der Eingang 1, beim Betätigen 0, und die Selbsthaltung fällt ab"
+      ],
+      "answer": 3,
+      "explain": "Der Öffner liefert unbetätigt 1-Signal. Damit der Motor laufen kann, muss im Programm auf 1 abgefragt werden. Ein Öffnerkontakt im Programm würde den Motor nur bei gedrücktem Aus-Taster einschalten lassen – ein typischer Fehler.",
+      "tags": [
+        "Öffner/Schließer",
+        "Selbsthaltung"
+      ]
+    },
+    {
+      "id": "sps-010",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Bei einer rücksetzdominanten Selbsthaltung (Speicherfunktion) sind Setz- und Rücksetzbedingung gleichzeitig 1. Welchen Zustand hat der Ausgang?",
+      "options": [
+        "1 – das Setzen hat Vorrang",
+        "0 – das Rücksetzen hat Vorrang",
+        "Er behält seinen vorherigen Zustand",
+        "Er wechselt in jedem Zyklus zwischen 0 und 1"
+      ],
+      "answer": 1,
+      "explain": "Rücksetzdominant heißt: Bei gleichzeitigem Setzen und Rücksetzen gewinnt das Rücksetzen. Bei Motorsteuerungen ist das üblich, damit der Aus-Befehl immer Vorrang hat.",
+      "tags": [
+        "Selbsthaltung"
+      ]
+    },
+    {
+      "id": "sps-011",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was liefert eine positive Flankenauswertung (steigende Flanke) eines Eingangssignals?",
+      "options": [
+        "Ein 1-Signal, solange der Eingang 1 ist",
+        "Für genau einen Zyklus ein 1-Signal, wenn das Signal von 1 nach 0 wechselt",
+        "Für genau einen Zyklus ein 1-Signal, wenn das Signal von 0 nach 1 wechselt",
+        "Ein Dauersignal ab dem ersten Signalwechsel bis zum Neustart der SPS"
+      ],
+      "answer": 2,
+      "explain": "Die Flankenauswertung vergleicht den aktuellen Zustand mit dem gespeicherten Zustand des letzten Zyklus (Flankenmerker). Beim Wechsel 0→1 ist das Ergebnis genau einen Zyklus lang 1. Der Wechsel 1→0 wäre eine negative Flanke.",
+      "tags": [
+        "Flanke"
+      ]
+    },
+    {
+      "id": "sps-012",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Timer TON (Einschaltverzögerung) hat PT = T#5s. Der Eingang IN ist 3 s lang 1 und fällt dann auf 0. Wie verhält sich der Ausgang Q?",
+      "options": [
+        "Q bleibt die ganze Zeit 0",
+        "Q wird nach 3 s für 2 s zu 1",
+        "Q wird nach 5 s für einen Zyklus zu 1",
+        "Q wird sofort 1 und nach 5 s wieder 0"
+      ],
+      "answer": 0,
+      "explain": "Beim TON wird Q erst 1, wenn IN ununterbrochen mindestens die Zeit PT lang 1 war. Fällt IN vorher ab, wird die Zeit zurückgesetzt und Q bleibt 0.",
+      "tags": [
+        "Timer",
+        "TON"
+      ]
+    },
+    {
+      "id": "sps-013",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welches Zeitverhalten hat ein Timer TOF (Ausschaltverzögerung)?",
+      "options": [
+        "Q wird mit IN sofort 1 und fällt erst die Zeit PT nach dem Abschalten von IN auf 0",
+        "Q wird erst die Zeit PT nach dem Einschalten von IN zu 1",
+        "Q liefert unabhängig von der Dauer von IN einen Impuls der Länge PT",
+        "Q ist 0, solange IN 1 ist, und wird beim Abschalten von IN für die Zeit PT zu 1"
+      ],
+      "answer": 0,
+      "explain": "Der TOF hält den Ausgang nach dem Abschalten des Eingangs noch für PT aufrecht – typisch z. B. für den Nachlauf eines Lüfters. Die verzögerte Einschaltung wäre ein TON, der feste Impuls ein TP.",
+      "tags": [
+        "Timer",
+        "TOF"
+      ]
+    },
+    {
+      "id": "sps-014",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Timer TP (Impuls) mit PT = T#4s wird durch ein 1 s langes 1-Signal an IN gestartet. Wie lange ist Q = 1?",
+      "options": [
+        "1 s",
+        "5 s",
+        "4 s",
+        "3 s"
+      ],
+      "answer": 2,
+      "explain": "Der TP erzeugt mit der steigenden Flanke an IN einen Impuls fester Länge PT – unabhängig davon, wie lange IN anliegt. Q ist daher 4 s lang 1.",
+      "tags": [
+        "Timer",
+        "TP"
+      ]
+    },
+    {
+      "id": "sps-015",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Ein Aufwärtszähler CTU hat den Vorgabewert PV = 10. Wann wird der Ausgang Q = 1?",
+      "options": [
+        "Bei jeder steigenden Flanke am Zähleingang CU",
+        "Sobald der Zählwert CV größer oder gleich 10 ist",
+        "Wenn der Zählwert CV genau 0 ist",
+        "Solange der Zähleingang CU ein 1-Signal hat"
+      ],
+      "answer": 1,
+      "explain": "Der CTU erhöht CV bei jeder steigenden Flanke an CU um 1. Q wird 1, wenn CV ≥ PV ist. Mit R (Reset) wird CV wieder auf 0 gesetzt. CV = 0 ist die Ausgangsbedingung beim Abwärtszähler CTD (CV ≤ 0).",
+      "tags": [
+        "Zähler",
+        "CTU"
+      ]
+    },
+    {
+      "id": "sps-016",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welchen Datentyp hat das Ergebnis eines Vergleichs wie „Temperatur > 80.0“?",
+      "options": [
+        "REAL",
+        "INT",
+        "TIME",
+        "BOOL"
+      ],
+      "answer": 3,
+      "explain": "Ein Vergleicher liefert immer eine Wahr/Falsch-Aussage, also BOOL (1 oder 0) – auch wenn die verglichenen Werte REAL oder INT sind.",
+      "tags": [
+        "Vergleicher",
+        "Datentypen"
+      ]
+    },
+    {
+      "id": "sps-017",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welcher Datentyp eignet sich für einen Messwert mit Nachkommastellen, z. B. 23,7 °C?",
+      "options": [
+        "INT",
+        "DINT",
+        "BOOL",
+        "REAL"
+      ],
+      "answer": 3,
+      "explain": "REAL ist ein Gleitpunkt-Datentyp (32 Bit) und kann Nachkommastellen darstellen. INT (16 Bit) und DINT (32 Bit) sind Ganzzahlen, BOOL ist nur ein Bit.",
+      "tags": [
+        "Datentypen"
+      ]
+    },
+    {
+      "id": "sps-018",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Wodurch unterscheidet sich ein Funktionsbaustein (FB) von einer Funktion (FC bzw. FUN)?",
+      "options": [
+        "Der FB hat ein Gedächtnis: Seine statischen Variablen bleiben über den Zyklus hinaus in einer Instanz erhalten (bei Siemens im Instanz-Datenbaustein)",
+        "Ein FB darf keine Eingangsparameter haben",
+        "Eine Funktion kann nur im Kontaktplan programmiert werden",
+        "Ein FB wird nur einmal beim Anlauf der SPS bearbeitet"
+      ],
+      "answer": 0,
+      "explain": "Eine Funktion liefert bei gleichen Eingängen immer das gleiche Ergebnis und hat keine gespeicherten Werte. Ein FB (z. B. ein Timer oder Zähler) braucht Speicher für seinen Zustand – dafür wird eine Instanz angelegt. Global-Datenbausteine speichern dagegen Daten für mehrere Bausteine.",
+      "tags": [
+        "Bausteine"
+      ]
+    },
+    {
+      "id": "sps-019",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was beschreibt in einem GRAFCET eine Transition?",
+      "options": [
+        "Die Aktion, die in einem Schritt ausgeführt wird",
+        "Den Anfangsschritt der Ablaufsteuerung",
+        "Die Übergangsbedingung, die erfüllt sein muss, damit vom aktiven Schritt zum nächsten Schritt weitergeschaltet wird",
+        "Einen Kommentar zur Funktion der Anlage"
+      ],
+      "answer": 2,
+      "explain": "Ein GRAFCET besteht aus Schritten, Transitionen und Aktionen. Die Transition (waagerechter Strich mit Bedingung) wird ausgelöst, wenn der vorangehende Schritt aktiv und ihre Bedingung erfüllt ist.",
+      "tags": [
+        "GRAFCET"
+      ]
+    },
+    {
+      "id": "sps-020",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welcher Digitalwert entspricht bei Siemens-Analogbaugruppen (z. B. S7-1200/S7-1500) dem Nennbereichsende, also z. B. 10 V oder 20 mA?",
+      "options": [
+        "32767",
+        "27648",
+        "4095",
+        "65535"
+      ],
+      "answer": 1,
+      "explain": "Siemens-Beispiel: Der Nennbereich wird auf 0 bis 27648 abgebildet. Werte darüber bis 32511 gelten als Übersteuerungsbereich. 32767 ist der größte INT-Wert, 4095 der Endwert eines 12-Bit-Wandlers.",
+      "tags": [
+        "Analogwerte",
+        "Siemens"
+      ]
+    },
+    {
+      "id": "sps-021",
+      "type": "mc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Was ist die Grundidee einer Sicherheits-SPS (fehlersichere Steuerung)?",
+      "options": [
+        "Sie verarbeitet Sicherheitsfunktionen redundant mit ständiger Selbstüberwachung und schaltet bei einem erkannten Fehler in einen sicheren Zustand",
+        "Sie ist eine normale SPS, die in einem abschließbaren Schaltschrank eingebaut ist",
+        "Sie macht eine Risikobeurteilung der Maschine überflüssig",
+        "Sie arbeitet ohne Programmzyklus und ist deshalb schneller"
+      ],
+      "answer": 0,
+      "explain": "Sicherheitssteuerungen arbeiten z. B. zweikanalig, testen sich und ihre Ein-/Ausgänge selbst und sind für Sicherheitsfunktionen nach DIN EN ISO 13849-1 geeignet. Die Risikobeurteilung bleibt trotzdem Pflicht.",
+      "tags": [
+        "Sicherheit"
+      ]
+    },
+    {
+      "id": "sps-022",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Temperatursensor liefert über eine Analogbaugruppe (Siemens-Beispiel: 0–27648 ≙ 0–150 °C) den Rohwert 18432. Welche Temperatur entspricht diesem Wert?",
+      "answer": "100 °C",
+      "value": 100.0,
+      "unit": "°C",
+      "tolerance": 0.02,
+      "explain": "Linear skalieren: T = Rohwert / 27648 · 150 °C = 18432 / 27648 · 150 °C = 0,6667 · 150 °C = 100 °C.",
+      "tags": [
+        "Analogwerte",
+        "Normieren"
+      ]
+    },
+    {
+      "id": "sps-023",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Drucktransmitter hat den Messbereich 0–6 bar und liefert ein Signal von 4–20 mA. Es werden 14 mA gemessen. Welcher Druck liegt an?",
+      "answer": "3,75 bar",
+      "value": 3.75,
+      "unit": "bar",
+      "tolerance": 0.02,
+      "explain": "Nutzbereich 20 mA − 4 mA = 16 mA. Anteil: (14 mA − 4 mA) / 16 mA = 0,625. Druck: 0,625 · 6 bar = 3,75 bar.",
+      "tags": [
+        "Analogwerte",
+        "4–20 mA"
+      ]
+    },
+    {
+      "id": "sps-024",
+      "type": "calc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Eine SPS hat eine Zykluszeit von 8 ms. Ein Impulsgeber liefert Impulse mit gleich langer Impuls- und Pausendauer. Impuls und Pause müssen jeweils mindestens eine Zykluszeit dauern, damit sie sicher erfasst werden (Eingangsverzögerung vernachlässigt). Wie hoch darf die Impulsfrequenz höchstens sein?",
+      "answer": "62,5 Hz",
+      "value": 62.5,
+      "unit": "Hz",
+      "tolerance": 0.02,
+      "explain": "Impuls ≥ 8 ms und Pause ≥ 8 ms → Periodendauer T ≥ 2 · 8 ms = 16 ms. f = 1 / T = 1 / 0,016 s = 62,5 Hz.",
+      "tags": [
+        "Zykluszeit"
+      ]
+    },
+    {
+      "id": "sps-025",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Ein Drehgeber liefert 100 Impulse pro Umdrehung. Ein Zähler in der SPS zählt in 10 s genau 2500 Impulse. Wie groß ist die Drehzahl in 1/min?",
+      "answer": "150 1/min",
+      "value": 150.0,
+      "unit": "1/min",
+      "tolerance": 0.02,
+      "explain": "Umdrehungen: 2500 / 100 = 25 in 10 s → 2,5 Umdrehungen pro Sekunde. n = 2,5 1/s · 60 s/min = 150 1/min.",
+      "tags": [
+        "Zähler",
+        "Drehzahl"
+      ]
+    },
+    {
+      "id": "sps-026",
+      "type": "calc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Ein Analogausgang (Siemens-Beispiel: 0–10 V ≙ 0–27648) gibt den Frequenzsollwert für einen Frequenzumrichter vor (0–10 V ≙ 0–50 Hz). Welcher Digitalwert muss für 35 Hz ausgegeben werden?",
+      "answer": "19354 (gerundet)",
+      "value": 19354,
+      "unit": "",
+      "tolerance": 0.02,
+      "explain": "Umgekehrt skalieren: Wert = 35 Hz / 50 Hz · 27648 = 0,7 · 27648 = 19353,6 → als INT gerundet 19354.",
+      "tags": [
+        "Analogwerte",
+        "Skalieren"
+      ]
+    },
+    {
+      "id": "sps-027",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Warum werden Aus-Taster und NOT-HALT-Befehlsgeräte als Öffner angeschlossen?",
+      "answer": "Weil dann ein Drahtbruch wie eine Betätigung wirkt: Das Signal fällt auf 0 und die Anlage schaltet sicher ab (Drahtbruchsicherheit).",
+      "keywords": [
+        "öffner",
+        "drahtbruch"
+      ],
+      "explain": "Bei einem Schließer würde ein Drahtbruch unbemerkt bleiben und der Ausschaltbefehl könnte nicht mehr wirken. Beim Öffner führt jede Unterbrechung zum Abschalten.",
+      "tags": [
+        "Drahtbruchsicherheit",
+        "NOT-HALT"
+      ]
+    },
+    {
+      "id": "sps-028",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was versteht man unter einer Selbsthaltung in der SPS-Technik?",
+      "answer": "Ein Ausgang hält sich über sein eigenes Signal eingeschaltet, nachdem der Ein-Taster losgelassen wurde, bis eine Aus-Bedingung ihn zurücksetzt.",
+      "keywords": [
+        "eingeschaltet",
+        "los"
+      ],
+      "explain": "Die Selbsthaltung wird z. B. als ODER-Verknüpfung aus Ein-Taster und Ausgang, in Reihe mit der Aus-Bedingung, oder mit einem Speicherbaustein (Setzen/Rücksetzen) programmiert.",
+      "tags": [
+        "Selbsthaltung"
+      ]
+    },
+    {
+      "id": "sps-029",
+      "type": "open",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Was bedeutet das Normieren bzw. Skalieren eines Analogwerts in der SPS?",
+      "answer": "Der Rohwert der Analogbaugruppe (z. B. 0–27648 bei Siemens) wird in einen physikalischen Wert wie °C oder bar umgerechnet – oder umgekehrt.",
+      "keywords": [
+        "umrechn",
+        "physikalisch"
+      ],
+      "explain": "Dazu dient eine lineare Umrechnung (Geradengleichung). Oft gibt es dafür fertige Bausteine, z. B. NORM_X und SCALE_X bei Siemens.",
+      "tags": [
+        "Analogwerte"
+      ]
+    },
+    {
+      "id": "sps-030",
+      "type": "open",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Nenne die drei Grundelemente eines GRAFCET.",
+      "answer": "Schritte, Transitionen (Übergangsbedingungen) und Aktionen.",
+      "keywords": [
+        "schritt",
+        "transition",
+        "aktion"
+      ],
+      "explain": "Schritte beschreiben Zustände, Transitionen die Weiterschaltbedingungen, und Aktionen die Befehle, die in einem aktiven Schritt ausgeführt werden. GRAFCET ist in DIN EN 60848 genormt.",
+      "tags": [
+        "GRAFCET"
+      ]
+    }
+  ]
+}

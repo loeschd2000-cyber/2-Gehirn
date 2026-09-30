@@ -1,0 +1,534 @@
+{
+  "topic": "et-grundlagen",
+  "title": "Elektrotechnik-Grundlagen",
+  "icon": "⚡",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "et-grundlagen-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Bei konstantem Widerstand wird die angelegte Spannung verdoppelt. Wie verändert sich der Strom?",
+      "options": [
+        "Er halbiert sich",
+        "Er verdoppelt sich",
+        "Er vervierfacht sich",
+        "Er bleibt gleich"
+      ],
+      "answer": 1,
+      "explain": "Nach dem ohmschen Gesetz gilt I = U / R. Bei konstantem R ist der Strom proportional zur Spannung, doppelte Spannung ergibt also doppelten Strom.",
+      "tags": [
+        "Ohmsches Gesetz"
+      ]
+    },
+    {
+      "id": "et-grundlagen-002",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Durch einen Widerstand fließt der doppelte Strom, der Widerstandswert bleibt gleich. Wie ändert sich die umgesetzte Leistung?",
+      "options": [
+        "Sie bleibt gleich",
+        "Sie verdoppelt sich",
+        "Sie halbiert sich",
+        "Sie vervierfacht sich"
+      ],
+      "answer": 3,
+      "explain": "P = I² · R. Der Strom geht quadratisch ein: (2 · I)² = 4 · I², die Leistung vervierfacht sich. Der typische Fehler „verdoppelt“ übersieht, dass auch die Spannung mit dem Strom steigt.",
+      "tags": [
+        "Leistung"
+      ]
+    },
+    {
+      "id": "et-grundlagen-003",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welcher Energiemenge in Joule (Wattsekunden) entspricht 1 kWh?",
+      "options": [
+        "3,6 MJ",
+        "3600 J",
+        "1000 J",
+        "36 MJ"
+      ],
+      "answer": 0,
+      "explain": "1 kWh = 1000 W · 3600 s = 3 600 000 Ws = 3,6 MJ. 3600 J wäre nur 1 Wh.",
+      "tags": [
+        "Arbeit",
+        "Einheiten"
+      ]
+    },
+    {
+      "id": "et-grundlagen-004",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Aussage gilt für eine Reihenschaltung von Widerständen?",
+      "options": [
+        "An allen Widerständen liegt die gleiche Spannung",
+        "Der Gesamtwiderstand ist kleiner als der kleinste Einzelwiderstand",
+        "Durch alle Widerstände fließt der gleiche Strom",
+        "Durch den kleinsten Widerstand fließt der größte Strom"
+      ],
+      "answer": 2,
+      "explain": "In der Reihenschaltung gibt es nur einen Strompfad, daher ist der Strom überall gleich. Die Spannung teilt sich im Verhältnis der Widerstände auf, der Gesamtwiderstand ist die Summe.",
+      "tags": [
+        "Reihenschaltung"
+      ]
+    },
+    {
+      "id": "et-grundlagen-005",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was gilt für den Ersatzwiderstand einer Parallelschaltung von Widerständen?",
+      "options": [
+        "Er ist kleiner als der kleinste Einzelwiderstand",
+        "Er ist gleich der Summe der Einzelwiderstände",
+        "Er liegt immer zwischen kleinstem und größtem Einzelwiderstand",
+        "Er ist größer als der größte Einzelwiderstand"
+      ],
+      "answer": 0,
+      "explain": "Jeder zusätzliche Zweig bietet dem Strom einen weiteren Weg, die Leitwerte addieren sich. Deshalb ist der Ersatzwiderstand immer kleiner als der kleinste Einzelwiderstand.",
+      "tags": [
+        "Parallelschaltung"
+      ]
+    },
+    {
+      "id": "et-grundlagen-006",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Drei gleiche Widerstände von je 330 Ω werden parallel geschaltet. Wie groß ist der Ersatzwiderstand?",
+      "options": [
+        "990 Ω",
+        "330 Ω",
+        "110 Ω",
+        "165 Ω"
+      ],
+      "answer": 2,
+      "explain": "Bei n gleichen parallelen Widerständen gilt R = R₁ / n = 330 Ω / 3 = 110 Ω. 990 Ω wäre die Reihenschaltung.",
+      "tags": [
+        "Parallelschaltung"
+      ]
+    },
+    {
+      "id": "et-grundlagen-007",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein unbelasteter Spannungsteiler wird am Ausgang mit einem Lastwiderstand belastet. Was passiert mit der Ausgangsspannung?",
+      "options": [
+        "Sie steigt an",
+        "Sie bleibt exakt gleich",
+        "Sie fällt auf 0 V",
+        "Sie sinkt"
+      ],
+      "answer": 3,
+      "explain": "Der Lastwiderstand liegt parallel zum unteren Teilerwiderstand. Diese Parallelschaltung ist kleiner als R₂ allein, daher entfällt ein kleinerer Anteil der Spannung auf sie. Je kleiner die Last, desto stärker sinkt die Spannung.",
+      "tags": [
+        "Spannungsteiler"
+      ]
+    },
+    {
+      "id": "et-grundlagen-008",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Eine Kupferleitung gleicher Länge wird mit doppeltem Querschnitt ausgeführt. Wie ändert sich ihr Widerstand?",
+      "options": [
+        "Er verdoppelt sich",
+        "Er halbiert sich",
+        "Er viertelt sich",
+        "Er bleibt gleich"
+      ],
+      "answer": 1,
+      "explain": "R = ρ · l / A. Der Widerstand ist umgekehrt proportional zum Querschnitt, doppelter Querschnitt ergibt also halben Widerstand.",
+      "tags": [
+        "Leitungswiderstand"
+      ]
+    },
+    {
+      "id": "et-grundlagen-009",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welcher Wert entspricht ungefähr dem spezifischen Widerstand von Kupfer bei 20 °C?",
+      "options": [
+        "0,0178 Ω·mm²/m",
+        "0,0278 Ω·mm²/m",
+        "0,178 Ω·mm²/m",
+        "1,78 Ω·mm²/m"
+      ],
+      "answer": 0,
+      "explain": "Kupfer hat ρ ≈ 0,0178 Ω·mm²/m (Leitfähigkeit κ ≈ 56 m/(Ω·mm²)). Ein Wert um 0,028 Ω·mm²/m gilt für Aluminium.",
+      "tags": [
+        "Leitungswiderstand",
+        "Kupfer"
+      ]
+    },
+    {
+      "id": "et-grundlagen-010",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie verhält sich der Widerstand eines Kupferleiters, wenn er sich erwärmt?",
+      "options": [
+        "Er sinkt",
+        "Er bleibt konstant",
+        "Er steigt",
+        "Er sinkt zuerst und steigt dann"
+      ],
+      "answer": 2,
+      "explain": "Metalle wie Kupfer haben einen positiven Temperaturkoeffizienten (α ≈ 0,0039 1/K). Mit steigender Temperatur nimmt der Widerstand zu.",
+      "tags": [
+        "Temperaturabhängigkeit"
+      ]
+    },
+    {
+      "id": "et-grundlagen-011",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Bei welchem Bauteil sinkt der Widerstand, wenn die Temperatur steigt?",
+      "options": [
+        "Kaltleiter (PTC)",
+        "Heißleiter (NTC)",
+        "Platin-Messwiderstand Pt100",
+        "Kupferdraht"
+      ],
+      "answer": 1,
+      "explain": "Ein Heißleiter (NTC) hat einen negativen Temperaturkoeffizienten und leitet im heißen Zustand besser. PTC, Pt100 und Kupfer haben einen positiven Temperaturkoeffizienten.",
+      "tags": [
+        "Temperaturabhängigkeit",
+        "NTC"
+      ]
+    },
+    {
+      "id": "et-grundlagen-012",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Bei einem Plattenkondensator wird der Plattenabstand halbiert, alles andere bleibt gleich. Wie ändert sich die Kapazität?",
+      "options": [
+        "Sie halbiert sich",
+        "Sie bleibt gleich",
+        "Sie viertelt sich",
+        "Sie verdoppelt sich"
+      ],
+      "answer": 3,
+      "explain": "C = ε₀ · εr · A / d. Die Kapazität ist umgekehrt proportional zum Plattenabstand, halber Abstand ergibt doppelte Kapazität.",
+      "tags": [
+        "Kondensator"
+      ]
+    },
+    {
+      "id": "et-grundlagen-013",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Zwei Kondensatoren mit je 10 µF werden in Reihe geschaltet. Wie groß ist die Gesamtkapazität?",
+      "options": [
+        "5 µF",
+        "10 µF",
+        "20 µF",
+        "100 µF"
+      ],
+      "answer": 0,
+      "explain": "Bei Kondensatoren in Reihe addieren sich die Kehrwerte: 1/C = 1/10 µF + 1/10 µF, also C = 5 µF. Kondensatoren verhalten sich damit umgekehrt wie Widerstände, 20 µF ergäbe die Parallelschaltung.",
+      "tags": [
+        "Kondensator"
+      ]
+    },
+    {
+      "id": "et-grundlagen-014",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein RC-Glied besteht aus R = 10 kΩ und C = 100 µF. Wie groß ist die Zeitkonstante τ?",
+      "options": [
+        "10 ms",
+        "0,1 s",
+        "1 s",
+        "10 s"
+      ],
+      "answer": 2,
+      "explain": "τ = R · C = 10 000 Ω · 0,0001 F = 1 s.",
+      "tags": [
+        "Zeitkonstante",
+        "Kondensator"
+      ]
+    },
+    {
+      "id": "et-grundlagen-015",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Nach welcher Zeit gilt ein Kondensator, der über einen Widerstand geladen wird, als praktisch vollständig geladen?",
+      "options": [
+        "nach 1 τ",
+        "nach 2 τ",
+        "nach 3 τ",
+        "nach 5 τ"
+      ],
+      "answer": 3,
+      "explain": "Nach 1 τ ist der Kondensator auf ca. 63 % geladen, nach 5 τ auf ca. 99,3 %. Deshalb gilt der Ladevorgang nach 5 τ als abgeschlossen.",
+      "tags": [
+        "Zeitkonstante"
+      ]
+    },
+    {
+      "id": "et-grundlagen-016",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Eine Relaisspule liegt an Gleichspannung. Wodurch wird der Strom nach Abschluss des Einschaltvorgangs begrenzt?",
+      "options": [
+        "Durch den induktiven Blindwiderstand der Spule",
+        "Durch den ohmschen Widerstand der Wicklung",
+        "Durch die Kapazität zwischen den Windungen",
+        "Gar nicht, es fließt ein Kurzschlussstrom"
+      ],
+      "answer": 1,
+      "explain": "Bei konstantem Gleichstrom ändert sich das Magnetfeld nicht mehr, es wird keine Spannung induziert. Der Strom wird dann nur noch durch den ohmschen Kupferwiderstand der Wicklung begrenzt (I = U / R).",
+      "tags": [
+        "Spule"
+      ]
+    },
+    {
+      "id": "et-grundlagen-017",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Eine Spule wird über einen Widerstand an Gleichspannung eingeschaltet. Wie verläuft der Strom?",
+      "options": [
+        "Er steigt verzögert (exponentiell) auf den Endwert an",
+        "Er springt sofort auf den Endwert",
+        "Er springt auf einen Höchstwert und fällt dann auf null ab",
+        "Er schwingt dauerhaft um den Endwert"
+      ],
+      "answer": 0,
+      "explain": "Die Selbstinduktionsspannung wirkt jeder Stromänderung entgegen, deshalb steigt der Strom mit der Zeitkonstante τ = L / R verzögert an. Das Springen und Abfallen des Stroms beschreibt dagegen das Laden eines Kondensators.",
+      "tags": [
+        "Spule",
+        "Zeitkonstante"
+      ]
+    },
+    {
+      "id": "et-grundlagen-018",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein Motor nimmt 5 kW elektrische Leistung auf und gibt 4,2 kW mechanische Leistung ab. Wie groß ist der Wirkungsgrad?",
+      "options": [
+        "16 %",
+        "80 %",
+        "84 %",
+        "119 %"
+      ],
+      "answer": 2,
+      "explain": "η = P_ab / P_zu = 4,2 kW / 5 kW = 0,84 = 84 %. Die 16 % sind die Verluste, ein Wirkungsgrad über 100 % ist unmöglich.",
+      "tags": [
+        "Wirkungsgrad"
+      ]
+    },
+    {
+      "id": "et-grundlagen-019",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Motor mit η = 0,9 treibt über ein Getriebe mit η = 0,8 eine Pumpe an. Wie groß ist der Gesamtwirkungsgrad von Motor und Getriebe?",
+      "options": [
+        "0,85",
+        "0,80",
+        "0,90",
+        "0,72"
+      ],
+      "answer": 3,
+      "explain": "Bei hintereinander geschalteten Wandlern werden die Einzelwirkungsgrade multipliziert: η = 0,9 · 0,8 = 0,72. Der Gesamtwirkungsgrad ist immer kleiner als der schlechteste Einzelwirkungsgrad.",
+      "tags": [
+        "Wirkungsgrad"
+      ]
+    },
+    {
+      "id": "et-grundlagen-020",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "In einen Knotenpunkt fließen die Ströme 3 A und 5 A hinein. Abfließend sind 2 A und ein unbekannter Strom I₄. Wie groß ist I₄?",
+      "options": [
+        "10 A",
+        "6 A",
+        "4 A",
+        "2 A"
+      ],
+      "answer": 1,
+      "explain": "Knotenregel (1. Kirchhoffsches Gesetz): Summe der zufließenden = Summe der abfließenden Ströme. 3 A + 5 A = 2 A + I₄, also I₄ = 6 A.",
+      "tags": [
+        "Kirchhoff"
+      ]
+    },
+    {
+      "id": "et-grundlagen-021",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was besagt die Maschenregel (2. Kirchhoffsches Gesetz)?",
+      "options": [
+        "Die Summe aller Ströme in einem Knoten ist null",
+        "In einer Masche ist der Strom in allen Zweigen gleich groß",
+        "Die Summe aller Spannungen in einer geschlossenen Masche ist null",
+        "Die Teilspannungen verhalten sich umgekehrt wie die Widerstände"
+      ],
+      "answer": 2,
+      "explain": "In jeder geschlossenen Masche ist die Summe aller Quellen- und Teilspannungen (mit Vorzeichen) gleich null. Die Aussage zu den Strömen im Knoten ist die Knotenregel.",
+      "tags": [
+        "Kirchhoff"
+      ]
+    },
+    {
+      "id": "et-grundlagen-022",
+      "type": "calc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein Heizlüfter mit 2 kW läuft an 30 Tagen jeweils 3 Stunden. Der Strompreis beträgt 0,35 €/kWh. Wie hoch sind die Energiekosten?",
+      "answer": "63,00 €",
+      "value": 63.0,
+      "unit": "€",
+      "tolerance": 0.03,
+      "explain": "W = P · t = 2 kW · 3 h · 30 = 180 kWh. Kosten = 180 kWh · 0,35 €/kWh = 63,00 €.",
+      "tags": [
+        "Energiekosten"
+      ]
+    },
+    {
+      "id": "et-grundlagen-023",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein 230-V-Verbraucher ist über eine Kupferleitung mit 1,5 mm² und 25 m einfacher Länge angeschlossen. Es fließen 10 A. Wie groß ist der Spannungsfall auf der Leitung (Hin- und Rückleiter, ρ = 0,0178 Ω·mm²/m)?",
+      "answer": "5,93 V",
+      "value": 5.93,
+      "unit": "V",
+      "tolerance": 0.03,
+      "explain": "Leiterlänge Hin und Rück: l = 2 · 25 m = 50 m. R = ρ · l / A = 0,0178 Ω·mm²/m · 50 m / 1,5 mm² ≈ 0,593 Ω. ΔU = I · R = 10 A · 0,593 Ω ≈ 5,93 V (ca. 2,6 % von 230 V).",
+      "tags": [
+        "Spannungsfall",
+        "Leitungswiderstand"
+      ]
+    },
+    {
+      "id": "et-grundlagen-024",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "R₁ = 47 Ω liegt in Reihe mit der Parallelschaltung aus R₂ = 100 Ω und R₃ = 150 Ω. Die Schaltung liegt an 24 V. Wie groß ist der Gesamtstrom in mA?",
+      "answer": "224,3 mA",
+      "value": 224.3,
+      "unit": "mA",
+      "tolerance": 0.03,
+      "explain": "R₂ ∥ R₃ = (100 Ω · 150 Ω) / (100 Ω + 150 Ω) = 60 Ω. R_ges = 47 Ω + 60 Ω = 107 Ω. I = U / R_ges = 24 V / 107 Ω ≈ 0,2243 A = 224,3 mA.",
+      "tags": [
+        "Gruppenschaltung"
+      ]
+    },
+    {
+      "id": "et-grundlagen-025",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein unbelasteter Spannungsteiler besteht aus R₁ = 10 kΩ und R₂ = 4,7 kΩ und liegt an 24 V. Wie groß ist die Spannung an R₂?",
+      "answer": "7,67 V",
+      "value": 7.67,
+      "unit": "V",
+      "tolerance": 0.03,
+      "explain": "U₂ = U · R₂ / (R₁ + R₂) = 24 V · 4,7 kΩ / 14,7 kΩ ≈ 7,67 V.",
+      "tags": [
+        "Spannungsteiler"
+      ]
+    },
+    {
+      "id": "et-grundlagen-026",
+      "type": "calc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Die Kupferwicklung eines Motors hat bei 20 °C einen Widerstand von 12 Ω. Wie groß ist ihr Widerstand bei 80 °C (α = 0,0039 1/K)?",
+      "answer": "14,81 Ω",
+      "value": 14.81,
+      "unit": "Ω",
+      "tolerance": 0.03,
+      "explain": "Δϑ = 80 °C − 20 °C = 60 K. R_w = R₂₀ · (1 + α · Δϑ) = 12 Ω · (1 + 0,0039 1/K · 60 K) = 12 Ω · 1,234 ≈ 14,81 Ω.",
+      "tags": [
+        "Temperaturabhängigkeit"
+      ]
+    },
+    {
+      "id": "et-grundlagen-027",
+      "type": "open",
+      "level": 2,
+      "part": "AP1",
+      "q": "Warum wird bei einer langen Zuleitung oft ein größerer Leiterquerschnitt gewählt, als es der Strom allein erfordern würde?",
+      "answer": "Weil der Leitungswiderstand mit der Länge steigt; ein größerer Querschnitt verringert den Widerstand und damit den Spannungsfall und die Leitungsverluste.",
+      "keywords": [
+        "widerstand",
+        "spannungsfall"
+      ],
+      "explain": "R = ρ · l / A: Lange Leitungen haben einen höheren Widerstand. Ein zu großer Spannungsfall führt zu Funktionsstörungen der Verbraucher (z. B. Motoren, Schütze) und zu Verlusten.",
+      "tags": [
+        "Spannungsfall"
+      ]
+    },
+    {
+      "id": "et-grundlagen-028",
+      "type": "open",
+      "level": 2,
+      "part": "AP1",
+      "q": "Wozu dient eine Freilaufdiode parallel zu einer Relais- oder Schützspule im Gleichstromkreis?",
+      "answer": "Beim Abschalten erzeugt die Spule eine hohe Selbstinduktionsspannung; die Freilaufdiode lässt den Spulenstrom abklingen und schützt so den schaltenden Transistor oder Kontakt.",
+      "keywords": [
+        "abschalt",
+        "induktion",
+        "spannung"
+      ],
+      "explain": "Die Diode wird in Sperrrichtung zur Betriebsspannung eingebaut. Nachteil: Das Relais fällt etwas verzögert ab.",
+      "tags": [
+        "Spule",
+        "Freilaufdiode"
+      ]
+    },
+    {
+      "id": "et-grundlagen-029",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was versteht man unter dem Wirkungsgrad eines Gerätes?",
+      "answer": "Das Verhältnis von abgegebener (nutzbarer) Leistung zu zugeführter Leistung; er ist wegen der Verluste immer kleiner als 1 bzw. 100 %.",
+      "keywords": [
+        "abgegeben",
+        "zugeführt",
+        "verhältnis"
+      ],
+      "explain": "η = P_ab / P_zu. Die Differenz P_zu − P_ab sind die Verluste, meist in Form von Wärme.",
+      "tags": [
+        "Wirkungsgrad"
+      ]
+    },
+    {
+      "id": "et-grundlagen-030",
+      "type": "open",
+      "level": 2,
+      "part": "AP1",
+      "q": "Was gibt die Zeitkonstante τ eines RC-Gliedes an?",
+      "answer": "τ = R · C ist die Zeit, nach der der Kondensator auf etwa 63 % der Endspannung geladen ist; nach etwa 5 τ gilt er als vollständig geladen.",
+      "keywords": [
+        "63",
+        "lade"
+      ],
+      "explain": "Beim Entladen sinkt die Spannung nach 1 τ auf ca. 37 % des Anfangswertes. Bei der Spule gilt τ = L / R.",
+      "tags": [
+        "Zeitkonstante"
+      ]
+    }
+  ]
+}

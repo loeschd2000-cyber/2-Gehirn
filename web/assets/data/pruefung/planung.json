@@ -1,0 +1,543 @@
+{
+  "topic": "planung",
+  "title": "Arbeitsplanung, Dokumentation & Qualität",
+  "icon": "📐",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "planung-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Was kennzeichnet einen Stromlaufplan in aufgelöster Darstellung?",
+      "options": [
+        "Die Betriebsmittel werden in ihre Einzelteile (z. B. Spule und Kontakte) aufgelöst und nach Strompfaden geordnet dargestellt",
+        "Alle Betriebsmittel werden einpolig und stark vereinfacht dargestellt",
+        "Er zeigt die räumliche Anordnung der Geräte im Schaltschrank",
+        "Er zeigt nur die Klemmen einer Klemmleiste mit den angeschlossenen Leitern"
+      ],
+      "answer": 0,
+      "explain": "Im Stromlaufplan in aufgelöster Darstellung sind Haupt- und Steuerstromkreis getrennt, und die Strompfade verlaufen möglichst geradlinig. So lässt sich die Funktion gut nachvollziehen. Einpolig vereinfacht ist der Übersichtsschaltplan.",
+      "tags": [
+        "Schaltpläne"
+      ]
+    },
+    {
+      "id": "planung-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Welcher Plan stellt eine Anlage vereinfacht, meist einpolig, dar und dient dem schnellen Überblick über Aufbau und Funktion?",
+      "options": [
+        "Stromlaufplan in aufgelöster Darstellung",
+        "Übersichtsschaltplan",
+        "Anschlussplan",
+        "Klemmenplan"
+      ],
+      "answer": 1,
+      "explain": "Der Übersichtsschaltplan zeigt die wesentlichen Teile und ihre Verbindungen vereinfacht und meist einpolig. Details wie einzelne Kontakte oder Klemmen sind im Stromlaufplan bzw. Anschluss- und Klemmenplan zu finden.",
+      "tags": [
+        "Schaltpläne"
+      ]
+    },
+    {
+      "id": "planung-003",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Ein Monteur soll die Außenleitungen einer Maschine an der Klemmleiste -X1 im Schaltschrank anschließen. Welche Unterlage zeigt ihm, welcher Leiter auf welche Klemme gehört?",
+      "options": [
+        "Übersichtsschaltplan",
+        "Arbeitsplan",
+        "Klemmenplan",
+        "GRAFCET-Ablaufbeschreibung"
+      ],
+      "answer": 2,
+      "explain": "Der Klemmenplan (Klemmenleistenplan) listet die Klemmen einer Klemmleiste mit den innen und außen angeschlossenen Leitern bzw. Zielen auf. Der Anschlussplan zeigt entsprechend die Anschlusspunkte einer Baueinheit mit den angeschlossenen Verbindungen.",
+      "tags": [
+        "Schaltpläne",
+        "Klemmenplan"
+      ]
+    },
+    {
+      "id": "planung-004",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "In welchem Zustand werden Betriebsmittel in einem Stromlaufplan grundsätzlich dargestellt?",
+      "options": [
+        "Im betätigten Zustand während des Normalbetriebs",
+        "In dem Zustand, der nach einer Störung eintritt",
+        "In der Lage, in der sie im Schaltschrank eingebaut sind",
+        "Im unbetätigten, spannungs- und stromlosen Zustand"
+      ],
+      "answer": 3,
+      "explain": "Kontakte werden so gezeichnet, wie sie ohne Betätigung und ohne Spannung stehen: Ein Schließer ist offen, ein Öffner geschlossen gezeichnet. Abweichungen müssen im Plan gekennzeichnet sein.",
+      "tags": [
+        "Schaltpläne"
+      ]
+    },
+    {
+      "id": "planung-005",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Wozu dient der Kontaktspiegel (Kontakttabelle) unter einer Schützspule im Stromlaufplan?",
+      "options": [
+        "Er zeigt, welche Kontakte zu diesem Schütz gehören und in welchen Strompfaden sie liegen",
+        "Er gibt die Bemessungsleistung des angeschlossenen Motors an",
+        "Er zeigt, an welchen Klemmen der Klemmleiste die Spule angeschlossen ist",
+        "Er gibt die Schaltzeiten des Schützes in Millisekunden an"
+      ],
+      "answer": 0,
+      "explain": "Da in der aufgelösten Darstellung Spule und Kontakte an verschiedenen Stellen liegen, verweist der Kontaktspiegel auf die Strompfade der Schließer und Öffner. Das erleichtert Fehlersuche und Verdrahtung.",
+      "tags": [
+        "Schaltpläne"
+      ]
+    },
+    {
+      "id": "planung-006",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Welcher Kennbuchstabe nach DIN EN 81346-2 wird für ein Leistungsschütz verwendet, das im Hauptstromkreis einen Motor schaltet?",
+      "options": [
+        "-K",
+        "-Q",
+        "-M",
+        "-S"
+      ],
+      "answer": 1,
+      "explain": "Q steht für das kontrollierte Schalten oder Variieren eines Energieflusses (z. B. Leistungsschütz, Leistungsschalter). -K wird für Relais und Hilfsschütze im Steuerstromkreis (Verarbeiten von Signalen) verwendet, -M für den Motor selbst, -S für handbetätigte Taster und Schalter.",
+      "tags": [
+        "Betriebsmittelkennzeichnung"
+      ]
+    },
+    {
+      "id": "planung-007",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Ein Betriebsmittel ist im Stromlaufplan mit -S1 gekennzeichnet. Um welche Art Betriebsmittel handelt es sich nach DIN EN 81346-2?",
+      "options": [
+        "Um einen Sensor wie einen induktiven Näherungsschalter",
+        "Um eine Meldeleuchte",
+        "Um einen handbetätigten Taster oder Schalter",
+        "Um eine Schmelzsicherung"
+      ],
+      "answer": 2,
+      "explain": "S bedeutet: Umwandeln einer manuellen Betätigung in ein Signal. Sensoren werden mit -B, Meldeleuchten mit -P und Schutzeinrichtungen wie Sicherungen mit -F gekennzeichnet.",
+      "tags": [
+        "Betriebsmittelkennzeichnung"
+      ]
+    },
+    {
+      "id": "planung-008",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Welches Betriebsmittel wird nach DIN EN 81346-2 typischerweise mit -F gekennzeichnet?",
+      "options": [
+        "Ein Frequenzumrichter",
+        "Ein Fußtaster",
+        "Eine Meldeleuchte",
+        "Eine Schmelzsicherung als Schutzeinrichtung"
+      ],
+      "answer": 3,
+      "explain": "F steht für den direkten Schutz eines Energie- oder Signalflusses, z. B. Sicherungen und Leitungsschutzschalter. Ein Fußtaster ist ein handbetätigtes Signalgerät (-S), eine Meldeleuchte stellt Informationen dar (-P). Der Anfangsbuchstabe des Gerätenamens entscheidet also nicht.",
+      "tags": [
+        "Betriebsmittelkennzeichnung"
+      ]
+    },
+    {
+      "id": "planung-009",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Bedeutung hat das Vorzeichen „+“ in einem Referenzkennzeichen nach DIN EN 81346?",
+      "options": [
+        "Es kennzeichnet den Ortsaspekt, also den Einbauort (z. B. einen Schaltschrank)",
+        "Es kennzeichnet den Produktaspekt, also das Betriebsmittel selbst",
+        "Es kennzeichnet den Funktionsaspekt, also die Aufgabe in der Anlage",
+        "Es kennzeichnet einen Anschluss mit positivem Potenzial"
+      ],
+      "answer": 0,
+      "explain": "Nach DIN EN 81346 steht „=“ für den Funktionsaspekt, „-“ für den Produktaspekt und „+“ für den Ortsaspekt. Beispiel: +S1-K3 = Hilfsschütz K3 im Schaltschrank S1.",
+      "tags": [
+        "Betriebsmittelkennzeichnung"
+      ]
+    },
+    {
+      "id": "planung-010",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Was bedeutet die Kontaktbezeichnung 13-14 an einem Hilfsschütz?",
+      "options": [
+        "Öffner mit der Ordnungsziffer 1",
+        "Schließer mit der Ordnungsziffer 1",
+        "Schließer mit der Ordnungsziffer 3",
+        "Anschluss der Schützspule"
+      ],
+      "answer": 1,
+      "explain": "Die erste Ziffer ist die Ordnungsziffer (fortlaufende Nummer des Kontakts), die zweite die Funktionsziffer. Funktionsziffern 3-4 bedeuten Schließer, 1-2 Öffner. Die Spule hat die Anschlüsse A1 und A2.",
+      "tags": [
+        "Kontaktbezeichnung"
+      ]
+    },
+    {
+      "id": "planung-011",
+      "type": "open",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Was geben die beiden Ziffern der Kontaktbezeichnung 21-22 an?",
+      "answer": "Die erste Ziffer ist die Ordnungsziffer (zweiter Kontakt), die zweite die Funktionsziffer; 1-2 bedeutet Öffner.",
+      "keywords": [
+        "ordnungsziffer",
+        "funktionsziffer",
+        "öffner"
+      ],
+      "explain": "Funktionsziffern: 1-2 Öffner, 3-4 Schließer, 5-6 Öffner und 7-8 Schließer mit Sonderfunktion, z. B. 95-96 und 97-98 am Überlastrelais.",
+      "tags": [
+        "Kontaktbezeichnung"
+      ]
+    },
+    {
+      "id": "planung-012",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welcher Kontakt wird bei einer Motorschützsteuerung in Reihe zum AUS-Taster in den Steuerstromkreis geschaltet, damit das Schütz bei Überlast abfällt?",
+      "options": [
+        "Der Schließer 97-98 des Überlastrelais",
+        "Der Spulenanschluss A1-A2 des Schützes",
+        "Der Öffner 95-96 des Überlastrelais",
+        "Der Hauptkontakt 1-2 des Schützes"
+      ],
+      "answer": 2,
+      "explain": "Bei Überlast öffnet der Kontakt 95-96, der Steuerstromkreis wird unterbrochen und das Schütz fällt ab. Der Schließer 97-98 schließt dabei und wird meist für eine Störmeldung (z. B. Meldeleuchte -P) genutzt.",
+      "tags": [
+        "Kontaktbezeichnung",
+        "Schützschaltung"
+      ]
+    },
+    {
+      "id": "planung-013",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Welche Aussage zu den Aderfarben in elektrischen Anlagen ist richtig?",
+      "options": [
+        "Grün-gelb kennzeichnet den Neutralleiter, Blau den Schutzleiter",
+        "Grün-gelb darf auch als Außenleiter verwendet werden, wenn die Ader beschriftet wird",
+        "Braun ist ausschließlich dem Schutzleiter vorbehalten",
+        "Grün-gelb darf nur für den Schutzleiter verwendet werden; Blau wird für den Neutralleiter verwendet"
+      ],
+      "answer": 3,
+      "explain": "Die Kombination Grün-gelb ist ausschließlich dem Schutzleiter (PE bzw. PEN mit zusätzlicher blauer Markierung) vorbehalten. Der Neutralleiter ist blau; Außenleiter sind z. B. braun, schwarz und grau.",
+      "tags": [
+        "Leiterfarben"
+      ]
+    },
+    {
+      "id": "planung-014",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welche Kriterien sind bei der Auswahl des Leiterquerschnitts zu berücksichtigen?",
+      "options": [
+        "Strombelastbarkeit (abhängig von Verlegeart, Häufung und Umgebungstemperatur), Schutz bei Überlast, zulässiger Spannungsfall und Abschaltbedingungen",
+        "Nur die Nennspannung der Anlage",
+        "Nur die Farbe und der Preis der Leitung",
+        "Nur die Leitungslänge, die Strombelastbarkeit spielt keine Rolle"
+      ],
+      "answer": 0,
+      "explain": "Der Querschnitt muss den Betriebsstrom sicher führen, zur Schutzeinrichtung passen (Betriebsstrom ≤ Nennstrom der Schutzeinrichtung ≤ zulässige Strombelastbarkeit), den Spannungsfall begrenzen und im Fehlerfall eine rechtzeitige Abschaltung ermöglichen.",
+      "tags": [
+        "Leiterquerschnitt"
+      ]
+    },
+    {
+      "id": "planung-015",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Eine Wechselstromleitung (230 V) aus Kupfer mit 2,5 mm² Querschnitt ist 25 m lang (einfache Länge) und führt 16 A (cos φ = 1). Wie groß ist der Spannungsfall? (κ = 56 m/(Ω·mm²))",
+      "answer": "5,71 V",
+      "value": 5.71,
+      "unit": "V",
+      "tolerance": 0.02,
+      "explain": "ΔU = 2 · l · I / (κ · A) = 2 · 25 m · 16 A / (56 m/(Ω·mm²) · 2,5 mm²) = 800 / 140 V ≈ 5,71 V. Das sind 5,71 V / 230 V ≈ 2,48 % der Nennspannung.",
+      "tags": [
+        "Spannungsfall",
+        "Leiterquerschnitt"
+      ]
+    },
+    {
+      "id": "planung-016",
+      "type": "calc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Für eine Wechselstromleitung aus Kupfer (230 V, cos φ = 1) mit 30 m einfacher Länge und 16 A Betriebsstrom darf der Spannungsfall höchstens 3 % betragen. Welcher Mindestquerschnitt ergibt sich rechnerisch? (κ = 56 m/(Ω·mm²))",
+      "answer": "2,48 mm² (gewählt: 2,5 mm²)",
+      "value": 2.48,
+      "unit": "mm²",
+      "tolerance": 0.03,
+      "explain": "Zulässiger Spannungsfall: ΔU = 0,03 · 230 V = 6,9 V. A = 2 · l · I / (κ · ΔU) = 2 · 30 m · 16 A / (56 m/(Ω·mm²) · 6,9 V) = 960 / 386,4 mm² ≈ 2,48 mm². Gewählt wird der nächstgrößere Normquerschnitt 2,5 mm²; die Strombelastbarkeit ist zusätzlich zu prüfen.",
+      "tags": [
+        "Leiterquerschnitt",
+        "Spannungsfall"
+      ]
+    },
+    {
+      "id": "planung-017",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "In welcher Reihenfolge laufen die Schritte einer vollständigen Handlung bei der Bearbeitung eines Arbeitsauftrags ab?",
+      "options": [
+        "Planen – Informieren – Durchführen – Entscheiden – Bewerten – Kontrollieren",
+        "Informieren – Planen – Entscheiden – Durchführen – Kontrollieren – Bewerten",
+        "Durchführen – Kontrollieren – Informieren – Planen – Entscheiden – Bewerten",
+        "Entscheiden – Planen – Informieren – Kontrollieren – Durchführen – Bewerten"
+      ],
+      "answer": 1,
+      "explain": "Zuerst werden Informationen zum Auftrag beschafft, dann Arbeitsschritte geplant und eine Lösung ausgewählt. Nach der Ausführung wird das Ergebnis kontrolliert und der gesamte Ablauf bewertet, um beim nächsten Auftrag besser zu werden.",
+      "tags": [
+        "Arbeitsplanung"
+      ]
+    },
+    {
+      "id": "planung-018",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "In welcher Reihenfolge wird bei der Erstprüfung einer elektrischen Anlage nach DIN VDE 0100-600 grundsätzlich vorgegangen?",
+      "options": [
+        "Zuerst die Anlage unter Spannung setzen und erproben; das Besichtigen ist freiwillig",
+        "Nur Messen; Besichtigen und Dokumentieren entfallen bei Neuanlagen",
+        "Besichtigen, dann Erproben und Messen, anschließend die Ergebnisse in einem Prüfprotokoll dokumentieren",
+        "Zuerst das Protokoll ausfüllen, gemessen wird erst nach der Übergabe an den Kunden"
+      ],
+      "answer": 2,
+      "explain": "Durch Besichtigen werden offensichtliche Mängel vor dem Einschalten erkannt. Danach folgen Erproben und Messen (z. B. Durchgängigkeit des Schutzleiters, Isolationswiderstand). Alle Ergebnisse werden dokumentiert und dem Auftraggeber übergeben.",
+      "tags": [
+        "Inbetriebnahme",
+        "Prüfung"
+      ]
+    },
+    {
+      "id": "planung-019",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welcher Isolationswiderstand muss bei der Erstprüfung eines 230/400-V-Stromkreises nach DIN VDE 0100-600 mindestens erreicht werden (Messspannung 500 V DC)?",
+      "options": [
+        "0,5 MΩ",
+        "1 kΩ",
+        "100 MΩ",
+        "1 MΩ"
+      ],
+      "answer": 3,
+      "explain": "Für Stromkreise bis 500 V Nennspannung wird mit 500 V DC gemessen, der Mindestwert beträgt 1 MΩ. Der Wert 0,5 MΩ gilt für SELV- und PELV-Stromkreise (Messspannung 250 V DC).",
+      "tags": [
+        "Prüfung",
+        "Isolationswiderstand"
+      ]
+    },
+    {
+      "id": "planung-020",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was gehört zu einer ordnungsgemäßen Übergabe einer Anlage an den Kunden?",
+      "answer": "Eine Einweisung des Kunden bzw. Bedienpersonals, die Übergabe der Dokumentation (Pläne, Prüfprotokolle, Anleitungen) und ein unterschriebenes Übergabeprotokoll.",
+      "keywords": [
+        "einweis",
+        "dokumentation",
+        "protokoll"
+      ],
+      "explain": "Im Übergabeprotokoll werden u. a. Anlage, Prüfergebnisse, bekannte Restmängel und die Einweisung festgehalten und vom Kunden gegengezeichnet. Mit der Abnahme beginnt in der Regel die Gewährleistungsfrist.",
+      "tags": [
+        "Inbetriebnahme",
+        "Übergabe"
+      ]
+    },
+    {
+      "id": "planung-021",
+      "type": "open",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Nennen Sie die fünf Sicherheitsregeln nach DIN VDE 0105-100 vor Arbeiten an elektrischen Anlagen.",
+      "answer": "Freischalten; gegen Wiedereinschalten sichern; Spannungsfreiheit allpolig feststellen; erden und kurzschließen; benachbarte, unter Spannung stehende Teile abdecken oder abschranken.",
+      "keywords": [
+        "freischalt",
+        "wiedereinschalt",
+        "spannungsfrei",
+        "erden"
+      ],
+      "explain": "Die Regeln werden vor Beginn der Arbeit in dieser Reihenfolge angewendet und nach Abschluss in umgekehrter Reihenfolge aufgehoben. Sie gelten auch bei der Fehlersuche, sobald spannungsfrei gearbeitet werden muss.",
+      "tags": [
+        "Arbeitssicherheit",
+        "Fehlersuche"
+      ]
+    },
+    {
+      "id": "planung-022",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Bei einer Motorsteuerung zieht das Schütz -Q1 nach Betätigen des EIN-Tasters nicht an. Die Messung zeigt, dass an den Spulenanschlüssen A1-A2 die volle Steuerspannung anliegt. Was ist die wahrscheinlichste Ursache?",
+      "options": [
+        "Die Schützspule ist unterbrochen oder das Schütz ist mechanisch blockiert",
+        "Der EIN-Taster schließt nicht",
+        "Die Sicherung des Steuerstromkreises hat ausgelöst",
+        "Der Überlastrelais-Kontakt 95-96 hat geöffnet"
+      ],
+      "answer": 0,
+      "explain": "Wenn die Spannung an A1-A2 ankommt, sind alle vorgeschalteten Elemente (Sicherung, 95-96, AUS- und EIN-Taster) in Ordnung. Der Fehler liegt dann im Schütz selbst. Systematisch misst man entlang des Strompfads, um den Fehler einzugrenzen.",
+      "tags": [
+        "Fehlersuche",
+        "Schützschaltung"
+      ]
+    },
+    {
+      "id": "planung-023",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Wofür steht der PDCA-Zyklus im Qualitätsmanagement?",
+      "options": [
+        "Produce – Deliver – Control – Account",
+        "Plan – Do – Check – Act (Planen, Umsetzen, Überprüfen, Handeln/Verbessern)",
+        "Prüfen – Dokumentieren – Codieren – Archivieren",
+        "Plan – Design – Construct – Assemble"
+      ],
+      "answer": 1,
+      "explain": "Der PDCA-Zyklus (Deming-Kreis) ist die Grundlage der kontinuierlichen Verbesserung: Maßnahmen werden geplant, umgesetzt, auf Wirkung überprüft und bei Erfolg als Standard übernommen, dann beginnt der Zyklus von vorn.",
+      "tags": [
+        "Qualitätsmanagement",
+        "PDCA"
+      ]
+    },
+    {
+      "id": "planung-024",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was wird bei einer Zertifizierung nach DIN EN ISO 9001 bestätigt?",
+      "options": [
+        "Dass jedes einzelne Produkt des Unternehmens fehlerfrei ist",
+        "Dass das Unternehmen besonders umweltschonend produziert",
+        "Dass das Unternehmen ein Qualitätsmanagementsystem eingeführt hat, das die Anforderungen der Norm erfüllt, und es anwendet",
+        "Dass alle Mitarbeiter eine Meisterprüfung abgelegt haben"
+      ],
+      "answer": 2,
+      "explain": "Die ISO 9001 bewertet das Managementsystem (z. B. Kundenorientierung, prozessorientierter Ansatz, fortlaufende Verbesserung), nicht die Fehlerfreiheit einzelner Produkte. Für Umweltmanagement gibt es die DIN EN ISO 14001.",
+      "tags": [
+        "Qualitätsmanagement",
+        "ISO 9001"
+      ]
+    },
+    {
+      "id": "planung-025",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was ist das Ziel eines kontinuierlichen Verbesserungsprozesses (KVP)?",
+      "answer": "Prozesse, Produkte und Qualität in vielen kleinen Schritten ständig zu verbessern, wobei die Mitarbeiter einbezogen werden.",
+      "keywords": [
+        "verbesser",
+        "schritt"
+      ],
+      "explain": "KVP setzt auf viele kleine Verbesserungen statt auf seltene große Umstellungen. Werkzeug dafür ist z. B. der PDCA-Zyklus; Vorschläge kommen oft direkt von den Beschäftigten.",
+      "tags": [
+        "Qualitätsmanagement"
+      ]
+    },
+    {
+      "id": "planung-026",
+      "type": "calc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Für eine Schaltschrankerweiterung fallen Materialkosten von 245,80 € an. Die Montage dauert 3,5 h bei einem Stundenverrechnungssatz von 62,00 €/h. Wie hoch sind Material- und Lohnkosten zusammen (netto)?",
+      "answer": "462,80 €",
+      "value": 462.8,
+      "unit": "€",
+      "tolerance": 0.02,
+      "explain": "Lohnkosten = 3,5 h · 62,00 €/h = 217,00 €. Summe = 245,80 € + 217,00 € = 462,80 €.",
+      "tags": [
+        "Kostenrechnung"
+      ]
+    },
+    {
+      "id": "planung-027",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Für einen Auftrag gelten: Fertigungsmaterial 800,00 €, Materialgemeinkostenzuschlag 15 %, Fertigungslohn 400,00 €, Fertigungsgemeinkostenzuschlag 120 %. Wie hoch sind die Herstellkosten?",
+      "answer": "1.800,00 €",
+      "value": 1800.0,
+      "unit": "€",
+      "tolerance": 0.02,
+      "explain": "Materialkosten = 800,00 € + 15 % (120,00 €) = 920,00 €. Fertigungskosten = 400,00 € + 120 % (480,00 €) = 880,00 €. Herstellkosten = 920,00 € + 880,00 € = 1.800,00 €.",
+      "tags": [
+        "Kostenrechnung",
+        "Zuschläge"
+      ]
+    },
+    {
+      "id": "planung-028",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Die Selbstkosten für einen Auftrag betragen 1.500,00 €. Der Betrieb kalkuliert 10 % Gewinn, anschließend kommen 19 % Umsatzsteuer hinzu. Wie hoch ist der Bruttoangebotspreis?",
+      "answer": "1.963,50 €",
+      "value": 1963.5,
+      "unit": "€",
+      "tolerance": 0.02,
+      "explain": "Nettopreis = 1.500,00 € · 1,10 = 1.650,00 €. Umsatzsteuer = 1.650,00 € · 0,19 = 313,50 €. Bruttopreis = 1.650,00 € + 313,50 € = 1.963,50 €.",
+      "tags": [
+        "Kostenrechnung",
+        "Angebot"
+      ]
+    },
+    {
+      "id": "planung-029",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Ein Kunde beschwert sich verärgert über eine wiederholte Störung an seiner Anlage. Welches Verhalten ist angemessen?",
+      "options": [
+        "Sofort klarstellen, dass der Kunde die Anlage falsch bedient haben muss",
+        "Viele Fachbegriffe verwenden, um Kompetenz zu zeigen, und das Gespräch kurz halten",
+        "Die Beschwerde nicht kommentieren und auf den nächsten Wartungstermin verweisen",
+        "Ruhig zuhören, Verständnis zeigen, den Sachverhalt klären, eine Lösung anbieten und das Vereinbarte festhalten"
+      ],
+      "answer": 3,
+      "explain": "Bei Reklamationen hilft sachliches, kundenorientiertes Verhalten: aktiv zuhören, gezielt (offen) nachfragen, verständlich erklären und verbindliche Absprachen dokumentieren.",
+      "tags": [
+        "Kundenkommunikation"
+      ]
+    },
+    {
+      "id": "planung-030",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Wie sind ausgediente Elektrogeräte aus einem Betrieb zu entsorgen?",
+      "options": [
+        "Getrennt vom Restmüll über die dafür vorgesehenen Rücknahme- oder Sammelsysteme nach dem Elektro- und Elektronikgerätegesetz (ElektroG)",
+        "Mit dem Restmüll, sofern keine Batterien eingebaut sind",
+        "Zusammen mit dem Bauschutt im Container",
+        "Beliebig, weil das ElektroG nur für Privathaushalte gilt"
+      ],
+      "answer": 0,
+      "explain": "Elektroaltgeräte enthalten Schadstoffe und wertvolle Rohstoffe. Sie sind am Symbol der durchgestrichenen Mülltonne erkennbar und müssen getrennt erfasst werden; Hersteller und Händler haben Rücknahmepflichten. Batterien und Lampen werden vorher entnommen, soweit möglich.",
+      "tags": [
+        "Umweltschutz",
+        "Entsorgung"
+      ]
+    }
+  ]
+}

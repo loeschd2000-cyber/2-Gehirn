@@ -1,0 +1,544 @@
+{
+  "topic": "sensorik",
+  "title": "Sensorik & Aktorik",
+  "icon": "📡",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "sensorik-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wodurch wird bei einem induktiven Näherungsschalter der Schaltvorgang ausgelöst?",
+      "options": [
+        "Ein beliebiges Objekt verändert die Kapazität zwischen zwei Elektroden an der Sensorfläche",
+        "Ein Metallteil im hochfrequenten Wechselfeld vor der Sensorfläche bedämpft durch Wirbelströme den Oszillator",
+        "Ein Objekt reflektiert einen ausgesendeten Lichtstrahl zurück zum Empfänger im Sensor",
+        "Ein Dauermagnet am Objekt schließt einen Reedkontakt im Inneren des Sensors"
+      ],
+      "answer": 1,
+      "explain": "Induktive Sensoren erkennen nur elektrisch leitfähige Objekte (Metalle). Die Kapazitätsänderung ist das Prinzip des kapazitiven Sensors, der Reedkontakt das eines Magnetschalters.",
+      "tags": [
+        "Induktiv"
+      ]
+    },
+    {
+      "id": "sensorik-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Der Füllstand von Wasser in einem undurchsichtigen Kunststoffbehälter soll von außen durch die Behälterwand erfasst werden. Welcher Sensor ist dafür geeignet?",
+      "options": [
+        "Induktiver Näherungsschalter",
+        "Magnetschalter mit Reedkontakt",
+        "Einweglichtschranke",
+        "Kapazitiver Näherungsschalter"
+      ],
+      "answer": 3,
+      "explain": "Kapazitive Sensoren reagieren auf die Änderung der Dielektrizitätszahl und erkennen auch Nichtmetalle wie Wasser, Granulat oder Holz – bei dünnen, nichtmetallischen Wänden auch hindurch. Induktive Sensoren erkennen nur Metall.",
+      "tags": [
+        "Kapazitiv"
+      ]
+    },
+    {
+      "id": "sensorik-003",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Der Nennschaltabstand eines induktiven Sensors bezieht sich auf eine Normmessplatte aus Stahl. Was gilt, wenn stattdessen ein Aluminiumteil erfasst werden soll?",
+      "options": [
+        "Der Schaltabstand ist kleiner; er wird mit einem Reduktionsfaktor kleiner als 1 berechnet",
+        "Der Schaltabstand ist größer, weil Aluminium den Strom besser leitet als Stahl",
+        "Der Schaltabstand bleibt gleich, da alle Metalle den Sensor gleich stark bedämpfen",
+        "Aluminium kann von induktiven Sensoren grundsätzlich nicht erkannt werden"
+      ],
+      "answer": 0,
+      "explain": "Nichteisenmetalle wie Aluminium, Messing oder Kupfer bedämpfen den Oszillator schwächer als Stahl. Der Schaltabstand wird deshalb mit dem Reduktionsfaktor aus dem Datenblatt verringert (Ausnahme: sogenannte Faktor-1-Sensoren).",
+      "tags": [
+        "Induktiv",
+        "Schaltabstand"
+      ]
+    },
+    {
+      "id": "sensorik-004",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Bei welcher optischen Sensorbauart sind Sender und Empfänger in getrennten Gehäusen einander gegenüber montiert?",
+      "options": [
+        "Reflexionslichtschranke",
+        "Reflexionslichttaster",
+        "Einweglichtschranke",
+        "Lichttaster mit Hintergrundausblendung"
+      ],
+      "answer": 2,
+      "explain": "Die Einweglichtschranke hat die größte Reichweite und ist sehr betriebssicher, braucht aber zwei Geräte mit Verkabelung. Bei der Reflexionslichtschranke liegen Sender und Empfänger in einem Gehäuse, gegenüber sitzt ein Reflektor; beim Lichttaster reflektiert das Objekt selbst.",
+      "tags": [
+        "Optisch"
+      ]
+    },
+    {
+      "id": "sensorik-005",
+      "type": "mc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Warum werden Reflexionslichtschranken für glänzende Objekte mit Polarisationsfilter und Tripelreflektor eingesetzt?",
+      "options": [
+        "Der Polarisationsfilter verdoppelt die Reichweite, sodass auch glänzende Objekte weiter entfernt erkannt werden",
+        "Der Polarisationsfilter macht den Sensor unempfindlich gegen Staub und Verschmutzung auf der Optik",
+        "Der Tripelreflektor dreht die Polarisationsebene; das Spiegellicht eines glänzenden Objekts wird dadurch nicht fälschlich als Reflektor gewertet",
+        "Ohne Polarisationsfilter können Reflexionslichtschranken nur metallische Objekte erkennen"
+      ],
+      "answer": 2,
+      "explain": "Ein glänzendes Objekt spiegelt das polarisierte Licht ohne Drehung der Polarisationsebene zurück; der Filter vor dem Empfänger sperrt es, der Strahl gilt als unterbrochen. Nur das vom Tripelreflektor gedrehte Licht passiert den Filter.",
+      "tags": [
+        "Optisch",
+        "Reflexionslichtschranke"
+      ]
+    },
+    {
+      "id": "sensorik-006",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wovon hängt die Tastweite eines (energetischen) Reflexionslichttasters ohne Hintergrundausblendung stark ab?",
+      "options": [
+        "Von Farbe und Oberflächenbeschaffenheit des Objekts",
+        "Vom Abstand zwischen Sensor und Reflektor",
+        "Vom Metallanteil des Objekts",
+        "Von der Dielektrizitätszahl des Objekts"
+      ],
+      "answer": 0,
+      "explain": "Beim Lichttaster reflektiert das Objekt selbst das Licht zum Empfänger. Helle, glänzende Objekte werden weiter erkannt als dunkle, matte. Die Tastweite im Datenblatt bezieht sich meist auf eine weiße Referenzfläche.",
+      "tags": [
+        "Optisch",
+        "Lichttaster"
+      ]
+    },
+    {
+      "id": "sensorik-007",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Der Füllstand in einem offenen Behälter soll berührungslos aus etwa 1 m Abstand gemessen werden, unabhängig von Farbe und Transparenz des Mediums. Welcher Sensor eignet sich?",
+      "options": [
+        "Induktiver Näherungsschalter",
+        "Kapazitiver Näherungsschalter",
+        "Reflexionslichttaster",
+        "Ultraschallsensor"
+      ],
+      "answer": 3,
+      "explain": "Der Ultraschallsensor misst die Laufzeit des Schallechos und berechnet daraus den Abstand; Farbe und Transparenz spielen keine Rolle. Direkt vor dem Sensor liegt eine Blindzone, in der nicht gemessen werden kann. Induktive und kapazitive Sensoren haben nur Schaltabstände im Millimeterbereich.",
+      "tags": [
+        "Ultraschall"
+      ]
+    },
+    {
+      "id": "sensorik-008",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie wird die Last (z. B. ein SPS-Eingang) an einen PNP-Sensor (plusschaltend) angeschlossen?",
+      "options": [
+        "Zwischen Schaltausgang und +24 V (Plus)",
+        "Zwischen Schaltausgang und 0 V (Minus)",
+        "In Reihe in die braune Versorgungsleitung (+24 V)",
+        "Zwischen +24 V und 0 V, ohne Verbindung zum Schaltausgang"
+      ],
+      "answer": 1,
+      "explain": "Der PNP-Ausgang schaltet +24 V auf den Ausgang durch; die Last liegt daher zwischen Ausgang und 0 V. Bei NPN (minusschaltend) ist es umgekehrt: Last zwischen +24 V und Ausgang. In Europa sind PNP-Sensoren an SPS-Eingängen Standard.",
+      "tags": [
+        "PNP/NPN"
+      ]
+    },
+    {
+      "id": "sensorik-009",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein 4-Leiter-DC-Sensor hat die Adern braun (BN), blau (BU), schwarz (BK) und weiß (WH). Welche Belegung ist üblich?",
+      "options": [
+        "BN = +24 V, BU = 0 V, BK und WH = zwei Schaltausgänge (z. B. Schließer und Öffner)",
+        "BN = 0 V, BU = +24 V, BK und WH = zwei Schaltausgänge (z. B. Schließer und Öffner)",
+        "BN = Schaltausgang, BU = 0 V, BK = +24 V, WH = Schirm",
+        "BN = +24 V, BU = Schaltausgang, BK = 0 V, WH = Schutzleiter"
+      ],
+      "answer": 0,
+      "explain": "Braun ist Plus, blau Minus, schwarz der (erste) Schaltausgang. Beim 4-Leiter-Sensor kommt weiß als zweiter Ausgang hinzu, oft antivalent (Schließer und Öffner). Ein 3-Leiter-Sensor hat nur BN, BU und BK.",
+      "tags": [
+        "Anschluss",
+        "Leiterzahl"
+      ]
+    },
+    {
+      "id": "sensorik-010",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Was ist beim Anschluss eines 2-Leiter-Sensors an einen SPS-Eingang zu beachten?",
+      "options": [
+        "Der Sensor benötigt zusätzlich eine eigene dritte Leitung für seine Versorgungsspannung",
+        "Der Sensor liegt in Reihe mit der Last: Im gesperrten Zustand fließt ein kleiner Reststrom, im durchgeschalteten Zustand fällt am Sensor eine Spannung ab",
+        "Der Sensor darf ausschließlich an Wechselspannung betrieben werden",
+        "Der Sensor muss zwingend über einen Schutzleiteranschluss geerdet werden"
+      ],
+      "answer": 1,
+      "explain": "Der 2-Leiter-Sensor versorgt sich über den Laststromkreis selbst. Der Reststrom kann einen empfindlichen Eingang fälschlich ansteuern, der Spannungsfall kann bei Reihenschaltung mehrerer Sensoren zu Problemen führen – Datenblattwerte mit dem Eingang abgleichen.",
+      "tags": [
+        "Anschluss",
+        "Leiterzahl"
+      ]
+    },
+    {
+      "id": "sensorik-011",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein Näherungsschalter hat die Schaltfunktion Öffner (NC). Wie verhält sich sein Ausgang?",
+      "options": [
+        "Ohne Objekt ist der Ausgang gesperrt (Signal 0), bei erkanntem Objekt schaltet er durch (Signal 1)",
+        "Der Ausgang wechselt bei jeder Objekterkennung seinen Zustand und hält ihn bis zum nächsten Objekt",
+        "Der Ausgang ist dauerhaft durchgeschaltet und schaltet nur bei einem Sensorfehler ab",
+        "Ohne Objekt ist der Ausgang durchgeschaltet (Signal 1), bei erkanntem Objekt schaltet er ab (Signal 0)"
+      ],
+      "answer": 3,
+      "explain": "Beim Schließer (NO) wird der Ausgang bei Objekterkennung aktiv, beim Öffner (NC) inaktiv. Bei Öffnerfunktion erzeugt ein Drahtbruch dasselbe Signal wie ein erkanntes Objekt (Signal 0).",
+      "tags": [
+        "Schaltfunktion"
+      ]
+    },
+    {
+      "id": "sensorik-012",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Warum werden Analogsignale bei langen Leitungen in Industrieanlagen bevorzugt als Stromsignal (4–20 mA) statt als Spannungssignal (0–10 V) übertragen?",
+      "options": [
+        "Stromsignale benötigen am Messumformer grundsätzlich keine Versorgungsspannung",
+        "Stromsignale haben immer eine höhere Auflösung als Spannungssignale",
+        "Der eingeprägte Strom wird durch den Leitungswiderstand nicht verfälscht und ist weniger störempfindlich",
+        "Stromsignale können ohne Rückleiter über nur eine Ader übertragen werden"
+      ],
+      "answer": 2,
+      "explain": "Die Stromquelle des Messumformers treibt denselben Strom durch den Kreis, solange die zulässige Bürde (maximaler Lastwiderstand) nicht überschritten wird. Bei einem Spannungssignal verursacht der Leitungswiderstand einen Spannungsfall, der den Messwert verfälscht.",
+      "tags": [
+        "Analogsignal"
+      ]
+    },
+    {
+      "id": "sensorik-013",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Drucktransmitter mit dem Messbereich 0 … 10 bar liefert ein Signal von 4 … 20 mA. Die SPS misst 13,6 mA. Welcher Druck liegt an?",
+      "answer": "6 bar",
+      "value": 6.0,
+      "unit": "bar",
+      "tolerance": 0.03,
+      "explain": "p = (I − 4 mA) / 16 mA · 10 bar = (13,6 mA − 4 mA) / 16 mA · 10 bar = 0,6 · 10 bar = 6 bar.",
+      "tags": [
+        "Analogsignal",
+        "Skalierung"
+      ]
+    },
+    {
+      "id": "sensorik-014",
+      "type": "open",
+      "level": 2,
+      "part": "AP1",
+      "q": "Was bedeutet „Life-Zero“ beim Normsignal 4–20 mA und welchen Vorteil hat es?",
+      "answer": "Der Messbereichsanfang wird mit 4 mA statt 0 mA übertragen (lebender Nullpunkt). Fällt der Strom deutlich unter 4 mA bzw. auf 0 mA, erkennt die Steuerung einen Drahtbruch oder Sensorausfall.",
+      "keywords": [
+        "4",
+        "drahtbruch"
+      ],
+      "explain": "Zusätzlich reichen die 4 mA, um 2-Leiter-Messumformer über die Signalleitung mit Energie zu versorgen. Bei 0–20 mA oder 0–10 V ist ein Drahtbruch nicht vom Messwert 0 zu unterscheiden.",
+      "tags": [
+        "Analogsignal",
+        "Life-Zero"
+      ]
+    },
+    {
+      "id": "sensorik-015",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Temperaturmessumformer liefert 0 … 10 V für den Messbereich −50 … +150 °C. Die SPS misst 3,5 V. Welche Temperatur liegt vor?",
+      "answer": "20 °C",
+      "value": 20.0,
+      "unit": "°C",
+      "tolerance": 0.05,
+      "explain": "Messspanne: 150 °C − (−50 °C) = 200 °C. T = −50 °C + (3,5 V / 10 V) · 200 °C = −50 °C + 70 °C = 20 °C.",
+      "tags": [
+        "Analogsignal",
+        "Skalierung"
+      ]
+    },
+    {
+      "id": "sensorik-016",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was bedeutet die Bezeichnung Pt100 bei einem Temperaturfühler?",
+      "options": [
+        "Platin-Messwiderstand mit 100 Ω bei 20 °C",
+        "Platin-Thermoelement mit einer Thermospannung von 100 µV pro Kelvin",
+        "Platin-Fühler für Temperaturen bis maximal 100 °C",
+        "Platin-Messwiderstand mit 100 Ω bei 0 °C"
+      ],
+      "answer": 3,
+      "explain": "Der Widerstand eines Pt100 steigt mit der Temperatur (positiver Temperaturkoeffizient), um etwa 0,385 Ω pro Kelvin. Ein Pt1000 hat 1000 Ω bei 0 °C und reagiert weniger empfindlich auf Leitungswiderstände.",
+      "tags": [
+        "Temperatur",
+        "Pt100"
+      ]
+    },
+    {
+      "id": "sensorik-017",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Pt100 hat einen Temperaturkoeffizienten von α = 0,00385 1/K (vereinfacht linear, Bezugstemperatur 0 °C). Welchen Widerstand hat er bei 60 °C?",
+      "answer": "123,1 Ω",
+      "value": 123.1,
+      "unit": "Ω",
+      "tolerance": 0.02,
+      "explain": "R = R₀ · (1 + α · Δϑ) = 100 Ω · (1 + 0,00385 1/K · 60 K) = 100 Ω · 1,231 = 123,1 Ω.",
+      "tags": [
+        "Temperatur",
+        "Pt100"
+      ]
+    },
+    {
+      "id": "sensorik-018",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Warum werden Pt100-Fühler häufig in 3- oder 4-Leiter-Schaltung angeschlossen?",
+      "options": [
+        "Damit der Widerstand der Anschlussleitungen das Messergebnis nicht verfälscht",
+        "Damit der Fühler schneller auf Temperaturänderungen reagiert",
+        "Weil der Pt100 zwei getrennte Versorgungsspannungen benötigt",
+        "Damit der Fühler zusätzlich als Thermoelement arbeiten kann"
+      ],
+      "answer": 0,
+      "explain": "Bei der 2-Leiter-Schaltung addiert sich der Leitungswiderstand zum Messwiderstand: Schon 0,385 Ω Leitungswiderstand verfälschen die Messung um etwa 1 K. Die 3-Leiter-Schaltung kompensiert ihn weitgehend, die 4-Leiter-Schaltung eliminiert ihn.",
+      "tags": [
+        "Temperatur",
+        "Pt100"
+      ]
+    },
+    {
+      "id": "sensorik-019",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Nach welchem Prinzip arbeitet ein Thermoelement?",
+      "options": [
+        "Der elektrische Widerstand eines Platindrahtes ändert sich mit der Temperatur",
+        "Ein Halbleiter ändert seine Kapazität abhängig von der Temperatur",
+        "Zwei verschiedene Metalle sind an der Messstelle verbunden; eine Temperaturdifferenz zur Vergleichsstelle erzeugt eine kleine Thermospannung",
+        "Ein Bimetallstreifen verbiegt sich bei Erwärmung und öffnet einen Kontakt"
+      ],
+      "answer": 2,
+      "explain": "Die Thermospannung (Seebeck-Effekt) liegt im Bereich von Mikro- bis Millivolt und hängt von der Temperaturdifferenz zwischen Mess- und Vergleichsstelle ab. Deshalb ist eine Vergleichsstellenkompensation nötig; bis zum Messgerät werden passende Ausgleichsleitungen verlegt.",
+      "tags": [
+        "Temperatur",
+        "Thermoelement"
+      ]
+    },
+    {
+      "id": "sensorik-020",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Worauf bezieht sich der Messwert eines Relativdrucksensors?",
+      "options": [
+        "Auf das Vakuum (absoluter Nullpunkt)",
+        "Auf den jeweiligen Umgebungsdruck (Atmosphärendruck)",
+        "Auf den Druck an einem zweiten Prozessanschluss",
+        "Auf einen fest eingestellten Normdruck von 1013 hPa"
+      ],
+      "answer": 1,
+      "explain": "Relativdruck = Absolutdruck − Umgebungsdruck. Absolutdrucksensoren messen gegen Vakuum, Differenzdrucksensoren die Differenz zwischen zwei Anschlüssen (z. B. zur Filterüberwachung).",
+      "tags": [
+        "Druck"
+      ]
+    },
+    {
+      "id": "sensorik-021",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Warum besitzt ein inkrementeller Drehgeber zwei Spuren A und B, deren Signale um 90° versetzt sind?",
+      "options": [
+        "Damit die absolute Position direkt nach dem Einschalten bekannt ist",
+        "Damit die Drehrichtung erkannt werden kann",
+        "Damit der Geber ohne Versorgungsspannung arbeiten kann",
+        "Damit eine Spur als Reserve bei Ausfall der anderen dient"
+      ],
+      "answer": 1,
+      "explain": "Je nachdem, ob A vor B oder B vor A kommt, erkennt die Auswertung die Drehrichtung. Werden alle Flanken beider Spuren gezählt, vervierfacht sich die Auflösung (Vierfachauswertung). Die Nullspur (N bzw. Z) liefert einen Impuls pro Umdrehung zur Referenzierung.",
+      "tags": [
+        "Drehgeber"
+      ]
+    },
+    {
+      "id": "sensorik-022",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein inkrementeller Drehgeber mit 500 Impulsen pro Umdrehung sitzt auf einer Gewindespindel mit 4 mm Steigung. Der Zähler (Einfachauswertung) hat 25 600 Impulse gezählt. Welchen Weg hat der Schlitten zurückgelegt?",
+      "answer": "204,8 mm",
+      "value": 204.8,
+      "unit": "mm",
+      "tolerance": 0.02,
+      "explain": "Umdrehungen: 25 600 / 500 = 51,2. Weg: 51,2 · 4 mm = 204,8 mm.",
+      "tags": [
+        "Drehgeber"
+      ]
+    },
+    {
+      "id": "sensorik-023",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was ist der wichtigste Vorteil eines Absolutwertgebers gegenüber einem inkrementellen Drehgeber?",
+      "answer": "Der Absolutwertgeber liefert für jede Stellung einen eindeutigen Positionswert, die Position ist also sofort nach dem Einschalten bekannt. Ein Inkrementalgeber liefert nur Impulse, die gezählt werden, und braucht nach dem Einschalten eine Referenzfahrt.",
+      "keywords": [
+        "position",
+        "einschalt",
+        "referenz"
+      ],
+      "explain": "Singleturn-Absolutwertgeber codieren eine Umdrehung, Multiturn-Geber zusätzlich die Anzahl der Umdrehungen. Die Position wird z. B. über SSI oder einen Feldbus übertragen.",
+      "tags": [
+        "Drehgeber"
+      ]
+    },
+    {
+      "id": "sensorik-024",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Wie arbeitet ein Sicherheits-Lichtgitter zur Absicherung einer Gefahrstelle grundsätzlich?",
+      "options": [
+        "Viele parallele Lichtstrahlen bilden ein Schutzfeld; bei Unterbrechung erscheint nur eine Warnmeldung und der Bediener muss die Maschine selbst anhalten",
+        "Es schaltet die Maschine erst ab, wenn alle Lichtstrahlen gleichzeitig unterbrochen sind",
+        "Viele parallele Lichtstrahlen bilden ein Schutzfeld; wird ein Strahl unterbrochen, schalten die sicheren Ausgänge (OSSD) ab und die gefahrbringende Bewegung wird gestoppt",
+        "Es erkennt ausschließlich metallische Werkzeuge in der Hand des Bedieners und schaltet dann ab"
+      ],
+      "answer": 2,
+      "explain": "Sicherheits-Lichtgitter sind berührungslos wirkende Schutzeinrichtungen. Die zwei OSSD-Ausgänge arbeiten redundant und werden getestet. Der Sicherheitsabstand muss so gewählt werden, dass die Maschine stillsteht, bevor die Gefahrstelle erreicht wird.",
+      "tags": [
+        "Sicherheit",
+        "Lichtgitter"
+      ]
+    },
+    {
+      "id": "sensorik-025",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was ist IO-Link?",
+      "options": [
+        "Eine herstellerunabhängige serielle Punkt-zu-Punkt-Verbindung zwischen einem IO-Link-Master und einem Sensor oder Aktor über ein ungeschirmtes Standardkabel",
+        "Ein Feldbus, an dem viele Sensoren in Linie an einer gemeinsamen Busleitung hängen",
+        "Ein Ethernet-basiertes Netzwerk, das jeden Sensor über einen Switch direkt mit der SPS verbindet",
+        "Ein analoges Normsignal, das 4–20 mA ersetzt und keine Parameter oder Diagnosedaten überträgt"
+      ],
+      "answer": 0,
+      "explain": "IO-Link (IEC 61131-9) nutzt die bekannte 3-Leiter-Anschlusstechnik. Neben Prozesswerten werden Parameter und Diagnosedaten übertragen, z. B. um einen Sensor beim Tausch automatisch neu zu parametrieren. Der Master ist über einen Feldbus an die SPS angebunden.",
+      "tags": [
+        "IO-Link"
+      ]
+    },
+    {
+      "id": "sensorik-026",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was bedeutet die Bezeichnung 5/2-Wegeventil?",
+      "options": [
+        "5 Schaltstellungen, 2 Anschlüsse",
+        "5 bar Betriebsdruck, 2 Magnetspulen",
+        "5 Anschlüsse, 2 anschließbare Zylinder",
+        "5 Anschlüsse, 2 Schaltstellungen"
+      ],
+      "answer": 3,
+      "explain": "Die erste Zahl nennt die Anzahl der Anschlüsse (z. B. 1 Druckluft, 2 und 4 Arbeitsleitungen, 3 und 5 Entlüftung), die zweite die Anzahl der Schaltstellungen. 5/2-Ventile steuern typischerweise doppeltwirkende Zylinder.",
+      "tags": [
+        "Aktoren",
+        "Magnetventil"
+      ]
+    },
+    {
+      "id": "sensorik-027",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein elektrisch betätigtes 5/2-Wegeventil ist monostabil (ein Magnet mit Federrückstellung). Was passiert bei Ausfall der Steuerspannung?",
+      "options": [
+        "Das Ventil bleibt in der zuletzt geschalteten Stellung stehen",
+        "Das Ventil geht in eine Mittelstellung, in der alle Anschlüsse gesperrt sind",
+        "Das Ventil schaltet abwechselnd zwischen beiden Stellungen hin und her",
+        "Die Feder schaltet das Ventil in die Grundstellung zurück"
+      ],
+      "answer": 3,
+      "explain": "Bistabile Ventile (Impulsventile mit zwei Magnetspulen) bleiben dagegen bei Spannungsausfall in ihrer letzten Stellung. Die Wahl beeinflusst, wie sich die Anlage bei Not-Halt oder Stromausfall verhält.",
+      "tags": [
+        "Aktoren",
+        "Magnetventil"
+      ]
+    },
+    {
+      "id": "sensorik-028",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein elektrischer Stellantrieb für eine Lüftungsklappe wird mit 4 … 20 mA angesteuert (4 mA = 0°, 20 mA = 90°). Welchen Strom muss der Analogausgang der SPS ausgeben, damit die Klappe auf 30° steht?",
+      "answer": "9,33 mA",
+      "value": 9.33,
+      "unit": "mA",
+      "tolerance": 0.02,
+      "explain": "I = 4 mA + (30° / 90°) · 16 mA = 4 mA + 5,33 mA = 9,33 mA.",
+      "tags": [
+        "Aktoren",
+        "Stellantrieb"
+      ]
+    },
+    {
+      "id": "sensorik-029",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wozu wird eine Freilaufdiode parallel zu einer Relais- oder Schützspule im Gleichstromkreis geschaltet?",
+      "answer": "Beim Abschalten erzeugt die Spule durch Selbstinduktion eine hohe Spannungsspitze. Die Diode lässt den Spulenstrom abklingen und schützt so den schaltenden Kontakt oder Transistorausgang.",
+      "keywords": [
+        "abschalt",
+        "induktion",
+        "spannung"
+      ],
+      "explain": "Die Diode wird in Sperrrichtung zur Betriebsspannung parallel zur Spule geschaltet. Nachteil: Das Relais fällt etwas verzögert ab. Bei Wechselspannungsspulen verwendet man stattdessen z. B. RC-Glieder oder Varistoren.",
+      "tags": [
+        "Aktoren",
+        "Relais"
+      ]
+    },
+    {
+      "id": "sensorik-030",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Worin unterscheiden sich ein PNP- und ein NPN-Sensorausgang?",
+      "answer": "Ein PNP-Ausgang schaltet Plus (+24 V) auf den Ausgang, die Last liegt gegen 0 V. Ein NPN-Ausgang schaltet Minus (0 V) auf den Ausgang, die Last liegt gegen +24 V.",
+      "keywords": [
+        "plus",
+        "minus"
+      ],
+      "explain": "PNP = plusschaltend (in Europa üblich), NPN = minusschaltend. Ein NPN-Sensor funktioniert nicht direkt an einem SPS-Eingang, der für PNP-Sensoren ausgelegt ist.",
+      "tags": [
+        "PNP/NPN"
+      ]
+    }
+  ]
+}

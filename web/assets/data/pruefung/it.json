@@ -1,0 +1,538 @@
+{
+  "topic": "it",
+  "title": "IT-Arbeitsplatz & IT-Sicherheit",
+  "icon": "💻",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "it-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welcher Speicher behält seine Daten auch ohne Stromversorgung?",
+      "options": [
+        "SSD",
+        "Arbeitsspeicher (RAM)",
+        "CPU-Cache",
+        "Grafikspeicher (VRAM)"
+      ],
+      "answer": 0,
+      "explain": "SSDs (Flash-Speicher) und HDDs sind nichtflüchtige Massenspeicher. RAM, Cache und Grafikspeicher sind flüchtig und verlieren ihren Inhalt beim Ausschalten.",
+      "tags": [
+        "Hardware",
+        "Speicher"
+      ]
+    },
+    {
+      "id": "it-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welcher Vorteil spricht typischerweise für eine SSD gegenüber einer HDD?",
+      "options": [
+        "Geringerer Preis pro Terabyte Speicherkapazität",
+        "Deutlich kürzere Zugriffszeiten, da keine beweglichen mechanischen Teile vorhanden sind",
+        "Unbegrenzt viele Schreibzyklen",
+        "Kein Datenverlust möglich, daher ist keine Datensicherung nötig"
+      ],
+      "answer": 1,
+      "explain": "SSDs arbeiten rein elektronisch und sind daher schneller und stoßunempfindlicher. HDDs sind meist günstiger pro Terabyte; Flash-Zellen haben eine begrenzte Anzahl von Schreibzyklen.",
+      "tags": [
+        "Hardware",
+        "Speicher"
+      ]
+    },
+    {
+      "id": "it-003",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Über welche Schnittstelle werden an einem Büro-PC digitale Bild- und Tonsignale typischerweise zu einem Monitor oder Fernseher übertragen?",
+      "options": [
+        "VGA",
+        "PS/2",
+        "HDMI",
+        "RS-232"
+      ],
+      "answer": 2,
+      "explain": "HDMI (wie auch DisplayPort) überträgt Bild und Ton digital. VGA ist eine analoge, reine Bildschnittstelle, PS/2 diente für Maus und Tastatur, RS-232 ist eine serielle Datenschnittstelle.",
+      "tags": [
+        "Schnittstellen"
+      ]
+    },
+    {
+      "id": "it-004",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welche Aussage zu USB-C trifft zu?",
+      "options": [
+        "Jeder USB-C-Anschluss überträgt automatisch 40 Gbit/s",
+        "Über USB-C können grundsätzlich keine Bildsignale übertragen werden",
+        "USB-C-Anschlüsse dienen ausschließlich zum Laden von Geräten",
+        "USB-C bezeichnet die Steckerform; welche Datenrate und Funktionen möglich sind, hängt vom unterstützten Standard ab"
+      ],
+      "answer": 3,
+      "explain": "Hinter einer USB-C-Buchse kann z. B. USB 2.0, USB 3.x oder USB4 stecken, teils auch DisplayPort-Signale. Deshalb immer die Spezifikation von Gerät und Kabel prüfen.",
+      "tags": [
+        "Schnittstellen",
+        "USB"
+      ]
+    },
+    {
+      "id": "it-005",
+      "type": "calc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie viele Byte sind 2 MiB?",
+      "answer": "2 097 152 Byte",
+      "value": 2097152,
+      "unit": "Byte",
+      "tolerance": 0.02,
+      "explain": "1 KiB = 1024 Byte, 1 MiB = 1024 KiB = 1 048 576 Byte. 2 MiB = 2 · 1 048 576 Byte = 2 097 152 Byte. (Dezimal wären 2 MB = 2 000 000 Byte.)",
+      "tags": [
+        "Speichereinheiten"
+      ]
+    },
+    {
+      "id": "it-006",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Aufgabe gehört zu den Kernaufgaben eines Betriebssystems?",
+      "options": [
+        "Verwaltung der Hardware-Ressourcen (z. B. Prozessor, Arbeitsspeicher, Datenträger) für die Anwendungsprogramme",
+        "Textverarbeitung und Tabellenkalkulation für den Anwender",
+        "Hardware-Initialisierung beim Einschalten, bevor ein Programm geladen wird",
+        "Absicherung des Firmennetzes als Hardware-Firewall am Internetzugang"
+      ],
+      "answer": 0,
+      "explain": "Das Betriebssystem (z. B. Windows, Linux) verwaltet Prozessor, Speicher, Dateien und Geräte und stellt sie den Anwendungen zur Verfügung. Office-Programme sind Anwendungssoftware, die Initialisierung beim Einschalten übernimmt die Firmware (UEFI/BIOS).",
+      "tags": [
+        "Betriebssystem"
+      ]
+    },
+    {
+      "id": "it-007",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wozu dient ein Gerätetreiber?",
+      "options": [
+        "Er erhöht die Taktfrequenz des Prozessors",
+        "Er ermöglicht dem Betriebssystem, ein bestimmtes Hardwaregerät anzusprechen und zu steuern",
+        "Er schützt den PC vor Schadsoftware",
+        "Er sichert die Daten des Geräts automatisch in der Cloud"
+      ],
+      "answer": 1,
+      "explain": "Treiber vermitteln zwischen dem Betriebssystem und der konkreten Hardware (z. B. Drucker, Grafikkarte, USB-Seriell-Adapter). Fehlt der passende Treiber, funktioniert das Gerät nicht oder nur eingeschränkt.",
+      "tags": [
+        "Treiber"
+      ]
+    },
+    {
+      "id": "it-008",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Nach welchem Grundsatz sollten Benutzerrechte an einem IT-Arbeitsplatz vergeben werden?",
+      "options": [
+        "Alle arbeiten mit Administratorrechten, damit sie Software selbst installieren können",
+        "Alle Benutzer teilen sich ein gemeinsames Konto",
+        "Jeder erhält nur die Rechte, die er für seine Aufgaben benötigt; Administratorrechte nur bei Bedarf",
+        "Rechte richten sich nach der Dauer der Betriebszugehörigkeit"
+      ],
+      "answer": 2,
+      "explain": "Das Prinzip der minimalen Rechte (Least Privilege) begrenzt den Schaden durch Bedienfehler und Schadsoftware. Für Verwaltungsaufgaben nutzt man ein separates Administratorkonto.",
+      "tags": [
+        "Benutzerrechte"
+      ]
+    },
+    {
+      "id": "it-009",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Warum sollten Sicherheitsupdates für Betriebssystem und Programme zeitnah installiert werden?",
+      "options": [
+        "Weil sonst die Softwarelizenz sofort erlischt",
+        "Weil Updates immer die Hardwareleistung erhöhen",
+        "Weil ohne Updates keine Datensicherung möglich ist",
+        "Weil sie bekannte Sicherheitslücken schließen, die sonst von Angreifern ausgenutzt werden können"
+      ],
+      "answer": 3,
+      "explain": "Bekannte Lücken werden oft schnell aktiv ausgenutzt. In Produktionsanlagen werden Updates vorher abgestimmt und getestet, damit der Betrieb nicht gestört wird.",
+      "tags": [
+        "Updates"
+      ]
+    },
+    {
+      "id": "it-010",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Eine SSD wird mit 500 GB angegeben (dezimal, 1 GB = 10⁹ Byte). Wie viel GiB zeigt das Betriebssystem ungefähr an (1 GiB = 2³⁰ Byte = 1 073 741 824 Byte)?",
+      "answer": "465,66 GiB",
+      "value": 465.66,
+      "unit": "GiB",
+      "tolerance": 0.02,
+      "explain": "500 · 10⁹ Byte : 1 073 741 824 Byte/GiB ≈ 465,66 GiB. Deshalb erscheint ein Datenträger im Betriebssystem „kleiner“ als auf der Verpackung angegeben.",
+      "tags": [
+        "Speichereinheiten"
+      ]
+    },
+    {
+      "id": "it-011",
+      "type": "open",
+      "level": 2,
+      "part": "AP1",
+      "q": "Worin unterscheiden sich eine inkrementelle und eine differenzielle Datensicherung?",
+      "answer": "Die inkrementelle Sicherung speichert nur die Änderungen seit der letzten Sicherung (egal welcher Art). Die differenzielle Sicherung speichert alle Änderungen seit der letzten Vollsicherung.",
+      "keywords": [
+        "änderung",
+        "letzte",
+        "vollsicherung"
+      ],
+      "explain": "Inkrementell ist schnell und platzsparend, zur Wiederherstellung braucht man aber die Vollsicherung und alle Inkremente. Differenziell wächst von Tag zu Tag, zur Wiederherstellung reichen Vollsicherung und letzte differenzielle Sicherung.",
+      "tags": [
+        "Datensicherung"
+      ]
+    },
+    {
+      "id": "it-012",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Eine Firma macht sonntags eine Vollsicherung und montags bis freitags jeweils eine differenzielle Sicherung. Am Freitag fällt nach der Sicherung die Festplatte aus. Welche Sicherungen werden mindestens zur vollständigen Wiederherstellung benötigt?",
+      "options": [
+        "Die Vollsicherung vom Sonntag und die differenzielle Sicherung vom Freitag",
+        "Nur die differenzielle Sicherung vom Freitag",
+        "Die Vollsicherung und alle differenziellen Sicherungen von Montag bis Freitag",
+        "Nur die Vollsicherung vom Sonntag"
+      ],
+      "answer": 0,
+      "explain": "Jede differenzielle Sicherung enthält alle Änderungen seit der letzten Vollsicherung. Die Freitagssicherung enthält also bereits die Änderungen von Montag bis Donnerstag.",
+      "tags": [
+        "Datensicherung"
+      ]
+    },
+    {
+      "id": "it-013",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was besagt die 3-2-1-Regel der Datensicherung?",
+      "answer": "Es gibt mindestens 3 Kopien der Daten, auf 2 verschiedenen Speichermedien, davon 1 Kopie extern (außer Haus).",
+      "keywords": [
+        "kopien",
+        "medien",
+        "extern"
+      ],
+      "explain": "So schützt man sich gegen Geräteausfall, Brand, Diebstahl und Ransomware. Die externe Kopie sollte möglichst offline oder unveränderbar aufbewahrt werden.",
+      "tags": [
+        "Datensicherung"
+      ]
+    },
+    {
+      "id": "it-014",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "2 TB Daten (1 TB = 10¹² Byte) sollen auf eine externe Festplatte gesichert werden. Die effektive Übertragungsrate beträgt 200 MB/s (1 MB = 10⁶ Byte). Wie lange dauert die Sicherung in Stunden?",
+      "answer": "2,78 h",
+      "value": 2.78,
+      "unit": "h",
+      "tolerance": 0.03,
+      "explain": "t = 2 · 10¹² Byte : (200 · 10⁶ Byte/s) = 10 000 s. 10 000 s : 3600 s/h ≈ 2,78 h (etwa 2 h 47 min).",
+      "tags": [
+        "Übertragungszeit",
+        "Datensicherung"
+      ]
+    },
+    {
+      "id": "it-015",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welche USV-Bauart versorgt die Last ständig über den Wechselrichter und liefert deshalb bei Netzausfall ohne Umschaltunterbrechung weiter Spannung?",
+      "options": [
+        "Offline-USV (Standby, VFD)",
+        "Online-USV (Doppelwandler, VFI)",
+        "Line-Interactive-USV (VI)",
+        "Steckdosenleiste mit Überspannungsschutz"
+      ],
+      "answer": 1,
+      "explain": "Bei der Online-USV wird die Netzspannung gleichgerichtet und vom Wechselrichter neu erzeugt; die Batterie hängt am Zwischenkreis. Offline- und Line-Interactive-USV schalten erst bei Netzausfall um. Jede USV überbrückt Netzausfälle für eine begrenzte Zeit und ermöglicht ein geordnetes Herunterfahren.",
+      "tags": [
+        "USV"
+      ]
+    },
+    {
+      "id": "it-016",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was sind personenbezogene Daten im Sinne der DSGVO?",
+      "answer": "Alle Informationen, die sich auf eine identifizierte oder identifizierbare natürliche Person beziehen, z. B. Name, Anschrift, E-Mail-Adresse oder Personalnummer.",
+      "keywords": [
+        "person",
+        "identifizier"
+      ],
+      "explain": "Solche Daten dürfen nur mit einer Rechtsgrundlage (z. B. Einwilligung, Vertrag, gesetzliche Pflicht) verarbeitet werden. Wichtige Grundsätze sind u. a. Zweckbindung und Datenminimierung.",
+      "tags": [
+        "DSGVO"
+      ]
+    },
+    {
+      "id": "it-017",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche der folgenden Angaben ist ein personenbezogenes Datum nach DSGVO?",
+      "options": [
+        "Die Durchschnittstemperatur in einer Fertigungshalle",
+        "Die Firmware-Version einer SPS",
+        "Die dienstliche E-Mail-Adresse max.mustermann@firma.de",
+        "Die anonymisierte monatliche Ausschussquote einer Linie"
+      ],
+      "answer": 2,
+      "explain": "Eine E-Mail-Adresse mit Vor- und Nachnamen lässt direkt auf eine Person schließen – auch dienstliche Adressen sind personenbezogen. Wirklich anonymisierte Daten fallen nicht unter die DSGVO.",
+      "tags": [
+        "DSGVO"
+      ]
+    },
+    {
+      "id": "it-018",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Nennen Sie die drei klassischen Schutzziele der Informationssicherheit.",
+      "answer": "Vertraulichkeit, Integrität und Verfügbarkeit.",
+      "keywords": [
+        "vertraulich",
+        "integrität",
+        "verfügbar"
+      ],
+      "explain": "Vertraulichkeit: nur Berechtigte haben Zugriff. Integrität: Daten sind korrekt und unverändert. Verfügbarkeit: Systeme und Daten stehen bei Bedarf zur Verfügung. In der Produktion hat die Verfügbarkeit oft höchste Priorität.",
+      "tags": [
+        "Schutzziele"
+      ]
+    },
+    {
+      "id": "it-019",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Angreifer verändert unbemerkt die Sollwerte in einer Rezeptdatei einer Anlage. Welches Schutzziel der Informationssicherheit ist in erster Linie verletzt?",
+      "options": [
+        "Vertraulichkeit",
+        "Verfügbarkeit",
+        "Datenminimierung",
+        "Integrität"
+      ],
+      "answer": 3,
+      "explain": "Integrität bedeutet, dass Daten vollständig und unverändert sind bzw. Änderungen erkannt werden. Vertraulichkeit wäre verletzt, wenn die Datei nur unbefugt gelesen würde; Verfügbarkeit, wenn sie nicht mehr nutzbar wäre. Datenminimierung ist ein Grundsatz der DSGVO, kein Schutzziel.",
+      "tags": [
+        "Schutzziele"
+      ]
+    },
+    {
+      "id": "it-020",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welcher Umgang mit Passwörtern ist empfehlenswert?",
+      "options": [
+        "Für jeden Dienst ein eigenes, langes Passwort verwenden, z. B. verwaltet mit einem Passwort-Manager",
+        "Ein einziges starkes Passwort für alle Dienste verwenden",
+        "Das Passwort regelmäßig nur um eine hochgezählte Ziffer ändern",
+        "Das Passwort auf einem Zettel am Monitor notieren, damit man es nicht vergisst"
+      ],
+      "answer": 0,
+      "explain": "Wird ein Passwort bei einem Dienst gestohlen, probieren Angreifer es auch bei anderen Diensten aus. Lange Passphrasen sind sicher und gut merkbar; ein Passwort-Manager erzeugt und speichert eindeutige Passwörter.",
+      "tags": [
+        "Passwörter"
+      ]
+    },
+    {
+      "id": "it-021",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Kombination ist eine echte Zwei-Faktor-Authentisierung?",
+      "options": [
+        "Passwort und die Antwort auf eine Sicherheitsfrage",
+        "Passwort und ein Einmalcode aus einer Authenticator-App auf dem Smartphone",
+        "Zwei unterschiedliche Passwörter nacheinander",
+        "Benutzername und Passwort"
+      ],
+      "answer": 1,
+      "explain": "Zwei-Faktor-Authentisierung kombiniert zwei verschiedene Faktoren: Wissen (Passwort, PIN), Besitz (Smartphone, Token, Chipkarte) oder Biometrie (Fingerabdruck). Passwort plus Sicherheitsfrage ist zweimal „Wissen“.",
+      "tags": [
+        "Zwei-Faktor"
+      ]
+    },
+    {
+      "id": "it-022",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Eine E-Mail, angeblich von der IT-Abteilung, fordert dringend dazu auf, sich über einen Link neu anzumelden, sonst werde das Konto gesperrt. Wie sollte man reagieren?",
+      "options": [
+        "Schnell anmelden, damit das Konto nicht gesperrt wird",
+        "Auf die E-Mail antworten und nachfragen, ob sie echt ist",
+        "Den Link nicht anklicken, keine Daten eingeben und die E-Mail der IT-Abteilung auf bekanntem Weg melden",
+        "Den Link öffnen, aber nur das alte Passwort eingeben"
+      ],
+      "answer": 2,
+      "explain": "Zeitdruck, Drohungen und Links zu Anmeldeseiten sind typische Phishing-Merkmale. Eine Antwort ginge an den Angreifer; Rückfragen daher nur über bekannte Kontaktwege (z. B. Telefon).",
+      "tags": [
+        "Phishing"
+      ]
+    },
+    {
+      "id": "it-023",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was kennzeichnet Ransomware?",
+      "options": [
+        "Sie blendet ungefragt Werbung im Browser ein",
+        "Sie verbreitet sich ausschließlich über Bluetooth",
+        "Sie zeichnet heimlich Tastatureingaben auf, um Passwörter zu stehlen",
+        "Sie verschlüsselt Daten oder sperrt Systeme und fordert ein Lösegeld für die Freigabe"
+      ],
+      "answer": 3,
+      "explain": "Ransomware (Erpressungstrojaner) ist für Firmen und Produktionsanlagen besonders gefährlich. Wichtigster Schutz neben Updates und Vorsicht bei Anhängen ist eine aktuelle, getrennt bzw. offline aufbewahrte Datensicherung. Die anderen Beschreibungen passen zu Adware bzw. Keyloggern.",
+      "tags": [
+        "Malware",
+        "Ransomware"
+      ]
+    },
+    {
+      "id": "it-024",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Aufgabe hat eine Firewall?",
+      "options": [
+        "Sie filtert den Netzwerkverkehr anhand festgelegter Regeln und lässt nur erlaubte Verbindungen zu",
+        "Sie verschlüsselt alle auf der Festplatte gespeicherten Dateien",
+        "Sie erstellt automatisch Datensicherungen",
+        "Sie ersetzt einen Virenscanner vollständig"
+      ],
+      "answer": 0,
+      "explain": "Eine Firewall prüft z. B. Quell- und Zieladresse, Port und Protokoll und blockiert nicht erlaubten Verkehr. Sie ist ein wichtiger Baustein, ersetzt aber weder Virenschutz noch Updates.",
+      "tags": [
+        "Firewall"
+      ]
+    },
+    {
+      "id": "it-025",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was ermöglicht ein VPN (Virtual Private Network)?",
+      "options": [
+        "Eine schnellere Internetverbindung durch Datenkompression",
+        "Eine verschlüsselte Verbindung (Tunnel) über ein unsicheres Netz wie das Internet in ein geschütztes Netz",
+        "Einen vollständigen Schutz vor Phishing-E-Mails",
+        "Den kabellosen Anschluss von Geräten ohne WLAN-Router"
+      ],
+      "answer": 1,
+      "explain": "Über ein VPN kann z. B. ein Servicetechniker von außen verschlüsselt und authentifiziert auf das Firmennetz zugreifen, als wäre er vor Ort. Vor Phishing oder Schadsoftware auf dem Endgerät schützt ein VPN nicht.",
+      "tags": [
+        "VPN"
+      ]
+    },
+    {
+      "id": "it-026",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Eine 12-GB-Datei (1 GB = 10⁹ Byte) wird über eine Netzwerkverbindung mit 100 Mbit/s übertragen. Wie lange dauert die Übertragung im Idealfall in Minuten?",
+      "answer": "16 min",
+      "value": 16,
+      "unit": "min",
+      "tolerance": 0.03,
+      "explain": "12 GB = 12 · 10⁹ Byte · 8 bit/Byte = 96 · 10⁹ bit. t = 96 · 10⁹ bit : (100 · 10⁶ bit/s) = 960 s = 16 min. In der Praxis dauert es wegen Protokoll-Overhead etwas länger.",
+      "tags": [
+        "Übertragungszeit"
+      ]
+    },
+    {
+      "id": "it-027",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welche Maßnahme entspricht einer sicheren Fernwartung einer Anlage durch einen externen Dienstleister?",
+      "options": [
+        "Dauerhaft offener Fernzugriff direkt aus dem Internet auf die SPS, damit jederzeit geholfen werden kann",
+        "Ein gemeinsames Passwort für alle Dienstleister, das nie geändert wird",
+        "Zugang über eine verschlüsselte, authentifizierte Verbindung, die nur bei Bedarf vom Betreiber freigeschaltet und protokolliert wird",
+        "Fernwartungssoftware, die unbeaufsichtigt und ohne Passwort ständig läuft"
+      ],
+      "answer": 2,
+      "explain": "Fernwartungszugänge sind ein häufiges Einfallstor für Angriffe. Deshalb: zeitlich begrenzte Freigabe, persönliche Zugänge mit starker Authentisierung (z. B. Zwei-Faktor), Verschlüsselung (z. B. VPN) und Protokollierung.",
+      "tags": [
+        "Fernwartung"
+      ]
+    },
+    {
+      "id": "it-028",
+      "type": "open",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Warum sollte ein Produktionsnetz vom Büronetz getrennt (segmentiert) werden?",
+      "answer": "Damit sich Schadsoftware oder Angriffe nicht ungehindert vom Büronetz in die Produktion ausbreiten können; die Übergänge werden über Firewalls kontrolliert.",
+      "keywords": [
+        "schadsoftware",
+        "ausbreit",
+        "firewall"
+      ],
+      "explain": "Nach der Normenreihe IEC 62443 wird eine Anlage dazu in Zonen eingeteilt, die nur über kontrollierte Verbindungen (Conduits) kommunizieren. So bleibt ein Vorfall auf eine Zone begrenzt.",
+      "tags": [
+        "Industrial Security",
+        "Netzsegmentierung"
+      ]
+    },
+    {
+      "id": "it-029",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Was ist eine DMZ (demilitarisierte Zone) in einem Firmennetz?",
+      "options": [
+        "Ein Bereich des internen Netzes ganz ohne Firewall-Regeln",
+        "Ein Gäste-WLAN ohne Internetzugang",
+        "Ein geschützter Bereich im Arbeitsspeicher für Systemprogramme",
+        "Ein durch Firewalls abgeschotteter Netzbereich zwischen internem Netz und Internet für Server, die von außen erreichbar sein müssen"
+      ],
+      "answer": 3,
+      "explain": "In der DMZ stehen z. B. Web-, Mail- oder Fernwartungsserver. Wird ein solcher Server angegriffen, hat der Angreifer noch keinen direkten Zugriff auf das interne Netz bzw. die Produktion.",
+      "tags": [
+        "Industrial Security",
+        "DMZ"
+      ]
+    },
+    {
+      "id": "it-030",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Womit befasst sich die Normenreihe IEC 62443?",
+      "options": [
+        "Mit der IT-Sicherheit (Security) industrieller Automatisierungs- und Steuerungssysteme",
+        "Mit der funktionalen Sicherheit von Maschinensteuerungen (Performance Level)",
+        "Mit den Programmiersprachen für speicherprogrammierbare Steuerungen",
+        "Mit der elektrischen Ausrüstung von Maschinen"
+      ],
+      "answer": 0,
+      "explain": "IEC 62443 beschreibt Security für industrielle Anlagen, u. a. mit Zonen und Conduits sowie Security Levels, und richtet sich an Betreiber, Integratoren und Hersteller. Performance Level: DIN EN ISO 13849-1, SPS-Sprachen: IEC 61131-3, elektrische Ausrüstung: DIN EN 60204-1.",
+      "tags": [
+        "Industrial Security",
+        "IEC 62443"
+      ]
+    }
+  ]
+}

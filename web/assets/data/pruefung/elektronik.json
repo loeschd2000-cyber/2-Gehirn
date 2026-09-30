@@ -1,0 +1,547 @@
+{
+  "topic": "elektronik",
+  "title": "Elektronik",
+  "icon": "🔌",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "elektronik-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Reines Silizium wird mit Phosphor (fünfwertig) dotiert. Welcher Halbleitertyp entsteht?",
+      "options": [
+        "p-Leiter mit Löchern als Majoritätsträgern",
+        "Eigenleiter ohne freie Ladungsträger",
+        "Isolator, weil die Bindungen vollständig besetzt sind",
+        "n-Leiter mit freien Elektronen als Majoritätsträgern"
+      ],
+      "answer": 3,
+      "explain": "Phosphor hat fünf Valenzelektronen; eines davon wird im Kristallgitter nicht gebunden und steht als freies Elektron zur Verfügung (Donator). Dreiwertige Stoffe wie Bor ergeben dagegen einen p-Leiter.",
+      "tags": [
+        "Halbleiter",
+        "Dotierung"
+      ]
+    },
+    {
+      "id": "elektronik-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Ladungsträger sind in einem p-dotierten Halbleiter die Majoritätsträger?",
+      "options": [
+        "Löcher (Defektelektronen)",
+        "Freie Elektronen",
+        "Ortsfeste Akzeptor-Ionen",
+        "Positive Atomkerne des Siliziums"
+      ],
+      "answer": 0,
+      "explain": "Dreiwertige Akzeptoren (z. B. Bor) hinterlassen im Gitter fehlende Elektronen, die Löcher. Die Akzeptor-Ionen selbst sind ortsfest und tragen nicht zum Strom bei.",
+      "tags": [
+        "Halbleiter"
+      ]
+    },
+    {
+      "id": "elektronik-003",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was versteht man unter dem Dotieren eines Halbleiters?",
+      "answer": "Das gezielte Einbringen von Fremdatomen (drei- oder fünfwertig) in einen reinen Halbleiter, um seine Leitfähigkeit zu erhöhen; es entsteht ein p- oder n-Leiter.",
+      "keywords": [
+        "fremdatom",
+        "leitfähig"
+      ],
+      "explain": "Fünfwertige Fremdatome (z. B. Phosphor) liefern freie Elektronen (n-Leiter), dreiwertige (z. B. Bor) erzeugen Löcher (p-Leiter).",
+      "tags": [
+        "Halbleiter",
+        "Dotierung"
+      ]
+    },
+    {
+      "id": "elektronik-004",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Unter welcher Bedingung leitet eine Siliziumdiode in Durchlassrichtung?",
+      "options": [
+        "Die Anode ist um mehr als die Schleusenspannung positiver als die Kathode.",
+        "Die Kathode ist positiver als die Anode.",
+        "Anode und Kathode liegen auf gleichem Potenzial.",
+        "Nur wenn an der Diode eine Wechselspannung anliegt."
+      ],
+      "answer": 0,
+      "explain": "Eine Diode leitet, wenn die Anode positiv gegenüber der Kathode ist und die Schleusenspannung (bei Si ca. 0,7 V) überschritten wird. Ist die Kathode positiver, sperrt sie.",
+      "tags": [
+        "Diode"
+      ]
+    },
+    {
+      "id": "elektronik-005",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Schleusenspannung hat eine Siliziumdiode ungefähr?",
+      "options": [
+        "0,2 V bis 0,3 V",
+        "1,6 V bis 2,0 V",
+        "5,6 V",
+        "0,6 V bis 0,7 V"
+      ],
+      "answer": 3,
+      "explain": "Silizium-Dioden beginnen bei etwa 0,6 bis 0,7 V deutlich zu leiten. 0,2 bis 0,3 V gelten für Germanium- bzw. Schottky-Dioden, 1,6 bis 2,0 V für rote LEDs.",
+      "tags": [
+        "Diode",
+        "Schleusenspannung"
+      ]
+    },
+    {
+      "id": "elektronik-006",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "In welchem Arbeitsbereich wird eine Z-Diode zur Spannungsstabilisierung betrieben?",
+      "options": [
+        "In Durchlassrichtung oberhalb der Schleusenspannung",
+        "In Sperrrichtung im Durchbruchbereich",
+        "In Sperrrichtung unterhalb der Z-Spannung",
+        "In Durchlassrichtung unterhalb der Schleusenspannung"
+      ],
+      "answer": 1,
+      "explain": "Im Durchbruchbereich (Sperrrichtung) ändert sich die Spannung an der Z-Diode trotz großer Stromänderung nur wenig. Das wird zur Stabilisierung genutzt; ein Vorwiderstand begrenzt den Strom.",
+      "tags": [
+        "Z-Diode"
+      ]
+    },
+    {
+      "id": "elektronik-007",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welche Aufgabe hat der Vorwiderstand in einer Stabilisierungsschaltung mit Z-Diode?",
+      "options": [
+        "Er erhöht die Z-Spannung auf den gewünschten Wert.",
+        "Er glättet die Ausgangsspannung wie ein Ladekondensator.",
+        "Er begrenzt den Strom und nimmt die Differenz zwischen Eingangs- und Z-Spannung auf.",
+        "Er verhindert, dass die Z-Diode in den Durchbruch gelangt."
+      ],
+      "answer": 2,
+      "explain": "Ohne Vorwiderstand würde der Strom durch die Z-Diode im Durchbruch unbegrenzt ansteigen und sie zerstören. Am Vorwiderstand fällt die Spannung U_e − U_Z ab.",
+      "tags": [
+        "Z-Diode",
+        "Vorwiderstand"
+      ]
+    },
+    {
+      "id": "elektronik-008",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Eine Z-Diode mit U_Z = 5,1 V soll eine Last stabilisieren. Die Eingangsspannung beträgt 12 V, der Laststrom 15 mA und der Z-Strom soll 10 mA betragen. Wie groß muss der Vorwiderstand sein?",
+      "answer": "276 Ω",
+      "value": 276.0,
+      "unit": "Ω",
+      "tolerance": 0.03,
+      "explain": "Durch den Vorwiderstand fließen Last- und Z-Strom: I = 15 mA + 10 mA = 25 mA. Spannung am Vorwiderstand: U = 12 V − 5,1 V = 6,9 V. R_V = 6,9 V / 0,025 A = 276 Ω (gewählt wird ein Normwert, z. B. 270 Ω).",
+      "tags": [
+        "Z-Diode",
+        "Vorwiderstand"
+      ]
+    },
+    {
+      "id": "elektronik-009",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Warum darf eine LED nicht ohne Vorwiderstand direkt an eine Spannungsquelle angeschlossen werden?",
+      "options": [
+        "Weil die LED sonst in Sperrrichtung betrieben wird.",
+        "Weil die LED ohne Vorwiderstand nur mit halber Helligkeit leuchtet.",
+        "Weil der Vorwiderstand die Farbe des Lichts festlegt.",
+        "Wegen der steilen Kennlinie führt schon eine kleine Spannungserhöhung zu einem sehr großen Strom, der die LED zerstört."
+      ],
+      "answer": 3,
+      "explain": "Oberhalb der Durchlassspannung steigt der Strom einer LED nahezu senkrecht an. Der Vorwiderstand begrenzt den Strom auf den zulässigen Wert (z. B. 10 bis 20 mA).",
+      "tags": [
+        "LED",
+        "Vorwiderstand"
+      ]
+    },
+    {
+      "id": "elektronik-010",
+      "type": "calc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Eine rote LED (U_F = 2,0 V, I_F = 10 mA) soll als Meldeleuchte an 24 V DC betrieben werden. Wie groß muss der Vorwiderstand sein?",
+      "answer": "2200 Ω",
+      "value": 2200,
+      "unit": "Ω",
+      "tolerance": 0.02,
+      "explain": "R_V = (U_B − U_F) / I_F = (24 V − 2,0 V) / 0,010 A = 2200 Ω = 2,2 kΩ.",
+      "tags": [
+        "LED",
+        "Vorwiderstand"
+      ]
+    },
+    {
+      "id": "elektronik-011",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Brückengleichrichter (B2U) wird an ein 50-Hz-Netz angeschlossen. Welche Frequenz hat die Welligkeit (Brummspannung) der Ausgangsspannung?",
+      "options": [
+        "50 Hz",
+        "100 Hz",
+        "25 Hz",
+        "200 Hz"
+      ],
+      "answer": 1,
+      "explain": "Die Brückenschaltung nutzt beide Halbwellen, daher entstehen pro Periode zwei Spannungsimpulse: 2 · 50 Hz = 100 Hz. Beim Einweggleichrichter wären es 50 Hz.",
+      "tags": [
+        "Gleichrichter"
+      ]
+    },
+    {
+      "id": "elektronik-012",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Wie wirkt sich eine größere Kapazität des Ladekondensators hinter einem Gleichrichter bei gleicher Last aus?",
+      "options": [
+        "Die Restwelligkeit wird größer.",
+        "Die Ausgangsspannung sinkt auf den Effektivwert.",
+        "Die Restwelligkeit der Ausgangsspannung wird kleiner.",
+        "Die Frequenz der Welligkeit verdoppelt sich."
+      ],
+      "answer": 2,
+      "explain": "Ein größerer Kondensator entlädt sich zwischen den Ladeimpulsen weniger stark, deshalb sinkt die Brummspannung. Die Brummfrequenz hängt nur von der Gleichrichterschaltung ab.",
+      "tags": [
+        "Gleichrichter",
+        "Glättung"
+      ]
+    },
+    {
+      "id": "elektronik-013",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Transformator liefert sekundär 12 V (Effektivwert). Dahinter liegen ein Brückengleichrichter (Durchlassspannung je Diode 0,7 V) und ein Ladekondensator. Welche Ausgangsspannung stellt sich im Leerlauf ungefähr ein?",
+      "answer": "15,6 V",
+      "value": 15.6,
+      "unit": "V",
+      "tolerance": 0.03,
+      "explain": "Im Leerlauf lädt sich der Kondensator auf den Scheitelwert abzüglich zweier Diodenspannungen auf: Û = 12 V · √2 = 16,97 V; U = 16,97 V − 2 · 0,7 V = 15,57 V ≈ 15,6 V.",
+      "tags": [
+        "Gleichrichter",
+        "Glättung"
+      ]
+    },
+    {
+      "id": "elektronik-014",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wozu dient der Ladekondensator hinter einer Gleichrichterschaltung?",
+      "answer": "Er lädt sich auf den Scheitelwert auf und liefert in den Lücken zwischen den Halbwellen Strom an die Last; so glättet er die pulsierende Gleichspannung.",
+      "keywords": [
+        "glätt",
+        "gleichspannung"
+      ],
+      "explain": "Je größer die Kapazität und je kleiner der Laststrom, desto geringer ist die verbleibende Brummspannung.",
+      "tags": [
+        "Gleichrichter",
+        "Glättung"
+      ]
+    },
+    {
+      "id": "elektronik-015",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein NPN-Transistor wird als Schalter betrieben und ist voll durchgeschaltet (gesättigt). Was gilt für die Kollektor-Emitter-Spannung?",
+      "options": [
+        "U_CE ist sehr klein, etwa 0,1 V bis 0,3 V.",
+        "U_CE ist ungefähr gleich der Betriebsspannung.",
+        "U_CE ist etwa die halbe Betriebsspannung.",
+        "U_CE ist gleich der Basis-Emitter-Spannung von 0,7 V und der Kollektorstrom ist null."
+      ],
+      "answer": 0,
+      "explain": "Im Sättigungsbetrieb (übersteuert) fällt nur die kleine Sättigungsspannung U_CE,sat ab, fast die gesamte Spannung liegt an der Last. U_CE ≈ U_B gilt im gesperrten Zustand.",
+      "tags": [
+        "Transistor",
+        "Schalter"
+      ]
+    },
+    {
+      "id": "elektronik-016",
+      "type": "open",
+      "level": 2,
+      "part": "AP1",
+      "q": "Warum wird ein Transistor als Schalter nur voll durchgesteuert oder gesperrt betrieben und nicht im Zwischenbereich?",
+      "answer": "Weil in beiden Zuständen die Verlustleistung P = U_CE · I_C klein ist; im Zwischenbereich wären Spannung und Strom gleichzeitig groß und der Transistor würde stark erwärmt.",
+      "keywords": [
+        "verlustleistung",
+        "wärm"
+      ],
+      "explain": "Gesperrt: hohe Spannung, fast kein Strom. Durchgesteuert: großer Strom, sehr kleine Spannung. In beiden Fällen ist das Produkt klein.",
+      "tags": [
+        "Transistor",
+        "Schalter"
+      ]
+    },
+    {
+      "id": "elektronik-017",
+      "type": "calc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Ein NPN-Transistor soll von einem 5-V-Ausgang eines Mikrocontrollers eine Relaisspule mit 60 mA schalten. Stromverstärkung B = 100, U_BE = 0,7 V, Übersteuerungsfaktor 3. Wie groß muss der Basisvorwiderstand sein?",
+      "answer": "2389 Ω",
+      "value": 2389,
+      "unit": "Ω",
+      "tolerance": 0.03,
+      "explain": "I_B = I_C / B · ü = 60 mA / 100 · 3 = 1,8 mA. R_B = (5 V − 0,7 V) / 1,8 mA = 4,3 V / 0,0018 A = 2389 Ω (Normwert z. B. 2,2 kΩ, damit sicher übersteuert wird).",
+      "tags": [
+        "Transistor",
+        "Schalter"
+      ]
+    },
+    {
+      "id": "elektronik-018",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Wodurch wird ein MOSFET angesteuert?",
+      "options": [
+        "Durch den Basisstrom",
+        "Durch den Drainstrom",
+        "Durch den Strom zwischen Gate und Drain",
+        "Durch die Gate-Source-Spannung"
+      ],
+      "answer": 3,
+      "explain": "Der MOSFET ist spannungsgesteuert: Das Gate ist isoliert, im statischen Zustand fließt praktisch kein Steuerstrom. Nur zum Umladen der Gatekapazität beim Schalten ist Strom nötig.",
+      "tags": [
+        "MOSFET"
+      ]
+    },
+    {
+      "id": "elektronik-019",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Aufgabe hat eine Freilaufdiode an einer Relais- oder Schützspule?",
+      "options": [
+        "Sie erhöht den Einschaltstrom, damit das Relais sicher anzieht.",
+        "Sie verhindert, dass die Spule beim Einschalten Strom aufnimmt.",
+        "Sie richtet die Spulenspannung gleich, damit das Relais an Wechselspannung arbeitet.",
+        "Sie begrenzt die Induktionsspannung beim Abschalten der Spule und schützt so den Schaltkontakt bzw. Schalttransistor."
+      ],
+      "answer": 3,
+      "explain": "Beim Abschalten will die Spule den Stromfluss aufrechterhalten und erzeugt eine hohe Selbstinduktionsspannung. Die Freilaufdiode bietet dem Strom einen Weg und begrenzt die Spannung auf etwa 0,7 V über der Betriebsspannung.",
+      "tags": [
+        "Freilaufdiode",
+        "Relais"
+      ]
+    },
+    {
+      "id": "elektronik-020",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Wie wird eine Freilaufdiode an einer mit Gleichspannung betriebenen Relaisspule angeschlossen?",
+      "options": [
+        "Parallel zur Spule, in Sperrrichtung bezogen auf die Betriebsspannung (Kathode an Plus).",
+        "Parallel zur Spule, in Durchlassrichtung bezogen auf die Betriebsspannung (Anode an Plus).",
+        "In Reihe zur Spule in Durchlassrichtung.",
+        "Parallel zur Kollektor-Emitter-Strecke des Schalttransistors."
+      ],
+      "answer": 0,
+      "explain": "Im Betrieb sperrt die Diode. Beim Abschalten kehrt sich die Spulenspannung um, die Diode wird leitend und der Strom klingt über sie ab. In Durchlassrichtung angeschlossen wäre sie ein Kurzschluss für die Versorgung.",
+      "tags": [
+        "Freilaufdiode"
+      ]
+    },
+    {
+      "id": "elektronik-021",
+      "type": "mc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Welcher Nebeneffekt tritt auf, wenn eine Schützspule mit einer einfachen Freilaufdiode beschaltet wird?",
+      "options": [
+        "Das Schütz zieht verzögert an.",
+        "Das Schütz fällt verzögert ab, weil der Spulenstrom langsamer abklingt.",
+        "Die Spule nimmt im Betrieb einen höheren Strom auf.",
+        "Die Hauptkontakte prellen beim Einschalten stärker."
+      ],
+      "answer": 1,
+      "explain": "Über die Freilaufdiode fließt der Spulenstrom nach dem Abschalten weiter und klingt nur langsam ab, das Magnetfeld hält den Anker länger. Ist schnelles Abfallen nötig, verwendet man z. B. eine Kombination aus Diode und Z-Diode oder einen Varistor.",
+      "tags": [
+        "Freilaufdiode",
+        "Schütz"
+      ]
+    },
+    {
+      "id": "elektronik-022",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welche Eigenschaft hat ein idealer Operationsverstärker?",
+      "options": [
+        "Unendlich hoher Ausgangswiderstand",
+        "Leerlaufverstärkung von genau 1",
+        "Unendlich hoher Eingangswiderstand",
+        "Hohe Eingangsströme an beiden Eingängen"
+      ],
+      "answer": 2,
+      "explain": "Der ideale OPV hat unendlich hohe Leerlaufverstärkung, unendlich hohen Eingangswiderstand (keine Eingangsströme) und einen Ausgangswiderstand von 0 Ω.",
+      "tags": [
+        "OPV"
+      ]
+    },
+    {
+      "id": "elektronik-023",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein OPV arbeitet ohne Gegenkopplung als Komparator. Die Spannung am nicht invertierenden Eingang (+) ist größer als am invertierenden Eingang (−). Welche Ausgangsspannung stellt sich ein?",
+      "options": [
+        "Die negative Sättigungsspannung (nahe −U_B)",
+        "Die positive Sättigungsspannung (nahe +U_B)",
+        "0 V",
+        "Genau die Differenz der beiden Eingangsspannungen"
+      ],
+      "answer": 1,
+      "explain": "Wegen der sehr hohen Leerlaufverstärkung genügt schon eine kleine positive Differenzspannung U+ − U−, um den Ausgang in die positive Sättigung zu treiben.",
+      "tags": [
+        "OPV",
+        "Komparator"
+      ]
+    },
+    {
+      "id": "elektronik-024",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Aussage trifft auf den nicht invertierenden Verstärker mit OPV zu?",
+      "options": [
+        "Ausgangs- und Eingangsspannung sind um 180° phasenverschoben.",
+        "Die Verstärkung lässt sich beliebig kleiner als 1 einstellen.",
+        "Ausgangs- und Eingangsspannung sind gleichphasig, die Verstärkung beträgt mindestens 1.",
+        "Der Eingangswiderstand der Schaltung ist gleich dem Widerstand R1."
+      ],
+      "answer": 2,
+      "explain": "Für den nicht invertierenden Verstärker gilt V = 1 + R2/R1, also V ≥ 1, ohne Phasendrehung. Das Signal liegt direkt am +Eingang, daher ist der Eingangswiderstand sehr hoch.",
+      "tags": [
+        "OPV"
+      ]
+    },
+    {
+      "id": "elektronik-025",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein invertierender Verstärker mit OPV hat R1 = 10 kΩ (Eingangswiderstand) und R2 = 47 kΩ (Rückkopplungswiderstand). Die Eingangsspannung beträgt 0,5 V. Wie groß ist die Ausgangsspannung?",
+      "answer": "−2,35 V",
+      "value": -2.35,
+      "unit": "V",
+      "tolerance": 0.02,
+      "explain": "V = −R2 / R1 = −47 kΩ / 10 kΩ = −4,7. U_a = V · U_e = −4,7 · 0,5 V = −2,35 V. Das Minuszeichen steht für die Phasendrehung um 180°.",
+      "tags": [
+        "OPV",
+        "Verstärker"
+      ]
+    },
+    {
+      "id": "elektronik-026",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Wie wird ein leitender (herkömmlicher) Thyristor wieder in den Sperrzustand gebracht?",
+      "options": [
+        "Durch Wegnehmen der Gatespannung",
+        "Der Hauptstrom muss den Haltestrom unterschreiten, z. B. im Nulldurchgang der Wechselspannung.",
+        "Durch Erhöhen des Gatestroms",
+        "Durch einen kurzen Zündimpuls am Gate"
+      ],
+      "answer": 1,
+      "explain": "Einmal gezündet, bleibt der Thyristor unabhängig vom Gate leitend. Er sperrt erst, wenn der Anodenstrom unter den Haltestrom fällt, bei Wechselspannung also spätestens im Nulldurchgang.",
+      "tags": [
+        "Thyristor",
+        "Leistungselektronik"
+      ]
+    },
+    {
+      "id": "elektronik-027",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Wie wird ein Thyristor gezündet?",
+      "answer": "Durch einen positiven Steuerimpuls (Gatestrom) am Gate, während die Anode positiv gegenüber der Kathode ist.",
+      "keywords": [
+        "gate",
+        "anode"
+      ],
+      "explain": "Nach dem Zünden bleibt der Thyristor leitend, bis der Strom den Haltestrom unterschreitet. Durch Verschieben des Zündzeitpunkts entsteht die Phasenanschnittsteuerung.",
+      "tags": [
+        "Thyristor",
+        "Leistungselektronik"
+      ]
+    },
+    {
+      "id": "elektronik-028",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Wofür wird ein Triac typischerweise eingesetzt?",
+      "options": [
+        "Zur Gleichrichtung in einem Brückengleichrichter",
+        "Zur Stabilisierung einer Gleichspannung",
+        "Zur Verstärkung kleiner Sensorsignale",
+        "Zur Phasenanschnittsteuerung von Wechselstromverbrauchern, z. B. in Dimmern"
+      ],
+      "answer": 3,
+      "explain": "Ein Triac wirkt wie zwei antiparallel geschaltete Thyristoren mit gemeinsamem Gate und kann beide Halbwellen steuern. Deshalb eignet er sich für Wechselstromsteller.",
+      "tags": [
+        "Triac",
+        "Leistungselektronik"
+      ]
+    },
+    {
+      "id": "elektronik-029",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Aussage zum IGBT ist richtig?",
+      "options": [
+        "Er wird über das Gate spannungsgesteuert und schaltet große Ströme, z. B. im Wechselrichter eines Frequenzumrichters.",
+        "Er wird über einen Basisstrom gesteuert und eignet sich nur für Kleinsignale.",
+        "Er kann nur im Nulldurchgang des Stroms abgeschaltet werden.",
+        "Er ist eine Diode mit genau festgelegter Durchbruchspannung."
+      ],
+      "answer": 0,
+      "explain": "Der IGBT (Insulated Gate Bipolar Transistor) verbindet die leistungsarme Gate-Ansteuerung des MOSFET mit dem niedrigen Durchlassverlust eines Bipolartransistors. Er lässt sich über das Gate ein- und ausschalten.",
+      "tags": [
+        "IGBT",
+        "Leistungselektronik"
+      ]
+    },
+    {
+      "id": "elektronik-030",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welcher Vorteil ist typisch für ein Schaltnetzteil gegenüber einem konventionellen Netzteil mit 50-Hz-Transformator und Linearregler?",
+      "options": [
+        "Keine hochfrequenten Störaussendungen (EMV)",
+        "Einfacherer Aufbau mit weniger Bauteilen",
+        "Höherer Wirkungsgrad sowie kleinere Baugröße und geringeres Gewicht",
+        "Der Transformator arbeitet mit 50 Hz und ist dadurch besonders klein"
+      ],
+      "answer": 2,
+      "explain": "Schaltnetzteile arbeiten mit Schaltfrequenzen im kHz-Bereich; dadurch werden Transformator und Siebglieder klein, und die Transistoren arbeiten verlustarm als Schalter. Nachteil sind die EMV-Störungen durch das schnelle Schalten.",
+      "tags": [
+        "Netzteil",
+        "Schaltnetzteil"
+      ]
+    }
+  ]
+}

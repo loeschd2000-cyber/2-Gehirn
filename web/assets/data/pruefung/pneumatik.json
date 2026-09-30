@@ -1,0 +1,528 @@
+{
+  "topic": "pneumatik",
+  "title": "Pneumatik & Hydraulik",
+  "icon": "💨",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "pneumatik-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "In welcher Reihenfolge sind die Komponenten einer klassischen Wartungseinheit in Strömungsrichtung angeordnet?",
+      "options": [
+        "Öler – Filter – Druckregelventil mit Manometer",
+        "Druckregelventil mit Manometer – Öler – Filter",
+        "Filter – Öler – Druckregelventil mit Manometer",
+        "Filter – Druckregelventil mit Manometer – Öler"
+      ],
+      "answer": 3,
+      "explain": "Zuerst reinigt der Filter die Luft von Schmutz und Kondensat, dann stellt das Druckregelventil den Arbeitsdruck ein, zuletzt wird (falls nötig) Öl zugegeben. Der Öler steht am Ende, damit das Öl nicht im Filter oder Regler abgeschieden wird.",
+      "tags": [
+        "Wartungseinheit"
+      ]
+    },
+    {
+      "id": "pneumatik-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Aufgabe hat der Druckluftbehälter hinter dem Kompressor?",
+      "options": [
+        "Er erhöht den Druck über den Enddruck des Kompressors hinaus.",
+        "Er ersetzt den Filter und den Druckregler der Wartungseinheit.",
+        "Er speichert Druckluft und gleicht Druckschwankungen durch den wechselnden Luftverbrauch aus.",
+        "Er reichert die Druckluft mit Öl für die Zylinder an."
+      ],
+      "answer": 2,
+      "explain": "Der Behälter wirkt als Speicher und Puffer: Er glättet Druckschwankungen, verringert die Schalthäufigkeit des Kompressors und scheidet zusätzlich Kondensat ab. Den Druck erhöhen kann er nicht.",
+      "tags": [
+        "Drucklufterzeugung"
+      ]
+    },
+    {
+      "id": "pneumatik-003",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie viel Pascal entsprechen 1 bar?",
+      "options": [
+        "100 000 Pa",
+        "1 000 Pa",
+        "10 000 Pa",
+        "1 000 000 Pa"
+      ],
+      "answer": 0,
+      "explain": "1 bar = 10⁵ Pa = 100 000 Pa = 0,1 MPa. Umgekehrt ist 1 Pa = 1 N/m² ein sehr kleiner Druck.",
+      "tags": [
+        "Druckeinheiten"
+      ]
+    },
+    {
+      "id": "pneumatik-004",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Das Manometer an der Wartungseinheit zeigt 6 bar an. Welcher Absolutdruck liegt ungefähr vor?",
+      "options": [
+        "etwa 5 bar",
+        "genau 6 bar",
+        "etwa 7 bar",
+        "etwa 12 bar"
+      ],
+      "answer": 2,
+      "explain": "Manometer zeigen in der Regel den Überdruck gegenüber dem Luftdruck der Umgebung an. Absolutdruck = Überdruck + Luftdruck (ca. 1 bar), also etwa 7 bar.",
+      "tags": [
+        "Druckeinheiten"
+      ]
+    },
+    {
+      "id": "pneumatik-005",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wodurch fährt ein einfachwirkender Pneumatikzylinder üblicherweise in seine Ausgangslage zurück?",
+      "options": [
+        "Durch Druckluft auf der Kolbenstangenseite",
+        "Durch einen Elektromagneten im Zylinderrohr",
+        "Durch eine eingebaute Feder",
+        "Durch Unterdruck in der Abluftleitung"
+      ],
+      "answer": 2,
+      "explain": "Beim einfachwirkenden Zylinder wird nur eine Kolbenseite mit Druckluft beaufschlagt. Die Rückstellung übernimmt eine Feder (oder eine äußere Last). Druckluft auf beiden Seiten gibt es nur beim doppeltwirkenden Zylinder.",
+      "tags": [
+        "Zylinder"
+      ]
+    },
+    {
+      "id": "pneumatik-006",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was bedeutet die Bezeichnung „5/2-Wegeventil“?",
+      "options": [
+        "5 Anschlüsse und 2 Schaltstellungen",
+        "5 Schaltstellungen und 2 Anschlüsse",
+        "5 bar Nenndruck und 2 Anschlüsse",
+        "5 Arbeitsanschlüsse und 2 Entlüftungen"
+      ],
+      "answer": 0,
+      "explain": "Die erste Zahl nennt die Anzahl der (Haupt-)Anschlüsse, die zweite die Anzahl der Schaltstellungen. Ein 5/2-Wegeventil hat also 5 Anschlüsse (1, 2, 3, 4, 5) und 2 Schaltstellungen.",
+      "tags": [
+        "Wegeventile"
+      ]
+    },
+    {
+      "id": "pneumatik-007",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Funktion hat bei Pneumatikventilen der Anschluss mit der Bezeichnung 1?",
+      "options": [
+        "Arbeitsanschluss zum Zylinder",
+        "Entlüftung",
+        "Druckluftversorgung (Druckanschluss)",
+        "Steueranschluss"
+      ],
+      "answer": 2,
+      "explain": "Nach der Zahlenkennzeichnung gilt: 1 = Druckluftversorgung, 2 und 4 = Arbeitsanschlüsse, 3 und 5 = Entlüftungen, 12 und 14 = Steueranschlüsse.",
+      "tags": [
+        "Anschlussbezeichnung"
+      ]
+    },
+    {
+      "id": "pneumatik-008",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Was kennzeichnet die Bezeichnung „14“ an einem 5/2-Wegeventil?",
+      "options": [
+        "Einen Steueranschluss, dessen Signal Anschluss 1 mit Anschluss 4 verbindet",
+        "Einen Steueranschluss, dessen Signal Anschluss 1 mit Anschluss 2 verbindet",
+        "Einen Arbeitsanschluss mit 14 mm Nennweite",
+        "Die Entlüftung des Arbeitsanschlusses 4"
+      ],
+      "answer": 0,
+      "explain": "Steueranschlüsse werden zweistellig bezeichnet: Die Ziffern geben an, welche Anschlüsse bei anliegendem Signal verbunden werden. 14 verbindet 1 mit 4, 12 verbindet 1 mit 2.",
+      "tags": [
+        "Anschlussbezeichnung"
+      ]
+    },
+    {
+      "id": "pneumatik-009",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Ein bistabiles 5/2-Magnetventil (Impulsventil mit zwei Spulen) wurde über die Spule an Seite 14 umgeschaltet. Danach fällt die Steuerspannung aus. Was passiert?",
+      "options": [
+        "Das Ventil schaltet per Feder in die Grundstellung zurück.",
+        "Das Ventil geht in eine gesperrte Mittelstellung.",
+        "Das Ventil bleibt in der zuletzt geschalteten Stellung.",
+        "Das Ventil entlüftet beide Arbeitsanschlüsse."
+      ],
+      "answer": 2,
+      "explain": "Ein bistabiles Ventil hat keine Federrückstellung und behält seine Schaltstellung, bis das Gegensignal (Spule 12) kommt. Eine Rückstellung per Feder ist das Kennzeichen eines monostabilen Ventils.",
+      "tags": [
+        "Wegeventile",
+        "Elektropneumatik"
+      ]
+    },
+    {
+      "id": "pneumatik-010",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welchen Vorteil bietet ein 5/3-Wegeventil mit gesperrter Mittelstellung gegenüber einem 5/2-Wegeventil?",
+      "options": [
+        "Der Zylinder kann in einer Zwischenposition angehalten werden.",
+        "Der Zylinder fährt mit doppelter Kraft aus.",
+        "Die Abluft wird automatisch gedrosselt.",
+        "Das Ventil benötigt keine Druckluftversorgung."
+      ],
+      "answer": 0,
+      "explain": "In der gesperrten Mittelstellung sind alle Anschlüsse geschlossen, die Luft in beiden Zylinderkammern wird eingeschlossen und der Kolben bleibt stehen. Wegen der Kompressibilität der Luft ist das Halten allerdings nicht ganz lagegenau.",
+      "tags": [
+        "Wegeventile"
+      ]
+    },
+    {
+      "id": "pneumatik-011",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie viele Quadrate (Felder) besitzt das Schaltzeichen eines 5/3-Wegeventils nach DIN ISO 1219?",
+      "options": [
+        "5",
+        "3",
+        "2",
+        "8"
+      ],
+      "answer": 1,
+      "explain": "Im Schaltzeichen steht jedes Quadrat für eine Schaltstellung. Ein 5/3-Wegeventil hat 3 Schaltstellungen, also 3 Quadrate; die 5 Anschlüsse werden am Quadrat der Ruhestellung angezeichnet.",
+      "tags": [
+        "Schaltzeichen"
+      ]
+    },
+    {
+      "id": "pneumatik-012",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Woran erkennt man in Schaltzeichen nach DIN ISO 1219, ob ein Energieträger pneumatisch oder hydraulisch ist?",
+      "options": [
+        "Am Dreieck: ausgefüllt = Pneumatik, nicht ausgefüllt = Hydraulik",
+        "An der Leitungsfarbe: blau = Pneumatik, rot = Hydraulik",
+        "Am Dreieck: nicht ausgefüllt = Pneumatik, ausgefüllt = Hydraulik",
+        "An der Linienart: gestrichelt = Pneumatik, durchgezogen = Hydraulik"
+      ],
+      "answer": 2,
+      "explain": "Das Dreieck zeigt die Richtung des Energieflusses; ein leeres (nicht ausgefülltes) Dreieck steht für Pneumatik, ein ausgefülltes für Hydraulik. Gestrichelte Linien sind Steuerleitungen, keine Unterscheidung der Energieart.",
+      "tags": [
+        "Schaltzeichen"
+      ]
+    },
+    {
+      "id": "pneumatik-013",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein Ventil soll von einer Schaltnocke betätigt werden, die mit dem Zylinder vorbeifährt. Welche Betätigungsart ist dafür typisch?",
+      "options": [
+        "Handhebel mit Rastung",
+        "Pedal",
+        "Pilzdrucktaster",
+        "Rollenhebel"
+      ],
+      "answer": 3,
+      "explain": "Mechanisch von Nocken oder Schaltlinealen betätigte Ventile (z. B. als Endlagensignalgeber) haben einen Rollenhebel. Handhebel, Pedal und Drucktaster sind Betätigungen durch den Menschen (Muskelkraft).",
+      "tags": [
+        "Betätigungsarten"
+      ]
+    },
+    {
+      "id": "pneumatik-014",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Die Ausfahrgeschwindigkeit eines doppeltwirkenden Zylinders soll durch Abluftdrosselung mit einem Drossel-Rückschlagventil verringert werden. Wo wird das Ventil eingebaut?",
+      "options": [
+        "In der Leitung zum kolbenseitigen Anschluss; die einströmende Luft wird gedrosselt.",
+        "In der Versorgungsleitung zwischen Wartungseinheit und Wegeventil.",
+        "In der Leitung zum kolbenstangenseitigen Anschluss; die einströmende Luft wird gedrosselt, die ausströmende strömt frei ab.",
+        "In der Leitung zum kolbenstangenseitigen Anschluss; die Luft strömt über das Rückschlagventil frei hinein und wird beim Ausströmen gedrosselt."
+      ],
+      "answer": 3,
+      "explain": "Beim Ausfahren entweicht die Luft aus der Kolbenstangenseite. Wird diese Abluft gedrosselt, ist der Kolben zwischen zwei Luftpolstern eingespannt und bewegt sich gleichmäßig. Das Rückschlagventil lässt die Luft beim Einfahren ungedrosselt in den Zylinder.",
+      "tags": [
+        "Drossel-Rückschlagventil"
+      ]
+    },
+    {
+      "id": "pneumatik-015",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wozu dient ein Schnellentlüftungsventil, das direkt am Zylinder eingebaut ist?",
+      "options": [
+        "Der Zylinder soll langsamer und ruckfrei fahren.",
+        "Die Abluft wird direkt am Zylinder ins Freie geleitet, um die Kolbengeschwindigkeit zu erhöhen.",
+        "Der Zylinder soll bei Not-Halt in seiner Position gehalten werden.",
+        "Kondenswasser soll aus dem Zylinder abgelassen werden."
+      ],
+      "answer": 1,
+      "explain": "Die Abluft muss dann nicht erst durch Leitung und Wegeventil strömen, sondern entweicht direkt am Zylinder mit großem Querschnitt. Dadurch steigt die Kolbengeschwindigkeit.",
+      "tags": [
+        "Schnellentlüftung"
+      ]
+    },
+    {
+      "id": "pneumatik-016",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein Zylinder darf nur ausfahren, wenn zwei Signalventile gleichzeitig betätigt sind. Welches Ventil verknüpft die beiden Signale?",
+      "options": [
+        "Wechselventil (ODER-Funktion)",
+        "Zweidruckventil (UND-Funktion)",
+        "Schnellentlüftungsventil",
+        "Drossel-Rückschlagventil"
+      ],
+      "answer": 1,
+      "explain": "Das Zweidruckventil gibt nur dann ein Signal am Ausgang 2 ab, wenn an beiden Eingängen Druck ansteht – das entspricht einer UND-Verknüpfung. Das Wechselventil wäre eine ODER-Verknüpfung.",
+      "tags": [
+        "Logikventile"
+      ]
+    },
+    {
+      "id": "pneumatik-017",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein Zylinder soll wahlweise von zwei verschiedenen Stellen aus (Taster A oder Taster B) angesteuert werden. Welches Ventil wird für die Signalverknüpfung benötigt?",
+      "options": [
+        "Zweidruckventil (UND-Funktion)",
+        "Druckregelventil",
+        "Drossel-Rückschlagventil",
+        "Wechselventil (ODER-Funktion)"
+      ],
+      "answer": 3,
+      "explain": "Das Wechselventil schaltet das Signal des jeweils betätigten Eingangs zum Ausgang durch und sperrt dabei den anderen Eingang, damit die Luft nicht über das unbetätigte Ventil entweicht. Das entspricht einer ODER-Verknüpfung.",
+      "tags": [
+        "Logikventile"
+      ]
+    },
+    {
+      "id": "pneumatik-018",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Wie erfasst ein auf dem Zylinderrohr montierter Zylinderschalter (z. B. Reedkontakt) die Position des Kolbens?",
+      "options": [
+        "Über einen Druckschalter, der den Kammerdruck misst",
+        "Über das Magnetfeld eines Dauermagneten im Kolben",
+        "Über mechanischen Kontakt mit der Kolbenstange",
+        "Über Ultraschall-Laufzeitmessung durch das Zylinderrohr"
+      ],
+      "answer": 1,
+      "explain": "Zylinder für Positionsabfrage haben einen Ringmagneten im Kolben. Das Magnetfeld durchdringt das nichtmagnetische Zylinderrohr (z. B. Aluminium) und schaltet den Reedkontakt oder einen magnetoresistiven Sensor.",
+      "tags": [
+        "Elektropneumatik",
+        "Sensoren"
+      ]
+    },
+    {
+      "id": "pneumatik-019",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Warum wird eine 24-V-DC-Magnetspule eines Pneumatikventils mit einer Schutzbeschaltung (z. B. Freilaufdiode) versehen?",
+      "options": [
+        "Um den Einschaltstrom der Spule zu erhöhen",
+        "Damit die Spule an Gleich- und Wechselspannung betrieben werden kann",
+        "Um die Abschaltzeit des Ventils zu verkürzen",
+        "Um die beim Abschalten durch Selbstinduktion entstehende Spannungsspitze zu begrenzen"
+      ],
+      "answer": 3,
+      "explain": "Beim Abschalten einer Induktivität entsteht eine hohe Gegenspannung, die Schaltkontakte oder SPS-Ausgänge schädigen kann. Die Freilaufdiode baut die Energie ab; die Abschaltzeit wird dadurch eher etwas länger.",
+      "tags": [
+        "Elektropneumatik"
+      ]
+    },
+    {
+      "id": "pneumatik-020",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was erzeugt eine Hydropumpe in einer Hydraulikanlage?",
+      "options": [
+        "Einen Volumenstrom; der Druck entsteht erst durch den Widerstand der Last im System.",
+        "Einen festen Druck, der unabhängig von der Last immer gleich ist",
+        "Einen Unterdruck im Tank, der die Zylinder bewegt",
+        "Vor allem Wärme, die das Öl dünnflüssig hält"
+      ],
+      "answer": 0,
+      "explain": "Die Pumpe fördert Öl (Volumenstrom). Der Druck baut sich erst auf, wenn das Öl auf einen Widerstand trifft, z. B. einen belasteten Zylinder. Den Maximaldruck begrenzt das Druckbegrenzungsventil.",
+      "tags": [
+        "Hydraulik"
+      ]
+    },
+    {
+      "id": "pneumatik-021",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Warum lassen sich mit Hydraulik deutlich größere Kräfte und genauere Positionen erreichen als mit Pneumatik?",
+      "options": [
+        "Hydrauliköl ist leichter als Luft und strömt dadurch schneller.",
+        "Hydrauliköl ist nahezu inkompressibel und es werden deutlich höhere Drücke verwendet.",
+        "Hydraulikzylinder werden grundsätzlich ohne Dichtungen gebaut.",
+        "Hydraulikanlagen arbeiten ohne Pumpe und daher verlustfrei."
+      ],
+      "answer": 1,
+      "explain": "Typische Hydraulikdrücke liegen bei über 100 bar, Pneumatik meist bei etwa 6 bar. Da Öl sich kaum zusammendrücken lässt, kann ein Hydraulikzylinder eine Position steif halten, Luft dagegen federt.",
+      "tags": [
+        "Hydraulik"
+      ]
+    },
+    {
+      "id": "pneumatik-022",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein doppeltwirkender Pneumatikzylinder hat einen Kolbendurchmesser von 50 mm und wird mit 6 bar Überdruck betrieben. Wie groß ist die theoretische Kolbenkraft beim Ausfahren (Reibung vernachlässigt)?",
+      "answer": "1178 N",
+      "value": 1178.1,
+      "unit": "N",
+      "tolerance": 0.02,
+      "explain": "F = p · A. A = π · d² / 4 = π · (0,05 m)² / 4 = 1,963 · 10⁻³ m². p = 6 bar = 600 000 Pa. F = 600 000 Pa · 1,963 · 10⁻³ m² ≈ 1178 N.",
+      "tags": [
+        "Kolbenkraft"
+      ]
+    },
+    {
+      "id": "pneumatik-023",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Derselbe Zylinder (Kolbendurchmesser 50 mm) hat eine Kolbenstange mit 20 mm Durchmesser. Wie groß ist die theoretische Kolbenkraft beim Einfahren bei 6 bar (Reibung vernachlässigt)?",
+      "answer": "990 N",
+      "value": 989.6,
+      "unit": "N",
+      "tolerance": 0.02,
+      "explain": "Beim Einfahren wirkt nur die Kreisringfläche: A = π/4 · (D² − d²) = π/4 · (0,05² − 0,02²) m² = 1,649 · 10⁻³ m². F = p · A = 600 000 Pa · 1,649 · 10⁻³ m² ≈ 990 N.",
+      "tags": [
+        "Kolbenkraft"
+      ]
+    },
+    {
+      "id": "pneumatik-024",
+      "type": "calc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Ein Zylinder mit 80 mm Kolbendurchmesser wird mit 6 bar betrieben. Die Reibungsverluste betragen 10 % (Wirkungsgrad 0,9). Wie groß ist die wirksame Kolbenkraft beim Ausfahren?",
+      "answer": "2714 N",
+      "value": 2714.3,
+      "unit": "N",
+      "tolerance": 0.02,
+      "explain": "A = π · (0,08 m)² / 4 = 5,027 · 10⁻³ m². F_theor = 600 000 Pa · 5,027 · 10⁻³ m² = 3016 N. F_wirk = F_theor · η = 3016 N · 0,9 ≈ 2714 N.",
+      "tags": [
+        "Kolbenkraft"
+      ]
+    },
+    {
+      "id": "pneumatik-025",
+      "type": "calc",
+      "level": 3,
+      "part": "AP1+AP2",
+      "q": "Ein Zylinder soll bei 6 bar Betriebsdruck eine Kraft von 1000 N beim Ausfahren aufbringen (Reibung vernachlässigt). Welcher Kolbendurchmesser ist mindestens erforderlich?",
+      "answer": "46,1 mm",
+      "value": 46.1,
+      "unit": "mm",
+      "tolerance": 0.02,
+      "explain": "A = F / p = 1000 N / 600 000 Pa = 1,667 · 10⁻³ m². d = √(4 · A / π) = √(4 · 1,667 · 10⁻³ m² / π) = 0,0461 m ≈ 46,1 mm. In der Praxis wählt man die nächstgrößere Normgröße, z. B. 50 mm.",
+      "tags": [
+        "Kolbenkraft"
+      ]
+    },
+    {
+      "id": "pneumatik-026",
+      "type": "calc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Ein Hydraulikzylinder mit 63 mm Kolbendurchmesser soll beim Ausfahren eine Presskraft von 50 kN erzeugen (Verluste vernachlässigt). Welcher Druck ist erforderlich?",
+      "answer": "160,4 bar",
+      "value": 160.4,
+      "unit": "bar",
+      "tolerance": 0.02,
+      "explain": "A = π · (0,063 m)² / 4 = 3,117 · 10⁻³ m². p = F / A = 50 000 N / 3,117 · 10⁻³ m² = 16,04 · 10⁶ Pa. Mit 1 bar = 10⁵ Pa ergibt sich p ≈ 160,4 bar.",
+      "tags": [
+        "Hydraulik",
+        "Kolbenkraft"
+      ]
+    },
+    {
+      "id": "pneumatik-027",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Aufgabe hat das Druckregelventil in der Wartungseinheit?",
+      "answer": "Es stellt den gewünschten Arbeitsdruck ein und hält ihn auch bei schwankendem Netzdruck annähernd konstant.",
+      "keywords": [
+        "druck",
+        "konstant"
+      ],
+      "explain": "Der Eingangsdruck (Netzdruck) muss dabei immer höher sein als der eingestellte Arbeitsdruck; das Manometer zeigt den geregelten Druck an.",
+      "tags": [
+        "Wartungseinheit"
+      ]
+    },
+    {
+      "id": "pneumatik-028",
+      "type": "open",
+      "level": 2,
+      "part": "AP1",
+      "q": "Warum wird bei doppeltwirkenden Zylindern meist die Abluft und nicht die Zuluft gedrosselt?",
+      "answer": "Bei Abluftdrosselung ist der Kolben zwischen Arbeitsluft und gedrosselter Abluft eingespannt und bewegt sich dadurch gleichmäßig und ruckfrei, auch bei wechselnder Last.",
+      "keywords": [
+        "abluft",
+        "gleichmäßig"
+      ],
+      "explain": "Bei Zuluftdrosselung kann es zum „Stick-Slip“-Effekt (Ruckgleiten) kommen. Zuluftdrosselung wird vor allem bei einfachwirkenden Zylindern eingesetzt.",
+      "tags": [
+        "Drossel-Rückschlagventil"
+      ]
+    },
+    {
+      "id": "pneumatik-029",
+      "type": "open",
+      "level": 1,
+      "part": "AP1",
+      "q": "Was ist der Unterschied zwischen einem monostabilen und einem bistabilen Wegeventil?",
+      "answer": "Ein monostabiles Ventil kehrt nach Wegfall des Signals, z. B. per Feder, in seine Grundstellung zurück; ein bistabiles Ventil bleibt in der zuletzt geschalteten Stellung.",
+      "keywords": [
+        "grundstellung",
+        "bleibt"
+      ],
+      "explain": "Bistabile Ventile (Impulsventile) brauchen zum Zurückschalten ein Gegensignal. Das ist wichtig für das Verhalten bei Energieausfall.",
+      "tags": [
+        "Wegeventile"
+      ]
+    },
+    {
+      "id": "pneumatik-030",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Aufgabe hat das Druckbegrenzungsventil in einer Hydraulikanlage?",
+      "answer": "Es begrenzt den maximalen Systemdruck und schützt die Anlage vor Überlastung, indem es beim Erreichen des eingestellten Drucks Öl zum Tank ableitet.",
+      "keywords": [
+        "begrenz",
+        "tank"
+      ],
+      "explain": "Da die Pumpe einen Volumenstrom fördert, würde der Druck bei blockiertem Zylinder sonst so lange steigen, bis Bauteile beschädigt werden.",
+      "tags": [
+        "Hydraulik"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,557 @@
+{
+  "topic": "wiso",
+  "title": "Wirtschafts- und Sozialkunde",
+  "icon": "📚",
+  "part": "AP2",
+  "questions": [
+    {
+      "id": "wiso-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Wie lange darf die Probezeit in einem Berufsausbildungsverhältnis nach dem Berufsbildungsgesetz (BBiG) dauern?",
+      "options": [
+        "Mindestens einen Monat, höchstens vier Monate",
+        "Mindestens drei Monate, höchstens sechs Monate",
+        "Genau sechs Monate, wie bei einem Arbeitsvertrag",
+        "Höchstens zwei Wochen"
+      ],
+      "answer": 0,
+      "explain": "Nach § 20 BBiG beginnt die Ausbildung mit einer Probezeit von mindestens einem und höchstens vier Monaten. Die sechs Monate gelten als Höchstgrenze für Probezeiten in normalen Arbeitsverträgen.",
+      "tags": [
+        "BBiG",
+        "Probezeit"
+      ]
+    },
+    {
+      "id": "wiso-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Wie kann ein Berufsausbildungsverhältnis während der Probezeit gekündigt werden?",
+      "options": [
+        "Nur vom Ausbildenden mit einer Frist von vier Wochen",
+        "Von beiden Seiten jederzeit schriftlich, ohne Einhalten einer Kündigungsfrist und ohne Angabe von Gründen",
+        "Nur mit Zustimmung der IHK und unter Angabe eines wichtigen Grundes",
+        "Nur mündlich im Beisein des Ausbilders"
+      ],
+      "answer": 1,
+      "explain": "In der Probezeit kann das Ausbildungsverhältnis nach § 22 BBiG von beiden Seiten jederzeit ohne Kündigungsfrist gekündigt werden. Die Kündigung muss aber schriftlich erfolgen.",
+      "tags": [
+        "BBiG",
+        "Kündigung"
+      ]
+    },
+    {
+      "id": "wiso-003",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Auszubildender möchte nach der Probezeit die Ausbildung aufgeben, weil er einen anderen Beruf erlernen will. Wie kann er kündigen?",
+      "options": [
+        "Gar nicht, nach der Probezeit ist das Ausbildungsverhältnis für ihn unkündbar",
+        "Jederzeit mündlich ohne Frist, wie in der Probezeit",
+        "Schriftlich unter Angabe des Grundes mit einer Kündigungsfrist von vier Wochen",
+        "Nur zum Ende eines Ausbildungsjahres mit einer Frist von drei Monaten"
+      ],
+      "answer": 2,
+      "explain": "Nach der Probezeit kann der Auszubildende mit einer Frist von vier Wochen kündigen, wenn er die Ausbildung aufgeben oder sich für eine andere Berufstätigkeit ausbilden lassen will (§ 22 BBiG). Schriftform und Angabe der Gründe sind Pflicht; eine fristlose Kündigung aus wichtigem Grund ist für beide Seiten möglich.",
+      "tags": [
+        "BBiG",
+        "Kündigung"
+      ]
+    },
+    {
+      "id": "wiso-004",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Welche der folgenden Pflichten hat ein Auszubildender nach dem BBiG?",
+      "options": [
+        "Werkzeuge und Werkstoffe für die Ausbildung selbst kaufen",
+        "Die Unterrichtszeit der Berufsschule im Betrieb nacharbeiten",
+        "Private Besorgungen für den Ausbilder erledigen, wenn dieser es verlangt",
+        "Einen schriftlichen oder elektronischen Ausbildungsnachweis (Berichtsheft) führen"
+      ],
+      "answer": 3,
+      "explain": "Zu den Pflichten des Auszubildenden (§ 13 BBiG) gehören u. a. Lernpflicht, Befolgen von Weisungen, Berufsschulbesuch, Wahrung von Betriebsgeheimnissen und das Führen des Ausbildungsnachweises. Ausbildungsmittel stellt der Betrieb kostenlos, Berufsschulzeit wird angerechnet und ausbildungsfremde Tätigkeiten sind unzulässig.",
+      "tags": [
+        "BBiG",
+        "Pflichten"
+      ]
+    },
+    {
+      "id": "wiso-005",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Welche Pflicht hat der Ausbildende gegenüber dem Auszubildenden?",
+      "options": [
+        "Ausbildungsmittel wie Werkzeuge und Werkstoffe kostenlos zur Verfügung stellen",
+        "Die Berufsschulzeit von der Ausbildungsvergütung abziehen",
+        "Das Führen des Ausbildungsnachweises ausschließlich in der Freizeit anordnen",
+        "Dem Auszubildenden bei Bedarf beliebige Hilfsarbeiten ohne Ausbildungsbezug übertragen"
+      ],
+      "answer": 0,
+      "explain": "Nach § 14 BBiG muss der Ausbildende u. a. Ausbildungsmittel kostenlos bereitstellen, zum Berufsschulbesuch anhalten und dafür freistellen, Gelegenheit geben, den Ausbildungsnachweis am Arbeitsplatz zu führen, und nur Aufgaben übertragen, die dem Ausbildungszweck dienen.",
+      "tags": [
+        "BBiG",
+        "Pflichten"
+      ]
+    },
+    {
+      "id": "wiso-006",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Aussage zum Ausbildungsnachweis (Berichtsheft) ist richtig?",
+      "options": [
+        "Er ist freiwillig und wird nur bei schlechten Leistungen verlangt",
+        "Ein ordnungsgemäß geführter Ausbildungsnachweis ist Voraussetzung für die Zulassung zur Abschlussprüfung",
+        "Er wird von der Berufsschule benotet und zählt zur Abschlussnote",
+        "Er muss ausschließlich handschriftlich auf Papier geführt werden"
+      ],
+      "answer": 1,
+      "explain": "Der Ausbildungsnachweis dokumentiert den Verlauf der Ausbildung. Ohne ordnungsgemäß geführten Nachweis erfolgt keine Zulassung zur Abschlussprüfung. Er kann schriftlich oder elektronisch geführt werden und wird nicht benotet.",
+      "tags": [
+        "BBiG",
+        "Ausbildungsnachweis"
+      ]
+    },
+    {
+      "id": "wiso-007",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Was versteht man unter dem dualen System der Berufsausbildung?",
+      "options": [
+        "Die Ausbildung wird je zur Hälfte an einer Hochschule und einer Berufsschule absolviert",
+        "Zwei Betriebe teilen sich die Ausbildungsvergütung",
+        "Die Ausbildung findet an zwei Lernorten statt: im Ausbildungsbetrieb und in der Berufsschule",
+        "Die Abschlussprüfung wird von IHK und Gewerkschaft gemeinsam abgenommen"
+      ],
+      "answer": 2,
+      "explain": "Im dualen System lernt der Auszubildende im Betrieb (Grundlage: Ausbildungsordnung) und in der Berufsschule (Grundlage: Rahmenlehrplan bzw. Lehrplan des Landes). Die IHK als zuständige Stelle überwacht die Ausbildung und nimmt die Prüfungen ab.",
+      "tags": [
+        "Duales System"
+      ]
+    },
+    {
+      "id": "wiso-008",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was gilt rechtlich, wenn ein Auszubildender nach bestandener Abschlussprüfung weiterbeschäftigt wird, ohne dass etwas vereinbart wurde?",
+      "answer": "Dann gilt ein unbefristetes Arbeitsverhältnis (auf unbestimmte Zeit) als begründet.",
+      "keywords": [
+        "unbefrist",
+        "arbeitsverhältnis"
+      ],
+      "explain": "Das regelt § 24 BBiG. Wer nach der Ausbildung nicht übernommen werden soll, muss das rechtzeitig vorher erfahren; eine stillschweigende Weiterbeschäftigung führt zu einem unbefristeten Arbeitsverhältnis.",
+      "tags": [
+        "BBiG",
+        "Übernahme"
+      ]
+    },
+    {
+      "id": "wiso-009",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Wie lange dürfen Jugendliche nach dem Jugendarbeitsschutzgesetz (JArbSchG) grundsätzlich höchstens arbeiten?",
+      "options": [
+        "10 Stunden täglich und 48 Stunden wöchentlich",
+        "8 Stunden täglich und 48 Stunden wöchentlich",
+        "9 Stunden täglich und 45 Stunden wöchentlich",
+        "8 Stunden täglich und 40 Stunden wöchentlich"
+      ],
+      "answer": 3,
+      "explain": "Das JArbSchG gilt für Beschäftigte unter 18 Jahren. Sie dürfen höchstens 8 Stunden täglich und 40 Stunden wöchentlich an fünf Tagen pro Woche beschäftigt werden.",
+      "tags": [
+        "JArbSchG",
+        "Arbeitszeit"
+      ]
+    },
+    {
+      "id": "wiso-010",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein 17-jähriger Auszubildender arbeitet an einem Tag 7 Stunden. Wie lang müssen seine Ruhepausen nach dem JArbSchG insgesamt mindestens sein?",
+      "options": [
+        "60 Minuten",
+        "30 Minuten",
+        "45 Minuten",
+        "15 Minuten"
+      ],
+      "answer": 0,
+      "explain": "Jugendliche brauchen bei mehr als 4,5 bis 6 Stunden Arbeitszeit 30 Minuten und bei mehr als 6 Stunden 60 Minuten Pause. Als Pause zählt nur eine Unterbrechung von mindestens 15 Minuten. Die 30/45 Minuten gelten für Erwachsene nach dem Arbeitszeitgesetz.",
+      "tags": [
+        "JArbSchG",
+        "Pausen"
+      ]
+    },
+    {
+      "id": "wiso-011",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein 17-jähriger Auszubildender hat dienstags sechs Unterrichtsstunden zu je 45 Minuten Berufsschule; es ist sein einziger langer Schultag in der Woche. Was gilt nach dem JArbSchG?",
+      "options": [
+        "Er muss nach dem Unterricht noch bis zu vier Stunden im Betrieb arbeiten",
+        "Er darf an diesem Tag nach dem Unterricht nicht mehr im Betrieb beschäftigt werden",
+        "Er muss die Unterrichtszeit am Samstag im Betrieb nacharbeiten",
+        "Er muss für den restlichen Tag Urlaub nehmen"
+      ],
+      "answer": 1,
+      "explain": "Jugendliche dürfen einmal pro Woche an einem Berufsschultag mit mehr als fünf Unterrichtsstunden von mindestens je 45 Minuten nicht mehr beschäftigt werden (§ 9 JArbSchG). Der Tag wird auf die Arbeitszeit angerechnet.",
+      "tags": [
+        "JArbSchG",
+        "Berufsschule"
+      ]
+    },
+    {
+      "id": "wiso-012",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was regelt das Arbeitszeitgesetz (ArbZG) zur täglichen Höchstarbeitszeit volljähriger Arbeitnehmer?",
+      "options": [
+        "Maximal 8 Stunden werktäglich ohne jede Ausnahme",
+        "Maximal 12 Stunden täglich, wenn der Arbeitnehmer schriftlich zustimmt",
+        "Grundsätzlich 8 Stunden werktäglich; bis zu 10 Stunden sind möglich, wenn im Durchschnitt von sechs Kalendermonaten oder 24 Wochen 8 Stunden werktäglich nicht überschritten werden",
+        "Maximal 10 Stunden täglich, ein Ausgleich ist nicht vorgesehen"
+      ],
+      "answer": 2,
+      "explain": "Nach § 3 ArbZG gilt der 8-Stunden-Tag mit Verlängerungsmöglichkeit auf 10 Stunden bei Ausgleich. Außerdem gelten Pausen (30 Minuten bei mehr als 6 Stunden, 45 Minuten bei mehr als 9 Stunden) und eine Ruhezeit von mindestens 11 Stunden zwischen zwei Arbeitstagen.",
+      "tags": [
+        "ArbZG",
+        "Arbeitszeit"
+      ]
+    },
+    {
+      "id": "wiso-013",
+      "type": "calc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Eine Mitarbeiterin ist montags bis freitags jeweils von 7:00 bis 16:00 Uhr im Betrieb und macht täglich 45 Minuten Pause. Pausen zählen nicht zur Arbeitszeit. Wie hoch ist ihre wöchentliche Arbeitszeit?",
+      "answer": "41,25 h",
+      "value": 41.25,
+      "unit": "h",
+      "tolerance": 0.02,
+      "explain": "Anwesenheit pro Tag: 16:00 − 7:00 = 9 h. Arbeitszeit pro Tag: 9 h − 0,75 h = 8,25 h. Pro Woche: 8,25 h · 5 = 41,25 h.",
+      "tags": [
+        "Arbeitszeit"
+      ]
+    },
+    {
+      "id": "wiso-014",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Was versteht man unter Tarifautonomie?",
+      "options": [
+        "Das Recht der Bundesregierung, die Löhne für alle Branchen festzulegen",
+        "Das Recht des Betriebsrats, die Tariflöhne im Betrieb selbst festzusetzen",
+        "Das Recht jedes Arbeitnehmers, seinen Tariflohn allein zu bestimmen",
+        "Das im Grundgesetz geschützte Recht von Gewerkschaften und Arbeitgeberverbänden, Löhne und Arbeitsbedingungen ohne staatliche Einmischung auszuhandeln"
+      ],
+      "answer": 3,
+      "explain": "Die Tarifautonomie folgt aus der Koalitionsfreiheit (Art. 9 Abs. 3 GG). Tarifvertragsparteien sind Gewerkschaften auf der einen und Arbeitgeberverbände oder einzelne Arbeitgeber auf der anderen Seite.",
+      "tags": [
+        "Tarifvertrag"
+      ]
+    },
+    {
+      "id": "wiso-015",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was versteht man bei einem Arbeitskampf unter einer Urabstimmung?",
+      "answer": "Eine Abstimmung der Gewerkschaftsmitglieder darüber, ob nach gescheiterten Tarifverhandlungen gestreikt wird.",
+      "keywords": [
+        "gewerkschaft",
+        "mitglied",
+        "streik"
+      ],
+      "explain": "Die Urabstimmung findet meist nach dem Scheitern von Verhandlungen und ggf. Schlichtung statt. Die nötige Zustimmung legt die Gewerkschaft in ihrer Satzung fest. Während der Laufzeit eines Tarifvertrags gilt die Friedenspflicht, dann sind Streiks über die geregelten Punkte unzulässig.",
+      "tags": [
+        "Streik",
+        "Gewerkschaft"
+      ]
+    },
+    {
+      "id": "wiso-016",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Wer ist nach dem Betriebsverfassungsgesetz (BetrVG) bei der Betriebsratswahl wahlberechtigt?",
+      "options": [
+        "Alle Arbeitnehmer des Betriebs, die das 16. Lebensjahr vollendet haben, auch Auszubildende",
+        "Nur Arbeitnehmer ab 18 Jahren, die mindestens sechs Monate im Betrieb sind",
+        "Nur Mitglieder einer Gewerkschaft",
+        "Nur unbefristet beschäftigte Arbeitnehmer, Auszubildende sind ausgeschlossen"
+      ],
+      "answer": 0,
+      "explain": "Wahlberechtigt (aktives Wahlrecht) sind alle Arbeitnehmer ab 16 Jahren, Auszubildende zählen als Arbeitnehmer. Wählbar (passives Wahlrecht) ist man ab 18 Jahren bei mindestens sechs Monaten Betriebszugehörigkeit. Ein Betriebsrat kann in Betrieben mit in der Regel mindestens fünf ständigen wahlberechtigten Arbeitnehmern gewählt werden.",
+      "tags": [
+        "BetrVG",
+        "Betriebsrat"
+      ]
+    },
+    {
+      "id": "wiso-017",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Wer wählt die Jugend- und Auszubildendenvertretung (JAV)?",
+      "options": [
+        "Alle Arbeitnehmer des Betriebs",
+        "Arbeitnehmer unter 18 Jahren sowie Auszubildende unter 25 Jahren",
+        "Nur die Mitglieder des Betriebsrats",
+        "Nur Auszubildende im ersten Ausbildungsjahr"
+      ],
+      "answer": 1,
+      "explain": "Die JAV vertritt die Interessen der Jugendlichen und Auszubildenden gegenüber dem Betriebsrat. Sie wird in Betrieben mit in der Regel mindestens fünf solcher Arbeitnehmer gewählt; die regelmäßige Amtszeit beträgt zwei Jahre.",
+      "tags": [
+        "BetrVG",
+        "JAV"
+      ]
+    },
+    {
+      "id": "wiso-018",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Rolle hat der Betriebsrat bei einer Kündigung durch den Arbeitgeber?",
+      "options": [
+        "Er muss jeder Kündigung zustimmen, sonst ist sie immer unwirksam",
+        "Er wird erst nach Ausspruch der Kündigung informiert",
+        "Er muss vor jeder Kündigung angehört werden; eine ohne Anhörung ausgesprochene Kündigung ist unwirksam",
+        "Er ist an Kündigungen grundsätzlich nicht beteiligt"
+      ],
+      "answer": 2,
+      "explain": "Nach § 102 BetrVG ist der Betriebsrat vor jeder Kündigung anzuhören. Er kann Bedenken äußern oder widersprechen, eine Zustimmung ist aber im Normalfall nicht erforderlich.",
+      "tags": [
+        "BetrVG",
+        "Kündigung"
+      ]
+    },
+    {
+      "id": "wiso-019",
+      "type": "open",
+      "level": 1,
+      "part": "AP2",
+      "q": "Nennen Sie die fünf Zweige (Säulen) der gesetzlichen Sozialversicherung.",
+      "answer": "Krankenversicherung, Pflegeversicherung, Rentenversicherung, Arbeitslosenversicherung und Unfallversicherung.",
+      "keywords": [
+        "kranken",
+        "pflege",
+        "renten",
+        "arbeitslos"
+      ],
+      "explain": "Die Beiträge zu Kranken-, Pflege-, Renten- und Arbeitslosenversicherung tragen Arbeitgeber und Arbeitnehmer grundsätzlich etwa je zur Hälfte, die Unfallversicherung zahlt der Arbeitgeber allein.",
+      "tags": [
+        "Sozialversicherung"
+      ]
+    },
+    {
+      "id": "wiso-020",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Wer zahlt die Beiträge zur gesetzlichen Unfallversicherung und wer ist ihr Träger in der gewerblichen Wirtschaft?",
+      "options": [
+        "Arbeitgeber und Arbeitnehmer je zur Hälfte; Träger ist die Krankenkasse",
+        "Der Arbeitnehmer allein; Träger ist die Deutsche Rentenversicherung",
+        "Der Staat aus Steuermitteln; Träger ist die Bundesagentur für Arbeit",
+        "Der Arbeitgeber allein; Träger ist die Berufsgenossenschaft"
+      ],
+      "answer": 3,
+      "explain": "Die gesetzliche Unfallversicherung wird allein vom Arbeitgeber finanziert. Träger sind die Berufsgenossenschaften (für Elektrobetriebe z. B. die BG ETEM). Versichert sind Arbeitsunfälle, Wegeunfälle und Berufskrankheiten.",
+      "tags": [
+        "Sozialversicherung",
+        "Unfallversicherung"
+      ]
+    },
+    {
+      "id": "wiso-021",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Welche Beträge werden vom Bruttoentgelt abgezogen, um das Nettoentgelt zu ermitteln?",
+      "options": [
+        "Lohnsteuer, ggf. Solidaritätszuschlag und Kirchensteuer sowie die Arbeitnehmeranteile zur Sozialversicherung",
+        "Nur die Lohnsteuer",
+        "Lohnsteuer sowie die Arbeitgeberanteile zur Sozialversicherung",
+        "Umsatzsteuer und der Beitrag zur Unfallversicherung"
+      ],
+      "answer": 0,
+      "explain": "Netto = Brutto − Steuern (Lohnsteuer, ggf. Soli und Kirchensteuer) − Arbeitnehmeranteile zu Kranken-, Pflege-, Renten- und Arbeitslosenversicherung. Die Arbeitgeberanteile und die Unfallversicherung zahlt der Arbeitgeber zusätzlich.",
+      "tags": [
+        "Lohnabrechnung"
+      ]
+    },
+    {
+      "id": "wiso-022",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Laut Entgeltabrechnung beträgt das Bruttoentgelt 2.950,00 €. Abgezogen werden: Lohnsteuer 312,40 €, Solidaritätszuschlag 0,00 €, Kirchensteuer 24,99 € und Arbeitnehmeranteile zur Sozialversicherung insgesamt 612,13 €. Wie hoch ist das Nettoentgelt?",
+      "answer": "2.000,48 €",
+      "value": 2000.48,
+      "unit": "€",
+      "tolerance": 0.02,
+      "explain": "Netto = Brutto − Steuern − SV-Arbeitnehmeranteile = 2.950,00 € − 312,40 € − 0,00 € − 24,99 € − 612,13 € = 2.000,48 €.",
+      "tags": [
+        "Lohnabrechnung"
+      ]
+    },
+    {
+      "id": "wiso-023",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Wie haften die Gesellschafter einer Kommanditgesellschaft (KG)?",
+      "options": [
+        "Alle Gesellschafter haften nur mit ihrer Einlage",
+        "Der Komplementär haftet unbeschränkt, der Kommanditist nur bis zur Höhe seiner Einlage",
+        "Der Kommanditist haftet unbeschränkt, der Komplementär nur mit seiner Einlage",
+        "Alle Gesellschafter haften unbeschränkt mit ihrem Privatvermögen"
+      ],
+      "answer": 1,
+      "explain": "In der KG gibt es mindestens einen voll haftenden Komplementär und mindestens einen Kommanditisten mit beschränkter Haftung. In der OHG haften dagegen alle Gesellschafter unbeschränkt, unmittelbar und gesamtschuldnerisch, beim Einzelunternehmen haftet der Inhaber unbeschränkt.",
+      "tags": [
+        "Rechtsformen",
+        "Haftung"
+      ]
+    },
+    {
+      "id": "wiso-024",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Aussage zur GmbH ist richtig?",
+      "options": [
+        "Die Gesellschafter haften unbeschränkt mit ihrem Privatvermögen",
+        "Eine GmbH muss von mindestens sieben Personen gegründet werden",
+        "Gegenüber Gläubigern haftet nur das Gesellschaftsvermögen; das Mindeststammkapital beträgt 25.000 €",
+        "Die Geschäfte der GmbH führt die Hauptversammlung"
+      ],
+      "answer": 2,
+      "explain": "Die GmbH ist eine Kapitalgesellschaft; sie kann auch von einer einzigen Person gegründet werden. Organe sind Geschäftsführer und Gesellschafterversammlung. Die Hauptversammlung ist ein Organ der AG (neben Vorstand und Aufsichtsrat).",
+      "tags": [
+        "Rechtsformen",
+        "Haftung"
+      ]
+    },
+    {
+      "id": "wiso-025",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Aussage zum Arbeitsvertrag ist richtig?",
+      "options": [
+        "Er ist nur wirksam, wenn die IHK ihn genehmigt",
+        "Er muss immer notariell beurkundet werden",
+        "Ein mündlich geschlossener Arbeitsvertrag ist immer unwirksam",
+        "Er kann grundsätzlich formfrei geschlossen werden, der Arbeitgeber muss die wesentlichen Vertragsbedingungen aber nach dem Nachweisgesetz nachweisen"
+      ],
+      "answer": 3,
+      "explain": "Ein Arbeitsvertrag kommt auch mündlich wirksam zustande; aus Beweisgründen und wegen des Nachweisgesetzes werden die wesentlichen Bedingungen (z. B. Tätigkeit, Entgelt, Arbeitszeit, Urlaub) festgehalten. Eine Befristung und eine Kündigung müssen dagegen schriftlich erfolgen.",
+      "tags": [
+        "Arbeitsvertrag"
+      ]
+    },
+    {
+      "id": "wiso-026",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Innerhalb welcher Frist muss ein Arbeitnehmer beim Arbeitsgericht Kündigungsschutzklage erheben?",
+      "options": [
+        "Innerhalb von drei Wochen nach Zugang der schriftlichen Kündigung",
+        "Innerhalb von zwei Wochen nach dem letzten Arbeitstag",
+        "Innerhalb von vier Wochen nach Ablauf der Kündigungsfrist",
+        "Innerhalb von sechs Monaten nach Zugang der Kündigung"
+      ],
+      "answer": 0,
+      "explain": "Nach § 4 Kündigungsschutzgesetz beträgt die Klagefrist drei Wochen ab Zugang der Kündigung. Wird sie versäumt, gilt die Kündigung in der Regel als wirksam.",
+      "tags": [
+        "Kündigungsschutz"
+      ]
+    },
+    {
+      "id": "wiso-027",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Aus welchen drei Gründen kann eine ordentliche Kündigung nach dem Kündigungsschutzgesetz sozial gerechtfertigt sein?",
+      "answer": "Aus Gründen in der Person oder im Verhalten des Arbeitnehmers oder aus dringenden betrieblichen Erfordernissen.",
+      "keywords": [
+        "person",
+        "verhalten",
+        "betrieb"
+      ],
+      "explain": "Das Kündigungsschutzgesetz gilt, wenn das Arbeitsverhältnis länger als sechs Monate besteht und der Betrieb die gesetzliche Mindestgröße erreicht. Vor einer verhaltensbedingten Kündigung ist in der Regel eine Abmahnung nötig.",
+      "tags": [
+        "Kündigungsschutz"
+      ]
+    },
+    {
+      "id": "wiso-028",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Welche Schutzfristen gelten nach dem Mutterschutzgesetz grundsätzlich?",
+      "options": [
+        "8 Wochen vor und 6 Wochen nach der Entbindung",
+        "6 Wochen vor und 8 Wochen nach der Entbindung",
+        "4 Wochen vor und 4 Wochen nach der Entbindung",
+        "12 Wochen vor und 12 Wochen nach der Entbindung"
+      ],
+      "answer": 1,
+      "explain": "Vor der Entbindung darf die Frau nur beschäftigt werden, wenn sie es ausdrücklich möchte; nach der Entbindung gilt ein Beschäftigungsverbot (bei Früh- oder Mehrlingsgeburten länger). Während der Schwangerschaft und bis vier Monate nach der Entbindung besteht Kündigungsschutz.",
+      "tags": [
+        "Mutterschutz"
+      ]
+    },
+    {
+      "id": "wiso-029",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Welche Aussage zur Elternzeit ist richtig?",
+      "options": [
+        "Nur die Mutter hat einen Anspruch auf Elternzeit",
+        "Während der Elternzeit zahlt der Arbeitgeber das volle Gehalt weiter",
+        "Jeder Elternteil kann grundsätzlich bis zum 3. Geburtstag des Kindes Elternzeit nehmen und genießt in dieser Zeit besonderen Kündigungsschutz",
+        "Elternzeit muss nur in Betrieben mit Betriebsrat gewährt werden"
+      ],
+      "answer": 2,
+      "explain": "Elternzeit ist eine unbezahlte Freistellung von der Arbeit; beide Elternteile haben Anspruch, auch gleichzeitig. Ein Teil kann auch später genommen werden. Als Einkommensersatz gibt es das staatliche Elterngeld, nicht Lohn vom Arbeitgeber.",
+      "tags": [
+        "Elternzeit"
+      ]
+    },
+    {
+      "id": "wiso-030",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Welche drei Dimensionen umfasst Nachhaltigkeit in einem Unternehmen?",
+      "options": [
+        "Einkauf, Produktion und Verkauf",
+        "Qualität, Kosten und Termine",
+        "Planen, Durchführen und Kontrollieren",
+        "Ökologie, Ökonomie und Soziales"
+      ],
+      "answer": 3,
+      "explain": "Nachhaltig handelt ein Betrieb, wenn er Umwelt schont (z. B. Energie sparen, Abfall vermeiden), wirtschaftlich erfolgreich bleibt und soziale Verantwortung übernimmt (z. B. Arbeitsschutz, faire Arbeitsbedingungen).",
+      "tags": [
+        "Nachhaltigkeit",
+        "Umweltschutz"
+      ]
+    }
+  ]
+}

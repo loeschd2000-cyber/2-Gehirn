@@ -1,0 +1,546 @@
+{
+  "topic": "maschinensicherheit",
+  "title": "Maschinensicherheit",
+  "icon": "🚨",
+  "part": "AP1+AP2",
+  "questions": [
+    {
+      "id": "maschinensicherheit-001",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Wer bringt die CE-Kennzeichnung an einer neuen Maschine an?",
+      "options": [
+        "Der Hersteller (bzw. sein Bevollmächtigter) nach erfolgreicher Konformitätsbewertung",
+        "Eine Prüfstelle wie der TÜV nach der Abnahme",
+        "Der Betreiber nach der ersten Inbetriebnahme",
+        "Die zuständige Berufsgenossenschaft"
+      ],
+      "answer": 0,
+      "explain": "Mit der CE-Kennzeichnung erklärt der Hersteller, dass die Maschine die zutreffenden EU-Vorschriften erfüllt. Selbst wenn bei bestimmten Maschinen eine benannte Stelle beteiligt ist, bringt der Hersteller die Kennzeichnung an.",
+      "tags": [
+        "CE-Kennzeichnung"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-002",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Mit welchem Dokument erklärt der Hersteller verbindlich, dass eine vollständige Maschine alle einschlägigen EU-Anforderungen erfüllt?",
+      "options": [
+        "Einbauerklärung",
+        "EG- bzw. EU-Konformitätserklärung",
+        "Gefährdungsbeurteilung",
+        "Prüfprotokoll nach DGUV Vorschrift 3"
+      ],
+      "answer": 1,
+      "explain": "Die Konformitätserklärung wird der Maschine mitgeliefert und ist Voraussetzung für die CE-Kennzeichnung. Die Einbauerklärung gilt für unvollständige Maschinen, die Gefährdungsbeurteilung erstellt der Arbeitgeber nach dem Arbeitsschutzgesetz.",
+      "tags": [
+        "Konformitätserklärung"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-003",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Die Maschinenrichtlinie 2006/42/EG wird durch die Maschinenverordnung (EU) 2023/1230 abgelöst. Ab wann gilt die Maschinenverordnung im Wesentlichen?",
+      "options": [
+        "Ab dem 29. Dezember 2009",
+        "Ab dem 1. Januar 2025",
+        "Ab dem 20. Januar 2027",
+        "Ab dem 1. Januar 2030"
+      ],
+      "answer": 2,
+      "explain": "Die Maschinenverordnung gilt im Wesentlichen ab dem 20. Januar 2027. Als Verordnung gilt sie dann unmittelbar in allen EU-Staaten, ohne Umsetzung in nationales Recht. Der 29. Dezember 2009 war der Geltungsbeginn der Maschinenrichtlinie 2006/42/EG.",
+      "tags": [
+        "Maschinenverordnung"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-004",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was erhält der Kunde nach der Maschinenrichtlinie 2006/42/EG vom Hersteller einer unvollständigen Maschine (z. B. einem Industrieroboter ohne Greifer)?",
+      "options": [
+        "Eine EG-Konformitätserklärung mit CE-Kennzeichnung nach der Maschinenrichtlinie",
+        "Nur eine Rechnung, weitere Dokumente sind nicht vorgeschrieben",
+        "Eine Gefährdungsbeurteilung für den späteren Arbeitsplatz",
+        "Eine Einbauerklärung und eine Montageanleitung"
+      ],
+      "answer": 3,
+      "explain": "Eine unvollständige Maschine kann ihre Funktion allein nicht erfüllen und erhält keine CE-Kennzeichnung nach der Maschinenrichtlinie. Erst die fertige Gesamtmaschine bekommt Konformitätserklärung und CE-Kennzeichnung.",
+      "tags": [
+        "Einbauerklärung"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-005",
+      "type": "open",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Nennen Sie die drei Stufen der Risikominderung nach DIN EN ISO 12100 in der richtigen Reihenfolge.",
+      "answer": "1. Inhärent sichere Konstruktion, 2. technische Schutzmaßnahmen (ggf. mit ergänzenden Schutzmaßnahmen), 3. Benutzerinformation (z. B. Warnhinweise, Betriebsanleitung).",
+      "keywords": [
+        "konstruktion",
+        "schutzmaßnahme",
+        "benutzerinformation"
+      ],
+      "explain": "Die Reihenfolge ist verbindlich: Zuerst wird die Gefährdung möglichst konstruktiv beseitigt. Was bleibt, wird durch Schutzeinrichtungen gemindert; erst über das verbleibende Restrisiko wird informiert.",
+      "tags": [
+        "Risikominderung"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-006",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Aus welchen zwei Hauptschritten besteht die Risikobeurteilung nach DIN EN ISO 12100?",
+      "options": [
+        "Risikoanalyse und Risikobewertung",
+        "Konformitätserklärung und CE-Kennzeichnung",
+        "Gefährdungsbeurteilung und Betriebsanweisung",
+        "Erstprüfung und Wiederholungsprüfung"
+      ],
+      "answer": 0,
+      "explain": "Die Risikoanalyse umfasst die Festlegung der Grenzen der Maschine, die Identifizierung der Gefährdungen und die Risikoeinschätzung. In der Risikobewertung wird entschieden, ob eine Risikominderung nötig ist. Der Ablauf wird wiederholt, bis das Restrisiko vertretbar ist.",
+      "tags": [
+        "Risikobeurteilung"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-007",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1+AP2",
+      "q": "Ein Hersteller bringt an einer Maschine ein Warnschild „Quetschgefahr“ an. Welcher Stufe der Risikominderung nach DIN EN ISO 12100 ist das zuzuordnen?",
+      "options": [
+        "Inhärent sichere Konstruktion",
+        "Benutzerinformation",
+        "Technische Schutzmaßnahme",
+        "Ergänzende Schutzmaßnahme"
+      ],
+      "answer": 1,
+      "explain": "Warnschilder, Piktogramme und die Betriebsanleitung gehören zur Benutzerinformation (3. Stufe). Sie mindern das Risiko nicht technisch, sondern informieren über das Restrisiko.",
+      "tags": [
+        "Risikominderung"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-008",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Was beschreibt die Stopp-Kategorie 1 nach DIN EN 60204-1?",
+      "options": [
+        "Sofortiges Trennen der Energiezufuhr zu den Antrieben (ungesteuertes Stillsetzen)",
+        "Gesteuertes Stillsetzen, bei dem die Energie auch im Stillstand erhalten bleibt",
+        "Gesteuertes Stillsetzen, bei dem die Energie bis zum Stillstand erhalten bleibt und danach getrennt wird",
+        "Abschalten der gesamten Anlage einschließlich Beleuchtung und Steckdosen"
+      ],
+      "answer": 2,
+      "explain": "Stopp 0 = sofortige Energietrennung, Stopp 1 = gesteuert abbremsen und dann Energie trennen, Stopp 2 = gesteuert stillsetzen, Energie bleibt anstehen. Stopp 1 wird z. B. genutzt, wenn ein Antrieb aktiv abgebremst werden soll.",
+      "tags": [
+        "Stopp-Kategorien",
+        "DIN EN 60204-1"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-009",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welche Stopp-Kategorie nach DIN EN 60204-1 ist für die Not-Halt-Funktion NICHT zulässig?",
+      "options": [
+        "Stopp-Kategorie 0",
+        "Stopp-Kategorie 1",
+        "Keine – alle Stopp-Kategorien sind zulässig",
+        "Stopp-Kategorie 2"
+      ],
+      "answer": 3,
+      "explain": "Not-Halt muss in Stopp-Kategorie 0 oder 1 wirken. Bei Stopp-Kategorie 2 bleibt die Energie an den Antrieben auch im Stillstand erhalten – das ist für den Notfall nicht zulässig.",
+      "tags": [
+        "Not-Halt",
+        "Stopp-Kategorien"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-010",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Wie muss das Stellteil eines Not-Halt-Befehlsgeräts farblich gestaltet sein?",
+      "options": [
+        "Rot, mit gelbem Hintergrund",
+        "Gelb, mit rotem Hintergrund",
+        "Rot, mit schwarzem Hintergrund",
+        "Schwarz, mit gelbem Hintergrund"
+      ],
+      "answer": 0,
+      "explain": "Not-Halt-Stellteile sind rot, die Fläche dahinter (z. B. Schild oder Gehäuse) ist gelb. Typisch ist ein Pilzdrucktaster, der beim Betätigen einrastet.",
+      "tags": [
+        "Not-Halt",
+        "Farben"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-011",
+      "type": "open",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Worin unterscheiden sich Not-Halt und Not-Aus?",
+      "answer": "Not-Halt setzt eine gefährliche Bewegung bzw. einen gefährlichen Prozess still. Not-Aus schaltet im Notfall die elektrische Energie ab, wenn Gefahr durch elektrischen Schlag besteht.",
+      "keywords": [
+        "bewegung",
+        "elektrisch",
+        "energie"
+      ],
+      "explain": "Umgangssprachlich wird oft „Not-Aus“ gesagt, gemeint ist an Maschinen aber meist der Not-Halt. Beide sind ergänzende Schutzmaßnahmen und ersetzen keine trennenden oder nicht trennenden Schutzeinrichtungen.",
+      "tags": [
+        "Not-Halt",
+        "Not-Aus"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-012",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Nach einem Not-Halt wird der betätigte Pilzdrucktaster wieder entriegelt. Was muss danach gelten?",
+      "options": [
+        "Die Maschine läuft automatisch an der unterbrochenen Stelle weiter",
+        "Die Maschine darf nicht selbsttätig anlaufen; ein Wiederanlauf erfordert einen separaten Startbefehl",
+        "Die Maschine läuft nach einer festen Wartezeit von 5 s selbsttätig an",
+        "Das Entriegeln startet die Maschine, sofern alle Schutztüren geschlossen sind"
+      ],
+      "answer": 1,
+      "explain": "Das Entriegeln des Not-Halt-Geräts nimmt nur den Stoppbefehl zurück. Ein Wiederanlauf darf erst durch eine bewusste, getrennte Handlung (Rücksetzen/Start) erfolgen.",
+      "tags": [
+        "Not-Halt",
+        "Wiederanlauf"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-013",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Ein Leuchtmelder leuchtet gelb. Welche Bedeutung hat diese Farbe nach DIN EN 60204-1?",
+      "options": [
+        "Notfall, gefährlicher Zustand",
+        "Normaler Zustand",
+        "Anormaler Zustand, bevorstehender kritischer Zustand",
+        "Handlung durch den Bediener zwingend erforderlich"
+      ],
+      "answer": 2,
+      "explain": "Rot = Notfall, Gelb = anormal, Grün = normal, Blau = zwingende Handlung erforderlich, Weiß = neutral.",
+      "tags": [
+        "Farben",
+        "DIN EN 60204-1"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-014",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1",
+      "q": "Welche Farbe darf nach DIN EN 60204-1 für einen START-/EIN-Drucktaster NICHT verwendet werden?",
+      "options": [
+        "Weiß",
+        "Grün",
+        "Schwarz",
+        "Rot"
+      ],
+      "answer": 3,
+      "explain": "Für START/EIN sind Weiß (bevorzugt), Grau, Schwarz oder Grün zulässig, Rot dagegen nicht. Rot ist für Not-Halt und – neben Schwarz, Grau und Weiß – für STOPP/AUS vorgesehen.",
+      "tags": [
+        "Farben",
+        "DIN EN 60204-1"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-015",
+      "type": "mc",
+      "level": 1,
+      "part": "AP1",
+      "q": "Welche Farbe muss der Schutzleiter (PE) haben?",
+      "options": [
+        "Grün-gelb",
+        "Blau",
+        "Schwarz",
+        "Braun"
+      ],
+      "answer": 0,
+      "explain": "Die Kombination Grün-gelb ist ausschließlich dem Schutzleiter vorbehalten und darf für keinen anderen Leiter verwendet werden. Blau kennzeichnet den Neutralleiter.",
+      "tags": [
+        "Schutzleiter"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-016",
+      "type": "mc",
+      "level": 1,
+      "part": "AP2",
+      "q": "Welcher Performance Level nach DIN EN ISO 13849-1 stellt die höchsten Anforderungen an eine Sicherheitsfunktion?",
+      "options": [
+        "PL a",
+        "PL e",
+        "PL c",
+        "PL d"
+      ],
+      "answer": 1,
+      "explain": "Die Performance Level reichen von PL a (geringste) bis PL e (höchste Anforderungen). Der PL beschreibt, wie zuverlässig ein sicherheitsbezogenes Steuerungsteil seine Sicherheitsfunktion ausführt.",
+      "tags": [
+        "Performance Level"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-017",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Mit dem Risikograph nach DIN EN ISO 13849-1 wird für eine Sicherheitsfunktion ermittelt: schwere, irreversible Verletzung (S2), häufige bis dauernde Gefährdungsexposition (F2), Vermeidung der Gefährdung kaum möglich (P2). Welcher erforderliche Performance Level ergibt sich?",
+      "options": [
+        "PLr a",
+        "PLr c",
+        "PLr e",
+        "PLr d"
+      ],
+      "answer": 2,
+      "explain": "S2–F2–P2 ist der ungünstigste Pfad im Risikograph und führt zu PLr e. S steht für die Schwere der Verletzung, F für Häufigkeit/Dauer der Exposition, P für die Möglichkeit, die Gefährdung zu vermeiden.",
+      "tags": [
+        "Risikograph",
+        "Performance Level"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-018",
+      "type": "mc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Welche Kategorie nach DIN EN ISO 13849-1 fordert: Ein einzelner Fehler führt nicht zum Verlust der Sicherheitsfunktion, eine Anhäufung unerkannter Fehler kann jedoch zum Verlust führen?",
+      "options": [
+        "Kategorie 1",
+        "Kategorie 2",
+        "Kategorie 4",
+        "Kategorie 3"
+      ],
+      "answer": 3,
+      "explain": "Kategorie 3 ist einfehlersicher (meist zweikanalig), erkennt aber nicht jeden Fehler. Kategorie 4 muss Fehler rechtzeitig erkennen, sodass auch eine Anhäufung unerkannter Fehler nicht zum Verlust führt. Kategorie 1 ist einkanalig mit bewährten Bauteilen, Kategorie 2 einkanalig mit Testung.",
+      "tags": [
+        "Kategorien"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-019",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welche Aussage zur Zweihandschaltung trifft zu?",
+      "options": [
+        "Lässt der Bediener eines der beiden Stellteile los, wird die gefährliche Bewegung stillgesetzt",
+        "Sie schützt auch weitere Personen im Umfeld der Maschine",
+        "Nach dem Anlauf genügt es, ein Stellteil gedrückt zu halten",
+        "Die Stellteile sollten möglichst dicht nebeneinander liegen, damit sie mit einer Hand bedient werden können"
+      ],
+      "answer": 0,
+      "explain": "Die Zweihandschaltung bindet beide Hände des Bedieners an die Stellteile, solange die Gefahr besteht, und schützt daher nur den Bediener selbst. Bei Typ III nach DIN EN ISO 13851 müssen beide Stellteile zusätzlich innerhalb von 0,5 s betätigt werden.",
+      "tags": [
+        "Zweihandschaltung"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-020",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Für eine Zweihandschaltung wird der Mindestabstand nach DIN EN ISO 13855 mit S = K · T + C berechnet (K = 1600 mm/s, C = 250 mm). Die Gesamtnachlaufzeit (Ansprechzeit der Steuerung + Nachlaufzeit der Maschine) beträgt T = 0,12 s. Wie groß muss der Abstand zwischen Stellteil und Gefahrstelle mindestens sein?",
+      "answer": "442 mm",
+      "value": 442,
+      "unit": "mm",
+      "tolerance": 0.02,
+      "explain": "S = K · T + C = 1600 mm/s · 0,12 s + 250 mm = 192 mm + 250 mm = 442 mm.",
+      "tags": [
+        "Zweihandschaltung",
+        "Sicherheitsabstand"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-021",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Welche Aufgabe hat eine Zuhaltung an einer Schutztür?",
+      "options": [
+        "Sie meldet nur, ob die Tür offen ist, ohne sie zu blockieren",
+        "Sie hält die Schutztür verschlossen, bis die gefährliche Bewegung (z. B. ein Nachlauf) zum Stillstand gekommen ist",
+        "Sie schließt die Tür nach jedem Arbeitszyklus automatisch",
+        "Sie verhindert, dass die Tür bei laufender Maschine geschlossen wird"
+      ],
+      "answer": 1,
+      "explain": "Eine Verriegelung (z. B. Sicherheits-Positionsschalter) erkennt das Öffnen und löst einen Stopp aus. Eine Zuhaltung sperrt die Tür zusätzlich, solange Gefahr besteht – nötig z. B. bei langen Nachlaufzeiten.",
+      "tags": [
+        "Schutztür",
+        "Zuhaltung"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-022",
+      "type": "mc",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Was bedeutet „Zwangsöffnung“ beim Öffnerkontakt eines Sicherheits-Positionsschalters?",
+      "options": [
+        "Der Kontakt öffnet allein durch Federkraft, sobald die Betätigung wegfällt",
+        "Der Kontakt öffnet erst nach einer einstellbaren Verzögerungszeit",
+        "Bei Betätigung wird der Kontakt über eine starre Verbindung mechanisch geöffnet – auch wenn er verschweißt ist",
+        "Der Kontakt wird von einem Elektromagneten geöffnet"
+      ],
+      "answer": 2,
+      "explain": "Bei der Zwangsöffnung wird die Betätigungskraft über nicht federnde Teile direkt auf die Kontakte übertragen, sodass auch verschweißte Kontakte aufgebrochen werden. Gekennzeichnet ist sie mit einem Pfeil im Kreis.",
+      "tags": [
+        "Zwangsöffnung"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-023",
+      "type": "open",
+      "level": 2,
+      "part": "AP2",
+      "q": "Was versteht man bei sicherheitsgerichteten Steuerungen unter Redundanz und unter Diversität?",
+      "answer": "Redundanz: Die Sicherheitsfunktion ist mehrfach, z. B. zweikanalig, aufgebaut, damit ein einzelner Fehler sie nicht außer Kraft setzt. Diversität: Die Kanäle sind unterschiedlich aufgebaut (z. B. Öffner und Schließer oder verschiedene Technik), um Fehler gemeinsamer Ursache zu vermeiden.",
+      "keywords": [
+        "kanal",
+        "unterschiedlich",
+        "fehler"
+      ],
+      "explain": "Redundanz allein hilft nicht, wenn beide Kanäle durch dieselbe Ursache (z. B. Überspannung) gleichzeitig ausfallen. Diversität verringert solche Fehler gemeinsamer Ursache (CCF).",
+      "tags": [
+        "Redundanz",
+        "Diversität"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-024",
+      "type": "mc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Was bedeutet Querschlusserkennung bei einem zweikanaligen Sicherheitsrelais?",
+      "options": [
+        "Das Relais erkennt eine Überlastung des angeschlossenen Motors",
+        "Das Relais erkennt, wenn der Not-Halt-Taster nur halb betätigt wird",
+        "Das Relais erkennt einen Erdschluss im Hauptstromkreis der Maschine",
+        "Das Relais erkennt einen Kurzschluss zwischen den beiden Eingangskanälen, z. B. durch unterschiedliche Potenziale oder Testpulse"
+      ],
+      "answer": 3,
+      "explain": "Ein Querschluss verbindet beide Kanäle, sodass das Öffnen eines Kanals nicht mehr ausgewertet werden kann. Durch getaktete oder unterschiedlich gespeiste Kanäle erkennt das Sicherheitsrelais diesen Fehler und schaltet sicher ab.",
+      "tags": [
+        "Sicherheitsrelais",
+        "Querschluss"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-025",
+      "type": "mc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Warum werden Öffnerkontakte der nachgeschalteten Schütze in den Rückführkreis eines Sicherheitsrelais eingebunden?",
+      "options": [
+        "Damit das Sicherheitsrelais vor jedem Start prüft, ob die Schütze abgefallen sind, und z. B. verschweißte Hauptkontakte erkennt",
+        "Damit die Schütze beim Abschalten schneller abfallen",
+        "Damit der Not-Halt auch ohne Sicherheitsrelais wirkt",
+        "Damit die Schützspulen vor Überspannung geschützt sind"
+      ],
+      "answer": 0,
+      "explain": "Die Schütze besitzen Spiegelkontakte bzw. zwangsgeführte Kontakte: Ist ein Hauptkontakt verschweißt, bleibt der Öffner offen. Das Sicherheitsrelais lässt dann keinen Neustart zu.",
+      "tags": [
+        "Sicherheitsrelais",
+        "Rückführkreis"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-026",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Sicherheits-Lichtvorhang mit der Auflösung d = 20 mm sichert eine Gefahrstelle. Die Gesamtansprechzeit (Lichtvorhang + Steuerung + Nachlauf der Maschine) beträgt T = 0,2 s. Berechnen Sie den Mindestabstand nach DIN EN ISO 13855 mit S = K · T + C, K = 2000 mm/s und C = 8 · (d − 14 mm).",
+      "answer": "448 mm",
+      "value": 448,
+      "unit": "mm",
+      "tolerance": 0.02,
+      "explain": "C = 8 · (20 mm − 14 mm) = 48 mm. S = 2000 mm/s · 0,2 s + 48 mm = 400 mm + 48 mm = 448 mm. Das Ergebnis liegt zwischen 100 mm und 500 mm, K = 2000 mm/s bleibt also gültig.",
+      "tags": [
+        "Lichtvorhang",
+        "Sicherheitsabstand"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-027",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Lichtvorhang zum Handschutz hat die Auflösung d = 30 mm. Die Gesamtansprechzeit beträgt T = 0,1 s. Berechnen Sie den Mindestabstand nach DIN EN ISO 13855 mit S = K · T + C, K = 2000 mm/s und C = 8 · (d − 14 mm).",
+      "answer": "328 mm",
+      "value": 328,
+      "unit": "mm",
+      "tolerance": 0.02,
+      "explain": "C = 8 · (30 mm − 14 mm) = 128 mm. S = 2000 mm/s · 0,1 s + 128 mm = 200 mm + 128 mm = 328 mm.",
+      "tags": [
+        "Lichtvorhang",
+        "Sicherheitsabstand"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-028",
+      "type": "calc",
+      "level": 2,
+      "part": "AP2",
+      "q": "Ein Lichtvorhang mit der Auflösung d = 14 mm hat eine Ansprechzeit von 10 ms, das Sicherheitsrelais von 15 ms, die Nachlaufzeit der Maschine beträgt 110 ms. Berechnen Sie den Mindestabstand nach DIN EN ISO 13855 mit S = K · T + C, K = 2000 mm/s und C = 8 · (d − 14 mm).",
+      "answer": "270 mm",
+      "value": 270,
+      "unit": "mm",
+      "tolerance": 0.02,
+      "explain": "T = 10 ms + 15 ms + 110 ms = 135 ms = 0,135 s. C = 8 · (14 mm − 14 mm) = 0 mm. S = 2000 mm/s · 0,135 s + 0 mm = 270 mm.",
+      "tags": [
+        "Lichtvorhang",
+        "Sicherheitsabstand"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-029",
+      "type": "calc",
+      "level": 3,
+      "part": "AP2",
+      "q": "Ein Lichtvorhang (d = 14 mm) wird mit T = 0,3 s Gesamtansprechzeit eingesetzt. Nach DIN EN ISO 13855 gilt S = 2000 mm/s · T + 8 · (d − 14 mm). Ergibt sich S > 500 mm, darf mit K = 1600 mm/s neu gerechnet werden, das Ergebnis darf dann aber 500 mm nicht unterschreiten. Welcher Mindestabstand ist anzusetzen?",
+      "answer": "500 mm",
+      "value": 500,
+      "unit": "mm",
+      "tolerance": 0.02,
+      "explain": "1. Rechnung: S = 2000 mm/s · 0,3 s + 0 mm = 600 mm > 500 mm. 2. Rechnung mit K = 1600 mm/s: S = 1600 mm/s · 0,3 s = 480 mm. Das liegt unter 500 mm, daher gilt S = 500 mm.",
+      "tags": [
+        "Lichtvorhang",
+        "Sicherheitsabstand"
+      ]
+    },
+    {
+      "id": "maschinensicherheit-030",
+      "type": "open",
+      "level": 2,
+      "part": "AP1+AP2",
+      "q": "Was ist die Grundidee von Lockout/Tagout (LOTO) bei Wartungsarbeiten an Maschinen?",
+      "answer": "Alle Energiequellen werden getrennt, mit einem persönlichen Schloss gegen Wiedereinschalten gesichert und mit einem Anhänger gekennzeichnet; danach wird der energiefreie Zustand geprüft.",
+      "keywords": [
+        "schloss",
+        "anhänger",
+        "energie"
+      ],
+      "explain": "Jede Person, die an der Maschine arbeitet, hängt ihr eigenes Schloss an die Trenneinrichtung – erst wenn alle Schlösser entfernt sind, kann wieder eingeschaltet werden. Das entspricht den Sicherheitsregeln „Freischalten“ und „Gegen Wiedereinschalten sichern“.",
+      "tags": [
+        "Lockout/Tagout"
+      ]
+    }
+  ]
+}

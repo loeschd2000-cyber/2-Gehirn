@@ -119,6 +119,14 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         }, 250)
     }
 
+    @Volatile var pendingDiary = false
+    fun deliverDiary() {
+        pendingDiary = true
+        main.postDelayed({
+            web.evaluateJavascript("(window.__zgDiary && __zgDiary()) ? 'ok' : 'wait'") { r -> if (r?.contains("ok") == true) pendingDiary = false }
+        }, 400)
+    }
+
     fun onResume() { web.evaluateJavascript("window.__zgResume && __zgResume()", null) }
     fun onWakeStopped() { main.post { web.evaluateJavascript("window.__zgWakeState && __zgWakeState(false)", null) } }
     fun isListening(): Boolean = !srEnded
@@ -413,6 +421,10 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                 main.post { web.loadUrl("file:///android_asset/setup.html#bank=" + (if (ok) "ok" else "fehler") + "&msg=" + android.net.Uri.encode(msg)) }
             }.start()
         }
+        // Tagebuch
+        @JavascriptInterface fun consumeDiary(): Boolean { val d = pendingDiary; pendingDiary = false; return d }
+        @JavascriptInterface fun diaryReminder(h: Int, m: Int) { DiaryReminder.set(act, h, m) }
+        @JavascriptInterface fun diaryReminderTime(): String = DiaryReminder.time(act)?.let { "%02d:%02d".format(it.first, it.second) } ?: ""
         /** Protokoll des letzten Abspielversuchs (für die Einstellungsseite) */
         @JavascriptInterface fun musicLog(): String = Music.lastLog
         /** Steuert die gerade laufende Musik (Spotify oder jede andere App), ohne sie zu öffnen. */

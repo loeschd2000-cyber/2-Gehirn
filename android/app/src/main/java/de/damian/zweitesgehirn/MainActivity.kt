@@ -72,6 +72,10 @@ class MainActivity : Activity() {
     }
 
     private fun handleIntent(i: Intent?) {
+        if (i?.getBooleanExtra("diary", false) == true) {
+            i.removeExtra("diary")
+            bridge.deliverDiary()
+        }
         val d = i?.data
         if (d != null && d.scheme == "zweitesgehirn" && d.host == "bank-callback") {
             i.data = null

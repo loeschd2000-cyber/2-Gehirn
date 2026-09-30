@@ -12,7 +12,7 @@
     if (!c) { c = { id, title: "⚙ " + name, created: now, updated: now, messages: [], hidden: true }; chats.push(c); }
     c.data = val; c.updated = now; c.hidden = true;
     saveLocal(); scheduleDriveSave(); uploadChat(c);
-    if (/^(birthdays|exams|budgets)$/.test(name)) { try { proactiveSync(); renderHello(); } catch {} }
+    if (/^(birthdays|exams|budgets|bericht|muell)$/.test(name)) { try { proactiveSync(); renderHello(); } catch {} }
   }
   const clean = t => t.trim().replace(/^(?:(?:hey\s+|hallo\s+|ok\s+)?jarvis[,\s]+)/i, "").replace(/^(?:bitte|kannst\s+du(?:\s+bitte)?|könntest\s+du)\s+/i, "").replace(/\s+bitte$/i, "").replace(/[.!?]+$/, "").trim();
   const cap = x => x ? x.charAt(0).toUpperCase() + x.slice(1) : x;
@@ -191,7 +191,7 @@
     }
     // Liste leeren
     if ((m = new RegExp("^(?:lösch\\w*|leer\\w*|mach\\w*)\\s+(?:die|meine)\\s+" + LIST_RE + "(?:\\s+(?:leer|komplett|ganz))?$", "i").exec(t))) {
-      const k = listKey(m[1]); lists[k] = []; dataSet("lists", lists); assistantSay(`Die ${listName(k)} ist jetzt leer.`); return true;
+      const k = listKey(m[1]); lists[k] = []; dataSet("lists", lists); if (k === "todo" && gTasksOn()) gTasksClear().catch(() => {}); assistantSay(`Die ${listName(k)} ist jetzt leer.`); return true;
     }
     // abhaken / streichen
     if ((m = new RegExp("^(?:streich\\w*|lösch\\w*|entfern\\w*|hak\\w*)\\s+(.+?)\\s+(?:von|aus|auf)\\s+(?:der|meiner|den|meinen|dem|meinem)?\\s*" + LIST_RE + "(?:\\s+ab)?$", "i").exec(t)) || (m = /^(?:erledigt\s*[:,]?\s*(.+)|(.+?)\s+ist\s+erledigt)$/i.exec(t))) {
@@ -507,7 +507,7 @@
     }
     // Schule
     const tt = dataGet("timetable", {}), sk = WD_KEYS[n.getDay()];
-    if (tt[sk]) { parts.push(`In der Schule hast du heute ${tt[sk].join(", ")}.`); lines.push("🏫 " + tt[sk].join(", ")); }
+    if (tt[sk] && !untisOn()) { parts.push(`In der Schule hast du heute ${tt[sk].join(", ")}.`); lines.push("🏫 " + tt[sk].join(", ")); }
     const exams = dataGet("exams", []).filter(x => { const d = (new Date(x.date + "T12:00") - new Date().setHours(12, 0, 0, 0)) / 86400000; return d >= 0 && d <= 7; }).sort((a, b) => a.date.localeCompare(b.date));
     for (const x of exams.slice(0, 2)) { const d = Math.round((new Date(x.date + "T12:00") - new Date().setHours(12, 0, 0, 0)) / 86400000); parts.push(`${x.kind}${x.subject ? " in " + x.subject : ""} ${d === 0 ? "ist heute" : d === 1 ? "ist morgen" : "in " + d + " Tagen"}.`); lines.push(`📝 ${x.kind} ${x.subject || ""} – ${d === 0 ? "heute" : d === 1 ? "morgen" : "in " + d + " Tagen"}`); }
     // Geburtstage

@@ -87,7 +87,7 @@ object Untis {
         val body = JSONObject().put("id", "zg").put("method", method).put("params", params).put("jsonrpc", "2.0").toString()
         val h = mutableMapOf("Content-Type" to "application/json")
         if (session != null) h["Cookie"] = "JSESSIONID=$session; schoolname=\"_" + Base64.encodeToString(school.toByteArray(), Base64.NO_WRAP) + "\""
-        val (code, txt) = Net.req(url, "POST", h, body)
+        val (code, txt) = Net.req(url, "POST", h, body, 12000)
         val j = try { JSONObject(txt) } catch (_: Throwable) { throw UntisErr(code, "Untis antwortet nicht richtig (Fehler $code). Stimmt der Server?") }
         j.optJSONObject("error")?.let { e ->
             val c = e.optInt("code")
@@ -267,6 +267,9 @@ object Device {
 object Loc {
     fun has(ctx: Context) = ctx.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
         ctx.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    fun hasFine(ctx: Context) = ctx.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    /** Geofences brauchen genauen Standort und ab Android 10 „Immer erlauben“ */
+    fun canFence(ctx: Context) = hasFine(ctx) && (Build.VERSION.SDK_INT < 29 || hasBackground(ctx))
     fun hasBackground(ctx: Context) = ctx.checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
 
     @SuppressLint("MissingPermission")
@@ -300,7 +303,7 @@ object Places {
     /** spots: [{name, lat, lng}] – Rückgabe „ok“, „need-bg“ (Standort „Immer erlauben“ fehlt) oder Fehler */
     @SuppressLint("MissingPermission")
     fun add(ctx: Context, text: String, place: String, spots: JSONArray, radius: Float): String {
-        if (!Loc.has(ctx)) return "perm"
+        if (!Loc.hasFine(ctx)) return "perm"
         val a = list(ctx)
         val used = (0 until a.length()).sumOf { a.getJSONObject(it).optJSONArray("spots")?.length() ?: 0 }
         val n = minOf(spots.length(), 20, 95 - used)
@@ -316,11 +319,14 @@ object Places {
             keep.put(s)
         }
         return try {
-            val req = GeofencingRequest.Builder().setInitialTrigger(0).addGeofences(fences).build()
-            LocationServices.getGeofencingClient(ctx).addGeofences(req, pending(ctx))
             a.put(JSONObject().put("id", gid).put("text", text).put("place", place).put("radius", radius.toDouble()).put("spots", keep).put("added", System.currentTimeMillis()))
             save(ctx, a)
-            if (Build.VERSION.SDK_INT >= 29 && !Loc.hasBackground(ctx)) "need-bg" else "ok"
+            // Ohne „Immer erlauben“ lehnt Android Geofences ab – dann erst scharf schalten, wenn das Recht da ist (rearm beim Öffnen der App)
+            if (!Loc.canFence(ctx)) return "need-bg"
+            val req = GeofencingRequest.Builder().setInitialTrigger(0).addGeofences(fences).build()
+            LocationServices.getGeofencingClient(ctx).addGeofences(req, pending(ctx))
+                .addOnFailureListener { e -> android.util.Log.w("Jarvis", "Geofence fehlgeschlagen: ${e.message}") }
+            "ok"
         } catch (e: Throwable) { e.message ?: "Fehler" }
     }
 
@@ -335,7 +341,7 @@ object Places {
     /** Nach dem Neustart sind alle Geofences weg – neu anmelden */
     @SuppressLint("MissingPermission")
     fun rearm(ctx: Context) {
-        if (!Loc.has(ctx)) return
+        if (!Loc.canFence(ctx)) return
         val a = list(ctx); val fences = ArrayList<Geofence>()
         for (i in 0 until a.length()) { val o = a.getJSONObject(i); val s = o.optJSONArray("spots") ?: continue
             for (k in 0 until s.length()) { val x = s.getJSONObject(k)
@@ -404,7 +410,8 @@ object FuelWatch {
             val price = s.optDouble("price", 0.0); if (price <= 0) continue
             if (price <= w.optDouble("limit")) {
                 val name = (s.optString("brand").ifBlank { s.optString("name") }) + " " + s.optString("place")
-                Notes.show(ctx, "fuel", "Tank-Alarm", 8501, "⛽ Diesel für ${"%.3f".format(price).replace('.', ',')} €",
+                val label = when (w.optString("type", "diesel")) { "e5" -> "Super E5"; "e10" -> "Super E10"; else -> "Diesel" }
+                Notes.show(ctx, "fuel", "Tank-Alarm", 8501, "⛽ $label für ${"%.3f".format(price).replace('.', ',')} €",
                     "$name (${"%.1f".format(s.optDouble("dist")).replace('.', ',')} km) – deine Grenze war ${"%.2f".format(w.optDouble("limit")).replace('.', ',')} €.")
                 clear(ctx)
             }

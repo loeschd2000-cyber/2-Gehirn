@@ -75,14 +75,16 @@
     if (changes.length) s += " Achtung: " + changes.map(l => `${uSubj(l)} um ${uHM(l.startTime)} ${l.code === "cancelled" ? "fällt aus" : "ist geändert" + (l.substText ? " (" + l.substText + ")" : "")}`).join(", ") + ".";
     return { s, lines, changes };
   }
-  const UNTIS_Q = /(stundenplan|vertretung\w*|unterricht|schule|schulfrei|fällt\s+.*aus|fallen\s+.*aus|ausfall|entfällt|stunden?\s+(?:aus|frei)|schluss|aus\s*haben|frei\s*haben|erste\s+stunde|anfang|fängt|beginnt)/;
+  const UNTIS_Q = /(stundenplan|vertretung\w*|\bunterricht\b|\bschule\b|\bschulfrei\b|\bfällt\s+.*\baus\b|\bfallen\s+.*\baus\b|\bausfall\b|\bentfällt\b|\bstunden?\s+(?:aus|frei)\b|erste\s+stunde|wann\s+(?:hab|habe)\s+ich\s+(?:\w+\s+)?(?:schluss|aus|frei)\b)/;
   async function handleUntis(text) {
     const t = clean(text), tl = t.toLowerCase();
-    if (!UNTIS_Q.test(tl)) return false;
+    if (!UNTIS_Q.test(tl) || /(spiel|playlist|musik|lied|song|spotify)/.test(tl)) return false;
     if (/\b(arbeit|klausur|prüfung|schulaufgabe|test|lernplan|berichtsheft)\b/.test(tl)) return false;   // Arbeiten → Schule-Befehle
     if (/[:]|merk\s+dir|^stundenplan\s+(?:am\s+|für\s+)?\w+tag\s+/.test(tl) || /^(?:am|jeden)\s+\w+tag\s+(?:habe?|haben)/.test(tl)) return false;   // Stundenplan von Hand eintragen
     if (/navigier|adresse|wie\s+(?:lange|weit)|fahr/.test(tl)) return false;
-    if (!/(was|welche|wann|wie|hab|habe|haben|hast|gibt|fällt|fallen|zeig|ist|sind|muss|vertretungsplan|stundenplan)/.test(tl)) return false;
+    if (!/^(?:was|welche\w*|wann|wie|hab|habe|haben|hast|gibt|gibt's|fällt|fallen|zeig\w*|ist|sind|muss|stundenplan|vertretungsplan|vertretung)\b/.test(tl)) return false;
+    if (!/(stundenplan|vertretung|\bunterricht\b|\bschul(?:e|frei)\b|\b(?:fällt|fallen|entfällt)\b.*\baus\b|\bentfällt\b|\bausfall\b|\bstunden?\b|schluss|\bfrei\b)/.test(tl)) return false;
+    if (/(warum|wieso|weshalb|erklär|wichtig|bock)/.test(tl)) return false;
     if (!untisOn()) return false;   // ohne Untis: alter Stundenplan
     const week = /woche/.test(tl) || (/stundenplan/.test(tl) && !/(heute|morgen|montag|dienstag|mittwoch|donnerstag|freitag)/.test(tl));
     let from = svDayFrom(tl), to = from;
@@ -119,7 +121,7 @@
   const AWIDO = "https://awido.cubefour.de/WebServices/Awido.Service.svc/secure";
   const AW_CLIENT = "lra-schweinfurt";
   async function awido(path) {
-    const r = await svNet(`${AWIDO}/${path}${path.includes("?") ? "&" : "?"}client=${AW_CLIENT}`);
+    const r = await svNet(path === "getPlaces" ? `${AWIDO}/getPlaces/client=${AW_CLIENT}` : `${AWIDO}/${path}${path.includes("?") ? "&" : "?"}client=${AW_CLIENT}`);
     if (!r.ok) throw new Error("Müllkalender-Server antwortet nicht (" + r.status + ")");
     const j = r.json(); if (j == null) throw new Error("Müllkalender: unerwartete Antwort");
     return j;
@@ -136,11 +138,11 @@
   }
   const MUELL_KINDS = [["Restmüll", /rest|schwarz|grau/], ["Bio", /bio|braun/], ["Papier", /papier|blau|pappe|karton/], ["Gelber Sack", /gelb|verpackung|wertstoff/], ["Sperrmüll", /sperr/], ["Problemmüll", /problem|schadstoff|gift/], ["Grüngut", /grüngut|garten|gras|schnitt/]];
   function muellKind(t) { const k = MUELL_KINDS.find(([, re]) => re.test(t.toLowerCase())); return k ? k[0] : null; }
-  const MUELL_RE = /(müll|mülltonne|tonne|abfuhr|gelbe[nr]?\s+sack|gelbe\s+säcke|biotonne|bio-?müll|restmüll|papiertonne|papiermüll|sperrmüll|abfall|grüngut)/;
+  const MUELL_RE = /(?:\bmüll\w*|\w*müll\b|\w*tonne\b|\babfuhr\w*|gelbe[nr]?\s+s[aä]c?ke?\b|\babfall\b|\bgrüngut\b)/;
   async function handleMuell(text) {
     const tl = clean(text).toLowerCase();
     if (!MUELL_RE.test(tl) || /(einkaufsliste|to-?do|warenkorb|amazon|kauf|bestell)/.test(tl)) return false;
-    if (!/(wann|welche|was|kommt|ist|abgeholt|abholung|raus|stellen|nächste|morgen|heute|abfuhr)/.test(tl)) return false;
+    if (!/\b(wann|welche\w*|was|kommt|ist|abgeholt|abholung|raus|rausstellen|nächste\w*|morgen|heute|abfuhr\w*)\b/.test(tl) || /^(?:ich|wir|er|sie|du)\s/.test(tl) || /(erklär|warum|wieso|was\s+(?:ist|bedeutet)\s+(?:ein|eine|der|die|das)\b)/.test(tl)) return false;
     const m = dataGet("muell", null);
     if (!m || !m.items) { assistantSay(`Dein Müllkalender ist noch nicht eingerichtet, ${anrede()}. Menü → Weitere Dienste → Müllkalender: Ort und Straße auswählen, fertig.`); return true; }
     const today = ymd(new Date()), next = m.items.filter(x => x.d >= today);
@@ -198,11 +200,14 @@
   }
   const fuelEur = p => p.toLocaleString("de-DE", { minimumFractionDigits: 3, maximumFractionDigits: 3 }) + " €";
   const fuelSay = p => { const e = Math.floor(p), c = Math.round((p - e) * 1000); return `${e} Euro ${Math.floor(c / 10)}${c % 10 === 9 ? " Komma 9" : ""}`; };
-  const FUEL_RE = /(tank\w*|sprit|diesel|benzin|super\s*e?\s*(?:5|10|95)|\be\s*10\b|kraftstoff|spritpreis\w*)/;
+  const FUEL_RE = /(\btank\w*|\bsprit\w*|\bdiesel\b|\bbenzin\b|\bsuper\b|\be\s*10\b|\be\s*5\b|kraftstoff)/;
   async function handleFuel(text) {
     const t = clean(text), tl = t.toLowerCase();
     if (!FUEL_RE.test(tl) || /(tanker|tankwart|tankstelle\s+(?:ist|heißt)|panzer|aquarium|wassertank)/.test(tl) && !/tankstelle/.test(tl)) return false;
-    if (/(was\s+(?:ist|sind|bedeutet)|erklär|unterschied|warum)/.test(tl)) return false;
+    if (/(was\s+(?:ist|sind|bedeutet)|erklär|unterschied|warum|ausgegeben|budget|liste|erledigt|to-?do)/.test(tl)) return false;
+    // „Mein Auto tankt Diesel“ / „Ich tanke Super“
+    const setM = /^(?:merk\s+dir\s*[,:]?\s*)?(?:mein\s+auto|ich)\s+(?:tankt?e?|fahre?)\s+(diesel|super\s*e?\s*10|e10|super\s*e?\s*5|super|benzin|e5)\b/.exec(tl);
+    if (setM) { const me = dataGet("me", {}); me.fuel = fuelType(setM[1]); dataSet("me", me); assistantSay(`Gemerkt: Du tankst ${FUEL_T[me.fuel]}.`); return true; }
     // Tank-Alarm
     if (/(bescheid|benachrichtig|meld|sag\s+mir|alarm|ping)/.test(tl) && /(unter|billiger\s+als|weniger\s+als)\s*([\d.,]+)/.test(tl)) {
       if (!AND || !AND.fuelWatchSet) { assistantSay("Der Tank-Alarm geht nur in der Android-App."); return true; }
@@ -216,10 +221,7 @@
       return true;
     }
     if (/(lösch|stopp|aus)\w*\s+.*tank-?alarm|tank-?alarm\s+(?:aus|löschen|stoppen)/.test(tl)) { if (AND && AND.fuelWatchClear) AND.fuelWatchClear(); assistantSay("Tank-Alarm ist aus."); return true; }
-    if (!/(billig|günstig|preis|kost|wo\s+.*tank|wie\s+viel|teuer|stand|tankstelle|tanken|navigier|bring)/.test(tl)) return false;
-    // „Mein Auto tankt Diesel“
-    const setM = /^(?:merk\s+dir\s*[,:]?\s*)?(?:mein\s+auto|ich)\s+(?:tankt?|fahre?)\s+(diesel|super\s*e?\s*10|e10|super|benzin|e5)/.exec(tl);
-    if (setM) { const me = dataGet("me", {}); me.fuel = fuelType(setM[1]); dataSet("me", me); assistantSay(`Gemerkt: Du tankst ${FUEL_T[me.fuel]}.`); return true; }
+    if (!/(billig|günstig|preis|kost\w*|\bwo\b.*\btank|wie\s+viel|teuer|tankstelle|\btanken\b|navigier|\bbring)/.test(tl)) return false;
     const type = fuelType(tl);
     if (!secGet("zg_tk_key")) { assistantSay(`Für Tankpreise brauche ich einmal deinen kostenlosen Tankerkönig-Schlüssel, ${anrede()}. Menü → Weitere Dienste → Tankerkönig, dauert zwei Minuten.`); return true; }
     const res = await svWait1(async () => { const w = await svWhere(); if (!w) throw new Error("Ich weiß nicht, wo du bist. Erlaube den Standort oder sag: Merk dir, ich wohne in …"); return { w, st: await fuelStations(type, w) }; });
@@ -262,6 +264,7 @@
   /* ================= 5) Handy: Taschenlampe, Nicht stören, lautlos, Akku ================= */
   function handlePhone(text) {
     const tl = clean(text).toLowerCase();
+    if (tl.split(/\s+/).length > 8) return false;   // nur kurze Befehle („Taschenlampe an“), keine Sätze über etwas
     const off = /\b(aus|ausschalten|ausmachen|abschalten|beenden|beende|stopp?)\b/.test(tl);
     if (/taschenlampe|lampe\s+(?:am|vom)\s+handy|handy-?lampe|handylicht|licht\s+am\s+handy/.test(tl)) {
       if (!AND || !AND.torch) { assistantSay("Die Taschenlampe geht nur in der Android-App."); return true; }
@@ -312,7 +315,7 @@
   }
 
   /* ================= 7) Berichtsheft ================= */
-  let berichtWait = false;
+  let berichtWait = 0;   // Zeitpunkt der Frage „Was hast du heute gemacht?“ (2 Minuten gültig)
   const kwOf = d => { const x = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = x.getUTCDay() || 7; x.setUTCDate(x.getUTCDate() + 4 - day); const y0 = new Date(Date.UTC(x.getUTCFullYear(), 0, 1)); return Math.ceil(((x - y0) / 864e5 + 1) / 7); };
   function weekStart(d) { const s = new Date(d); s.setHours(12, 0, 0, 0); s.setDate(s.getDate() - ((s.getDay() + 6) % 7)); return s; }
   const BERICHT_ADD = /^(?:(?:für\s+(?:mein|das)|fürs|ins|in\s+(?:mein|das))\s+)?berichtsheft\s*(?:eintrag)?\s*[:,-]?\s*(?:heute\s+)?(.{6,})$|^(?:trag\w*|notier\w*|schreib\w*)\s+(?:(?:ins|in\s+(?:mein|das))\s+berichtsheft|(?:fürs|für\s+(?:mein|das))\s+berichtsheft)\s*(?:ein)?\s*[:,-]?\s*(?:dass\s+)?(.{6,})$|^(?:trag\w*|notier\w*|schreib\w*)\s+(?:mir\s+)?(.{6,}?)\s+(?:ins|in\s+(?:mein|das))\s+berichtsheft(?:\s+ein)?$/i;
@@ -362,14 +365,16 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
   }
   async function handleBericht(text) {
     const t = clean(text), tl = t.toLowerCase();
-    if (berichtWait) {
-      berichtWait = false;
+    if (berichtWait && Date.now() - berichtWait < 120000) {
+      berichtWait = 0;
       if (/^(?:nichts|nix|abbrechen|stopp?|egal|später|nein)$/i.test(tl)) { assistantSay("Okay, dann später."); return true; }
       berichtAdd(t); return true;
     }
     if (!/berichtsheft|wochenbericht|ausbildungsnachweis/.test(tl)) return false;
     if (/(mach|schreib|erstell|erzeug|zeig|fertig)\w*\s+.*(wochenbericht|berichtsheft\s+für\s+(?:diese|die|letzte)\s+woche)|^wochenbericht$|wochenbericht\s+(?:schreiben|machen|bitte)|^berichtsheft\s+(?:für\s+)?(?:diese|die|letzte|vorige)\s+woche$/.test(tl)) return berichtWeek(tl);
-    if (/(was\s+steht|zeig|lies)\w*\s.*berichtsheft/.test(tl)) {
+    berichtWait = 0;
+    if (/^(?:(?:mein|das|ins)\s+)?berichtsheft(?:\s+(?:schreiben|eintragen|machen|ausfüllen|führen))?$/.test(tl)) { berichtWait = Date.now(); assistantSay(`Was hast du heute gemacht, ${anrede()}? Erzähl einfach, ich schreibe mit.`); return true; }
+    if (/(was\s+steht|zeig|lies)\w*\s.*berichtsheft|berichtsheft\s+(?:vorlesen|zeigen|anzeigen)/.test(tl)) {
       const s = weekStart(new Date()), l = dataGet("bericht", []).filter(e => e.date >= ymd(s));
       if (!l.length) { assistantSay("Diese Woche steht noch nichts im Berichtsheft."); return true; }
       extraCard(`📒 Berichtsheft KW ${kwOf(s)}`, l.map(e => `${WD[new Date(e.date + "T12:00").getDay()].slice(0, 2)} [${e.kind}]: ${e.text}`));
@@ -379,8 +384,7 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
     if (/^(?:(?:die\s+)?berichtsheft-?\s*erinnerung\s+an|erinner\w*\s+mich\s+(?:jeden\s+(?:abend|tag)\s+|wieder\s+)?(?:an\s+das|ans)\s+berichtsheft)/.test(tl)) { lsSet("zg_bericht_on", "1"); proactiveSync(); assistantSay("Okay, ich erinnere dich jeden Werktag um 19 Uhr ans Berichtsheft."); return true; }
     const m = BERICHT_ADD.exec(t);
     const what = m && (m[1] || m[2] || m[3]);
-    if (what && !/^(?:für\s+)?(?:diese|letzte)\s+woche$/i.test(what)) { berichtAdd(what); return true; }
-    if (/^(?:(?:mein|das)\s+)?berichtsheft$|berichtsheft\s+(?:schreiben|eintragen|machen)$/.test(tl)) { berichtWait = true; assistantSay(`Was hast du heute gemacht, ${anrede()}? Erzähl einfach, ich schreibe mit.`); return true; }
+    if (what && what.trim().split(/\s+/).length >= 2 && !/^(?:für\s+)?(?:diese|letzte)\s+woche$/i.test(what)) { berichtAdd(what); return true; }
     return false;
   }
 
@@ -436,7 +440,7 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
     [/^(?:der\s+)?post$/, '["amenity"="post_office"]', "Post"], [/^(?:dem\s+|einem\s+)?(?:drogerie|drogeriemarkt)$/, '["shop"="chemist"]', "Drogerie"],
     [/^(?:dem\s+|einem\s+)?(?:getränkemarkt|getränkehandel)$/, '["shop"="beverages"]', "Getränkemarkt"], [/^(?:dem\s+|einem\s+)?(?:elektromarkt|mediamarkt|saturn)$/, '["shop"="electronics"]', "Elektromarkt"],
   ];
-  const PLACE_RE = /^(?:erinner\w*\s+mich\s+(?:bitte\s+)?(?:(?:beim|bei\s+(?:der|dem)?|im|in\s+der|am|an\s+der|zum|zur)\s+(.+?)|wenn\s+ich\s+(?:beim|bei\s+(?:der|dem)?|im|in\s+der|am|an\s+der|in)\s+(.+?)\s+bin|wenn\s+ich\s+(zu\s*hause|daheim|hier)\s+bin|(hier|zu\s*hause|daheim))\s*,?\s+(?:an|daran,?\s*(?:dass)?)\s+(.+)|wenn\s+ich\s+(?:beim|bei\s+(?:der|dem)?|im|in\s+der|am|an\s+der|in)\s+(.+?)\s+bin\s*,?\s*erinner\w*\s+mich\s+(?:an|daran,?\s*(?:dass)?)\s+(.+))$/i;
+  const PLACE_RE = /^(?:erinner\w*\s+mich\s+(?:bitte\s+)?(?:(?:beim|bei(?:\s+(?:der|dem))?|im|in\s+der|am|an\s+der|zum|zur)\s+(.+?)|wenn\s+ich\s+(?:beim|bei(?:\s+(?:der|dem))?|im|in\s+der|am|an\s+der|in)\s+(.+?)\s+bin|wenn\s+ich\s+(zu\s*hause|daheim|hier)\s+bin|(hier|zu\s*hause|daheim))\s*,?\s+(?:an|daran,?\s*(?:dass)?)\s+(.+)|wenn\s+ich\s+(?:beim|bei(?:\s+(?:der|dem))?|im|in\s+der|am|an\s+der|in)\s+(.+?)\s+bin\s*,?\s*erinner\w*\s+mich\s+(?:an|daran,?\s*(?:dass)?)\s+(.+))$/i;
   const savedPlaces = () => dataGet("places", {});
   async function overpass(q, w, rad = 15000) {
     const r = await svNet("https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(`[out:json][timeout:20];(${q.replace(/AROUND/g, `(around:${rad},${w.lat},${w.lng})`)});out center 80;`));
@@ -467,7 +471,7 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
   async function handlePlaces(text) {
     const t = clean(text), tl = t.toLowerCase();
     // „Merk dir, hier ist mein Zuhause / die Arbeit / Oma“
-    let m = /^(?:merk\s+dir\s*[,:]?\s*)?(?:hier|das\s+hier|dieser\s+ort)\s+ist\s+(?:mein(?:e)?\s+|die\s+|der\s+|das\s+|bei\s+)?(.{2,30})$/i.exec(t);
+    let m = /^merk\s+dir\s*[,:]?\s*(?:hier|das\s+hier|dieser\s+ort)\s+ist\s+(?:mein(?:e)?\s+|die\s+|der\s+|das\s+|bei\s+)?(.{2,30})$/i.exec(t) || /^(?:hier|das\s+hier)\s+ist\s+(?:mein(?:e)?\s+|die\s+|der\s+)?(zuhause|zu\s*hause|arbeit|betrieb|firma|ausbildungsbetrieb|schule|berufsschule)$/i.exec(t);
     if (m) {
       if (!AND || !AND.locNow) { assistantSay("Orte merken geht nur in der Android-App."); return true; }
       const r = await nativeCall(id => AND.locNow(id), 15000);
@@ -489,10 +493,10 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
     m = PLACE_RE.exec(t);
     if (!m) return false;
     let place = (m[1] || m[2] || m[3] || m[4] || m[6] || "").trim(), what = (m[5] || m[7] || "").trim().replace(/^(?:an\s+)?/, "");
-    if (!place || !what || /^(?:\d|morgen|heute|um\s|abend|mittag|nachmittag|wochenende|januar|februar|märz|april|mai|juni|juli|august|september|oktober|november|dezember|montag|dienstag|mittwoch|donnerstag|freitag|samstag|sonntag)/i.test(place)) return false;
+    if (!place || !what || /^(?:\d|morgen|heute|um\s|abend|mittag|nachmittag|wochenende|januar|februar|märz|april|mai|juni|juli|august|september|oktober|november|dezember|montag|dienstag|mittwoch|donnerstag|freitag|samstag|sonntag|früh|nacht|nächste|ersten|zweiten|dritten|laufe|pause|mittagspause|feierabend|zeit\b|woche|tag\b|jahr|kürze|zukunft|ferien|urlaub|frühstück|abendessen|mittagessen)/i.test(place)) return false;
     if (!AND || !AND.placeAdd) { assistantSay("Orts-Erinnerungen gehen nur in der Android-App, weil das Handy merken muss, wo du bist."); return true; }
     const st = AND.locState ? AND.locState() : "bg";
-    if (st === "none") { AND.locPerm(false); assistantSay("Dafür brauche ich deinen Standort. Erlaube ihn bitte (am besten „Immer“) und sag es dann nochmal."); return true; }
+    if (st === "none" || st === "coarse") { AND.locPerm(false); assistantSay("Dafür brauche ich deinen Standort. Erlaube ihn bitte (am besten „Immer“) und sag es dann nochmal."); return true; }
     const res = await svWait1(async () => { const w = await svWhere(false); if (!w) throw new Error("Ich finde deinen Standort gerade nicht."); return placeSpots(place, w); });
     if (res && res.__err) { assistantSay("Das hat nicht geklappt: " + res.__err.message); return true; }
     if (!res) { assistantSay(/zu\s*hause|daheim/.test(place.toLowerCase()) ? "Ich weiß noch nicht, wo dein Zuhause ist. Sag zu Hause einmal: Merk dir, hier ist mein Zuhause." : `„${cap(place)}“ finde ich in deiner Nähe nicht. Wenn du dort bist, sag: Merk dir, hier ist ${cap(place)}.`); return true; }
@@ -500,7 +504,7 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
     if (r === "perm") { AND.locPerm(false); assistantSay("Erlaube bitte den Standort, dann sag es nochmal."); return true; }
     if (r !== "ok" && r !== "need-bg") { assistantSay("Das ging nicht: " + r); return true; }
     const n = res.spots.length;
-    assistantSay(`Mach ich, ${anrede()}. Sobald du ${n > 1 ? `an einem von ${n} Orten „${res.name}“ in deiner Nähe` : `bei ${res.name}`} bist, erinnere ich dich an: ${what}.` + (r === "need-bg" ? " Wichtig: Stell den Standort für Jarvis einmal auf „Immer erlauben“, sonst klappt es nur bei offener App. Ich öffne dir die Einstellung." : ""));
+    assistantSay(`Mach ich, ${anrede()}. Sobald du ${n > 1 ? `an einem von ${n} Orten „${res.name}“ in deiner Nähe` : `bei ${res.name}`} bist, erinnere ich dich an: ${what}.` + (r === "need-bg" ? " Wichtig: Damit das klappt, muss der Standort für Jarvis auf „Immer erlauben“ stehen – ich öffne dir die Einstellung. Danach einmal Jarvis öffnen, dann ist die Erinnerung scharf." : ""));
     if (r === "need-bg") setTimeout(() => { try { AND.locPerm(true); } catch {} }, 2500);
     return true;
   }
@@ -547,7 +551,8 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
   async function handleParcels(text) {
     const t = clean(text), tl = t.toLowerCase();
     if (!PARCEL_RE.test(tl) || /(warenkorb|bestell\w*\s+\w+\s+auf|kauf|leg\w*|verkauf)/.test(tl)) return false;
-    if (!/(wo|wann|status|kommt|verfolg|stand|unterwegs|angekommen|geliefert|zugestellt|\d{10,})/.test(tl)) return false;
+    if (!/\b(wo|wann|status|kommt|verfolg\w*|stand|unterwegs|angekommen|geliefert|zugestellt)\b|\d{10,}/.test(tl)) return false;
+    if (/^(?:ich|wir|er|sie|mein\s+paket\s+ist\s+(?:da|angekommen))\b/.test(tl) && !/\?/.test(text)) return false;
     const direct = trackNumbers(t.replace(/\s+/g, " ").replace(/(\d)\s+(?=\d)/g, "$1"));
     const res = await svWait1(async () => {
       let list = direct.map(n => ({ n, from: "", subject: "" }));
@@ -578,6 +583,7 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
     const l = await gTasksList(); const w = what.toLowerCase();
     for (const x of l) if (x.title.toLowerCase().includes(w) || w.includes(x.title.toLowerCase())) { try { await gApi(`${TASKS}/${x.id}`, { method: "PATCH", body: JSON.stringify({ status: "completed" }) }); } catch {} }
   }
+  async function gTasksClear() { for (const x of await gTasksList()) { try { await gApi(`${TASKS}/${x.id}`, { method: "PATCH", body: JSON.stringify({ status: "completed" }) }); } catch {} } }
   // Neue Aufgaben aus Google (z. B. am PC oder in Gmail angelegt) in die Jarvis-Liste holen
   async function gTasksPull() {
     if (!gTasksOn()) return;
@@ -672,13 +678,15 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
     return scored.filter(x => x.s === scored[0].s).map(x => x.d);
   }
   const stCmd = (id, capability, command, args) => stApi(`/devices/${id}/commands`, "POST", { commands: [{ component: "main", capability, command, ...(args ? { arguments: args } : {}) }] });
-  const ST_DEV_WORDS = /(fernseher|\btv\b|licht|lampe|lampen|lichter|beleuchtung|steckdose|stecker|waschmaschine|trockner|spülmaschine|geschirrspüler|kühlschrank|klima|staubsauger|saugroboter|smartthings)/;
+  const ST_DEV = "(?:fernseher|tv|licht|lichter|lampe|lampen|beleuchtung|steckdose|stecker|waschmaschine|trockner|spülmaschine|geschirrspüler|kühlschrank|klimaanlage|klima|staubsauger|saugroboter|ventilator)";
+  // nur echte Befehle: „Schalte den Fernseher aus“, „Licht im Wohnzimmer an“, „Ist die Waschmaschine fertig?“, „Welche Geräte hab ich?“
+  const ST_CMD = new RegExp("^(?:schalt\\w*|mach\\w*|dreh\\w*|knips\\w*)\\s+.*\\b(?:an|aus|ein|einschalten|ausschalten|anmachen|ausmachen|anschalten|abschalten)$|^(?:das\\s+|die\\s+|den\\s+|alle\\s+)?" + ST_DEV + "\\b[\\wäöüß ]{0,30}\\s(?:an|aus|ein)$|\\bauf\\s+\\d{1,3}\\s*(?:prozent|%)$|^(?:ist|läuft)\\s+(?:die\\s+|der\\s+)?(?:waschmaschine|trockner|spülmaschine|geschirrspüler)|wie\\s+lange\\s+(?:läuft|braucht|dauert)\\s+(?:die\\s+|der\\s+)?(?:waschmaschine|trockner|spülmaschine|geschirrspüler)|bescheid,?\\s+wenn\\s+(?:die\\s+|der\\s+)?(?:waschmaschine|trockner|spülmaschine|geschirrspüler)|welche\\s+(?:smart-?home-?)?geräte|meine\\s+(?:smart-?home-?)?geräte|^(?:mach\\s+(?:den\\s+)?)?(?:fernseher|tv)\\s+(?:lauter|leiser)$", "i");
   async function handleSmartThings(text) {
     const t = clean(text), tl = t.toLowerCase();
-    if (!ST_DEV_WORDS.test(tl) && !(stOn() && stDevCache && stDevCache.list.some(d => d.label.length > 2 && tl.includes(d.label.toLowerCase())))) return false;
-    if (/taschenlampe|handy/.test(tl) || /(was\s+(?:ist|sind|bedeutet)|erklär|wie\s+funktioniert)/.test(tl)) return false;
-    const isCmd = /\b(an|aus|ein|einschalten|ausschalten|anmachen|ausmachen|auf\s+\d+|lauter|leiser|fertig|läuft|status|noch|welche\s+geräte|bescheid)\b/.test(tl);
-    if (!isCmd) return false;
+    if (!ST_CMD.test(tl)) return false;
+    const named = stOn() && stDevCache && stDevCache.list.some(d => d.label.length > 2 && tl.includes(d.label.toLowerCase()));
+    if (!new RegExp(ST_DEV).test(tl) && !/geräte/.test(tl) && !named) return false;
+    if (/taschenlampe|handy|\bpc\b|computer|musik|radio|wecker|nicht\s+stören/.test(tl) || /(was\s+(?:ist|sind|bedeutet)|erklär|wie\s+funktioniert)/.test(tl)) return false;
     if (!stOn()) { assistantSay(`SmartThings ist noch nicht verbunden, ${anrede()}. Menü → Weitere Dienste → SmartThings, das dauert fünf Minuten.`); return true; }
     const res = await svWait1(async () => {
       const list = await stDevices();
@@ -833,7 +841,7 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
         selS.onchange = async () => {
           chosenOid = selS.value || null; strName = selS.options[selS.selectedIndex].textContent; selH.hidden = true;
           if (!selS.value) return;
-          try { const hn = await awido(`getStreetAddons/${encodeURIComponent(selS.value)}`); if (hn && hn.length > 1) { fill(selH, hn, "Hausnummer wählen …"); chosenOid = null; } } catch {}
+          try { const hn = await awido(`getStreetAddons/${encodeURIComponent(selS.value)}`); if (hn && hn.length > 1) { fill(selH, hn, "Hausnummer wählen …"); chosenOid = null; } else if (hn && hn.length === 1) chosenOid = hn[0].key; } catch {}
         };
         selH.onchange = () => { chosenOid = selH.value || null; hnr = selH.options[selH.selectedIndex].textContent; };
         svBtn(s, "Speichern", async () => {
@@ -889,7 +897,7 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
         const s = svSection(body, "✅", "Google Aufgaben", gTasksOn() ? "an" : "aus", gTasksOn());
         svInfo(s, "Deine To-do-Liste ist dann auch in Google Tasks (Gmail, Kalender, Handy) – in beide Richtungen. Einmalig in der Google Cloud Console die „Google Tasks API“ aktivieren (Link unten, dein Projekt wählen, „Aktivieren“).");
         svLink(s, "→ Google Tasks API aktivieren", "https://console.cloud.google.com/apis/library/tasks.googleapis.com");
-        if (!gTasksOn()) svBtn(s, "Einschalten", async () => { lsSet("zg_g_tasks", "1"); gToken = null; try { await getToken(false); await gTasksList(); } catch (e) { lsSet("zg_g_tasks", "0"); throw new Error("Google Aufgaben: " + e.message); } const l = dataGet("lists", { einkauf: [], todo: [] }); await gTasksAdd(l.todo || []); await gTasksPull(); toast("Google Aufgaben ist verbunden", "✅"); openServices(); }, true);
+        if (!gTasksOn()) svBtn(s, "Einschalten", async () => { lsSet("zg_g_tasks", "1"); gToken = null; tokenClient = null; try { await getToken(false); await gTasksList(); } catch (e) { lsSet("zg_g_tasks", "0"); throw new Error("Google Aufgaben: " + e.message); } const l = dataGet("lists", { einkauf: [], todo: [] }); await gTasksAdd(l.todo || []); await gTasksPull(); toast("Google Aufgaben ist verbunden", "✅"); openServices(); }, true);
         else svBtn(s, "Ausschalten", () => { lsSet("zg_g_tasks", "0"); openServices(); });
       }
       // --- Samsung Health
@@ -906,11 +914,11 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
       // --- Standort
       {
         const st = phone && AND.locState ? AND.locState() : "none";
-        const s = svSection(body, "📍", "Standort (Tanken, Orts-Erinnerungen)", st === "bg" ? "immer erlaubt" : st === "fg" ? "nur bei offener App" : "aus", st === "bg");
+        const s = svSection(body, "📍", "Standort (Tanken, Orts-Erinnerungen)", st === "bg" ? "immer erlaubt" : st === "fg" ? "nur bei offener App" : st === "coarse" ? "nur ungefähr" : "aus", st === "bg");
         if (!phone) svInfo(s, "Geht nur in der Android-App.");
         else {
           svInfo(s, "Für „Erinner mich beim Edeka an Milch“ muss der Standort auf „Immer erlauben“ stehen – sonst merkt Jarvis nicht, wenn du ankommst.");
-          if (st === "none") svBtn(s, "Standort erlauben", () => AND.locPerm(false), true);
+          if (st === "none" || st === "coarse") svBtn(s, st === "coarse" ? "Genauen Standort erlauben" : "Standort erlauben", () => AND.locPerm(false), true);
           if (st === "fg") svBtn(s, "„Immer erlauben“ einstellen", () => AND.locPerm(true), true);
         }
       }
@@ -928,10 +936,13 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
   setTimeout(() => { if (!MINI) { muellRefresh(false); gTasksPull(); } }, 9000);
 
   /* ================= Verteiler ================= */
+  // Sätze, die eindeutig zu anderen Befehlen gehören (sonst würde z. B. „Schreib Mama, das Paket ist da“ Pakete suchen)
+  const SV_GUARD = /\bwhats-?app\b|\bsms\b|^(?:schreib|schick|send|antwort)\w*\s+(?!mir\b|ins\b|in\s+(?:mein|das)\b|fürs\b)|\b(?:einkaufsliste|einkaufszettel|to-?do\w*|aufgabenliste)\b|\bist\s+erledigt\b|^erledigt\b|\b(?:amazon|warenkorb|bestell\w*|kaufen|verkauf\w*)\b|\b(?:ausgegeben|ausgeben|budget\w*|kontostand|konto)\b|\b(?:wecker|timer)\b/i;
   async function handleServices(text) {
     if (await handleBericht(text)) return true;
     if (await handlePlaces(text)) return true;
     if (/\berinner\w*\s+mich\b|\bweck\w*\s+mich\b/i.test(text)) return false;   // normale Erinnerungen/Wecker
+    if (SV_GUARD.test(clean(text))) return false;   // Nachrichten, Listen, Amazon, Geld, Wecker gehören anderen Befehlen
     if (await handleStudy(text)) return true;
     if (await handleUntis(text)) return true;
     if (await handleMuell(text)) return true;

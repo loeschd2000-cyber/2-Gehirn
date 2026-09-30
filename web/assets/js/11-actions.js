@@ -186,7 +186,7 @@ Nachricht: "${text.replace(/"/g, "'")}"`;
 
   /* Sperrbildschirm: Finanzen, Wallet, Tagebuch lesen, Mails, Nachrichten, Anrufe, Suche und „Was weißt du über mich“
      erst nach dem Entsperren (sonst könnte jeder am gesperrten Handy fragen) */
-  const PRIVATE_RE = /\b(finanz\w*|konto\w*|kontostand|guthaben|ausgaben|ausgegeben|einnahmen|fixkosten|abos?|budget\w*|sparkasse|statistik\w*|gehalt|lohn|geld|wallet|phantom|krypto\w*|mails?|e-mails?|posteingang|postfach|whatsapp|sms|nachricht\w*|ruf\w*|anruf\w*|telefonnummer|nummer|adresse|termine?|kalender|sparen|spar-?coach|abos?)\b|was\s+weißt\s+du\s+über\s+mich|was\s+(?:hab|habe)\s+ich\s+.*\s(?:gesagt|geredet|erzählt|geschrieben)|\bsuch\w*\s+in\b|\btagebuch\b.*\b(lies|lese|vor|zeig\w*|was)\b|\b(lies|zeig\w*)\b.*\btagebuch\b/i;
+  const PRIVATE_RE = /\b(paket\w*|sendung\w*|geschlafen|schlaf|schritte|berichtsheft|wochenbericht|orts-?erinnerung\w*|finanz\w*|konto\w*|kontostand|guthaben|ausgaben|ausgegeben|einnahmen|fixkosten|abos?|budget\w*|sparkasse|statistik\w*|gehalt|lohn|geld|wallet|phantom|krypto\w*|mails?|e-mails?|posteingang|postfach|whatsapp|sms|nachricht\w*|ruf\w*|anruf\w*|telefonnummer|nummer|adresse|termine?|kalender|sparen|spar-?coach|abos?)\b|was\s+weißt\s+du\s+über\s+mich|was\s+(?:hab|habe)\s+ich\s+.*\s(?:gesagt|geredet|erzählt|geschrieben)|\bsuch\w*\s+in\b|\btagebuch\b.*\b(lies|lese|vor|zeig\w*|was)\b|\b(lies|zeig\w*)\b.*\btagebuch\b/i;
   function lockedBlock(text) {
     if (!MINI || !deviceLocked()) return false;
     let isSearch = false; try { isSearch = SEARCH_RE.some(re => re.test(text)); } catch {}

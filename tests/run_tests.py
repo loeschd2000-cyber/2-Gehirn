@@ -57,9 +57,24 @@ window.ZGAndroid = {
       : [{ asin: 'B07XYZ1234', title: 'Varta Batterien AA, 20 Stück', price: 8.49 }];
     setTimeout(() => __zgShop.emit({ type: 'find', id, ok: true, items: it }), 20); },
   amazonSearch: q => L('amazonSearch ' + q), copyText: t => L('copy ' + t.slice(0, 30)), openLink: (u, p) => L('open ' + u),
+  http: (id, m, u, h, b) => fetch(u, { method: m, headers: JSON.parse(h || '{}'), body: m === 'GET' ? undefined : b }).then(async r => __zgNet.emit({ id, status: r.status, body: await r.text() })).catch(e => __zgNet.emit({ id, status: 0, error: String(e) })),
+  untisReady: () => true,
+  untisRange: (id, from, to) => { const ls = []; for (let d = from; d <= to; d++) { if (d % 100 > 31) continue;
+      ls.push({ date: d, startTime: 745, endTime: 915, su: [{ name: 'SPS', longname: 'SPS' }], ro: [{ name: 'B12' }] });
+      ls.push({ date: d, startTime: 930, endTime: 1100, su: [{ name: 'D', longname: 'Deutsch' }], code: 'cancelled' });
+      ls.push({ date: d, startTime: 1115, endTime: 1245, su: [{ name: 'ET', longname: 'Elektrotechnik' }] }); }
+    setTimeout(() => __zgNet.emit({ id, ok: true, lessons: ls }), 10); },
+  untisSearch: (id, q) => setTimeout(() => __zgNet.emit({ id, ok: true, schools: [] }), 10),
+  locNow: id => setTimeout(() => __zgNet.emit({ id, ok: true, lat: 50.05, lng: 10.23 }), 10), locState: () => 'bg', locPerm: b => L('locPerm ' + b),
+  placeAdd: (t, p, s, r) => { L('place ' + t + ' @' + p + ' ' + JSON.parse(s).length); return 'ok'; }, placeList: () => '[]', placeRemove: id => L('placeRemove ' + id),
+  torch: on => { L('torch ' + on); return 'ok'; }, dnd: on => { L('dnd ' + on); return 'ok'; }, ringer: m => { L('ringer ' + m); return 'ok'; },
+  battery: () => JSON.stringify({ pct: 76, charging: false, fullInMin: -1 }),
+  healthState: () => 'ok', healthConnect: () => L('healthConnect'),
+  healthToday: id => setTimeout(() => __zgNet.emit({ id, ok: true, steps: 8234, sleepMin: 445, sleepStart: Date.now() - 9 * 3600e3, sleepEnd: Date.now() - 1.5 * 3600e3 }), 10),
+  fuelWatchSet: (l, t, a, g) => L('fuelwatch ' + l + ' ' + t), fuelWatchGet: () => '', fuelWatchClear: () => L('fuelwatchClear'),
   priceWatchAdd: (a, n, l, now) => { L('pricewatch ' + a + ' ' + l); return 1; }, priceWatchList: () => '[]', priceWatchCancel: () => {}, priceWatchModel: () => {},
 };
-localStorage.setItem('zg_gemini_key', 'AIzaTESTKEY1234567890abcdef'); localStorage.setItem('zg_ai_mode', 'gemini');
+localStorage.setItem('zg_gemini_key', 'AIzaTESTKEY1234567890abcdef'); localStorage.setItem('zg_tk_key', '12345678-1234-1234-1234-123456789abc'); localStorage.setItem('zg_dhl_key', 'DHLTESTKEY1234567890'); localStorage.setItem('zg_ai_mode', 'gemini');
 localStorage.setItem('zg_wallet', JSON.stringify({ addr: '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU', invested: 400 }));
 """.replace("%BANK%", json.dumps(BANK))
 
@@ -70,6 +85,8 @@ def llm_answer(body):
     if "Tagebuch erzählt" in body: return {"titel": "Guter Tag", "text": "Heute war ein guter Tag.", "stimmung": "😊 gut"}
     if "WhatsApp schreiben" in body: return {"nachricht": "Ich komme später."}
     if "Kleinanzeigen" in body: return "__TEXT__" + json.dumps({"titel": "Xbox Controller schwarz", "preis": 25, "preis_spanne": "20–30 €", "beschreibung": "Verkaufe meinen Xbox Controller. [Zustand ergänzen]. Privatverkauf, keine Garantie.", "tipp": "Gute Fotos machen."})
+    if "Berichtsheft (Ausbildungsnachweis" in body: return {"betrieb": "Montag: Schaltschrank verdrahtet und geprüft", "schule": "", "unterweisungen": ""}
+    if "Lernplan: pro Tag" in body: return {"tage": [{"thema": "SPS Grundlagen", "uebung": "Aufbau einer SPS skizzieren"}, {"thema": "Logikfunktionen", "uebung": "UND/ODER üben"}]}
     if "ehrlicher Spar-Coach" in body: return {"tipps": [{"titel": "Spotify auf Studententarif", "euro_pro_monat": 5, "wie": "Tarif wechseln"}, {"titel": "Weniger Fast Food", "euro_pro_monat": 10, "wie": "zweimal weniger im Monat"}]}
     if "freundliche Bewerbung" in body: return {"betreff": "Anfrage zu Ihrem Auftrag", "text": "Hallo, ich bin Damian und habe Interesse. [Beispiele ergänzen]"}
     if "wortwörtlich" in body: return "__TEXT__Was steht auf der Einkaufsliste?"
@@ -100,6 +117,13 @@ async def route(r):
         b = json.loads(r.request.post_data)
         if b["method"] == "getBalance": return await r.fulfill(json={"result": {"value": 3200000000}}, headers=H)
         return await r.fulfill(json={"result": {"value": []}}, headers=H)
+    if "tankerkoenig" in u: return await r.fulfill(json={"ok": True, "stations": [
+        {"id": "a", "name": "Aral Schweinfurt", "brand": "Aral", "street": "Hauptstraße", "houseNumber": "1", "place": "Schweinfurt", "lat": 50.04, "lng": 10.22, "dist": 2.3, "price": 1.579, "isOpen": True},
+        {"id": "b", "name": "Shell", "brand": "Shell", "street": "Ring", "houseNumber": "5", "place": "Gochsheim", "lat": 50.02, "lng": 10.28, "dist": 4.1, "price": 1.629, "isOpen": True}]}, headers=H)
+    if "tagesschau.de" in u: return await r.fulfill(json={"news": [{"title": "Schlagzeile Eins", "topline": "Politik", "firstSentence": "Erster Satz.", "shareURL": "https://www.tagesschau.de/1", "type": "story"},
+        {"title": "Schlagzeile Zwei", "topline": "Wirtschaft", "shareURL": "https://www.tagesschau.de/2", "type": "story"}, {"title": "Schlagzeile Drei", "shareURL": "https://www.tagesschau.de/3", "type": "story"}]}, headers=H)
+    if "overpass-api" in u: return await r.fulfill(json={"elements": [{"type": "node", "lat": 50.051, "lon": 10.231, "tags": {"name": "EDEKA Müller"}}, {"type": "way", "center": {"lat": 50.07, "lon": 10.25}, "tags": {"brand": "EDEKA"}}]}, headers=H)
+    if "api-eu.dhl.com" in u: return await r.fulfill(json={"shipments": [{"id": "00340434161234567890", "status": {"statusCode": "transit", "description": "Die Sendung wurde im Zustell-Depot bearbeitet."}, "estimatedTimeOfDelivery": (today + datetime.timedelta(days=1)).isoformat() + "T12:00:00Z"}]}, headers=H)
     if "calendar/v3" in u: return await r.fulfill(json={"id": "ev1", "items": []}, headers=H)
     if "gmail.googleapis" in u: return await r.fulfill(json={"messages": []}, headers=H)
     if "generativelanguage" in u:
@@ -212,6 +236,50 @@ CASES = [
     ("Such mir Programmier-Jobs", ["Job-Finder", "Arduino", "Suche öffnen"], ["nicht geklappt", "Limit"]),
     ("Finde einen Job", ["Minijobs in deiner Nähe", "Arbeitsagentur"], ["nicht geklappt"]),
     ("Schreib mir eine Bewerbung für Job 1", ["Anzeige"]),
+    # --- Weitere Dienste ---
+    ("Fällt morgen was aus?", ["Deutsch", "fällt aus"]),
+    ("Wann hab ich morgen Schluss?", ["12:45 Uhr Schluss"]),
+    ("Stundenplan diese Woche", ["Stundenplan (Untis)", "SPS"]),
+    ("js:(() => { const t = new Date(Date.now() + 864e5), u = new Date(Date.now() + 3 * 864e5), f = d => d.toISOString().slice(0, 10); dataSet('muell', { oid: 'x', ort: 'Gochsheim', strasse: 'Hauptstraße', items: [{ d: f(t), t: 'Gelber Sack' }, { d: f(u), t: 'Restmüll' }], fetched: Date.now() }); })()", []),
+    ("Welcher Müll kommt morgen?", ["Gelber Sack"]),
+    ("Wann kommt die Restmülltonne?", ["Restmüll wird"]),
+    ("Wann ist die nächste Abfuhr?", ["Gelber Sack", "Müllabfuhr"]),
+    ("Wo ist Diesel am billigsten?", ["Aral", "1,579"]),
+    ("Sag mir Bescheid, wenn Diesel unter 1,60 kostet", ["fuelwatch 1.6 diesel"]),
+    ("Was gibt es Neues in der Welt?", ["Tagesschau", "Schlagzeile Eins"]),
+    ("Taschenlampe an", ["torch true"]),
+    ("Taschenlampe aus", ["torch false"]),
+    ("Nicht stören an", ["dnd true"]),
+    ("Mach das Handy lautlos", ["ringer silent"]),
+    ("Handy wieder laut", ["ringer normal"]),
+    ("Wie voll ist mein Akku?", ["76 Prozent"]),
+    ("Wie hab ich geschlafen?", ["7 Stunden 25 Minuten"]),
+    ("Wie viele Schritte hab ich heute?", ["8.234"]),
+    ("Berichtsheft: heute habe ich einen Schaltschrank verdrahtet", ["Notiert"]),
+    ("Mach meinen Wochenbericht", ["KW", "Schaltschrank"]),
+    ("Mach mir einen Lernplan für SPS", ["Lernplan", "SPS Grundlagen"]),
+    ("Erinner mich beim Edeka an Milch", ["place Milch @Edeka 2"]),
+    ("Merk dir, hier ist mein Zuhause", ["dein Zuhause"]),
+    ("Erinner mich zu Hause an den Müll", ["place Den Müll @Zuhause 1"]),
+    ("Verfolge Sendung 00340434161234567890", ["unterwegs", "Zustell-Depot"]),
+    ("Schalte den Fernseher aus", ["SmartThings ist noch nicht verbunden"]),
+    ("Guten Morgen", ["Schlagzeile", "SPS"]),
+    # dürfen NICHT von den neuen Diensten abgefangen werden
+    ("Was ist ein Spannungsabfall?", [], ["abgeholt", "Müllabfuhr"]),
+    ("Was tun bei Stromausfall?", [], ["Untis"]),
+    ("Warum ist Schule wichtig?", [], ["Untis"]),
+    ("Setz Tanken auf die To-do-Liste", ["To-do-Liste"], ["Aral"]),
+    ("Bestell eine Taschenlampe auf Amazon", [], ["torch"]),
+    ("nein", []),
+    ("Schreib Papa auf WhatsApp, er soll mich nicht stören", [], ["dnd"]),
+    ("nein", []),
+    ("Leg noch eine Lampe in den Warenkorb", [], ["SmartThings"]),
+    ("nein", []),
+    ("Hier ist es echt kalt", [], ["Gemerkt: Hier"]),
+    ("Erinner mich bei Rewe an Brot", ["place Brot @Rewe"]),
+    ("Berichtsheft schreiben", ["Was hast du heute gemacht"]),
+    ("Heute Schütze verdrahtet und einen Motor angeschlossen", ["Notiert"]),
+    ("Wo ist Super am billigsten?", ["Super E5"]),
     ("js:pcCtl = true; PC_BASE = 'http://pc.test'", []),
     ("Mach am PC leiser", ["PC: Leiser"]),
     ("Öffne Spotify am PC", ["Ich öffne Spotify am PC"]),

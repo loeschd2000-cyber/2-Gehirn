@@ -176,6 +176,7 @@ class MainActivity : Activity() {
         inForeground = unlocked || !lockActive()   // gesperrt: „Hey Jarvis“ öffnet dann den kleinen Kreis (ohne Privates)
         if (inForeground && lockActive()) unlockedUntil = Long.MAX_VALUE
         if (Prefs.wake(this) && !WakeService.running) WakeService.start(this)
+        try { Places.rearm(this) } catch (_: Throwable) {}   // Orts-Erinnerungen scharf schalten (z. B. nachdem „Immer erlauben“ gesetzt wurde)
         bridge.onResume()
     }
 

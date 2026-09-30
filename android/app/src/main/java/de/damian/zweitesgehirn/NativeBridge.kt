@@ -659,7 +659,7 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
         @JavascriptInterface fun ringer(mode: String): String = Device.ringer(act, mode)
         @JavascriptInterface fun battery(): String = try { Device.battery(act).toString() } catch (_: Throwable) { "{}" }
         // Standort + Orts-Erinnerungen
-        @JavascriptInterface fun locState(): String = if (!Loc.has(act)) "none" else if (Build.VERSION.SDK_INT >= 29 && !Loc.hasBackground(act)) "fg" else "bg"
+        @JavascriptInterface fun locState(): String = if (!Loc.has(act)) "none" else if (!Loc.hasFine(act)) "coarse" else if (Build.VERSION.SDK_INT >= 29 && !Loc.hasBackground(act)) "fg" else "bg"
         @JavascriptInterface fun locPerm(background: Boolean) {
             main.post {
                 val a = activity ?: return@post

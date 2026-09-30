@@ -1520,7 +1520,28 @@ Nachricht: "${text}"`;
     const body = document.createElement("div"); body.className = "body"; body.textContent = entry.text; card.append(body);
     log.append(card); log.scrollTop = log.scrollHeight;
     lastViaVoice = false;
-    assistantSay("Gespeichert. Dein Tagebucheintrag für heute ist aufgeschrieben." + (entry.stimmung ? " Stimmung: " + entry.stimmung.replace(/^\S+\s*/, "") + "." : ""));
+    const cal = await markDiaryInCalendar(c, entry);
+    if (cal !== "ok" && cal !== "nicht verbunden") note("Kalender: " + cal);
+    assistantSay("Gespeichert. Dein Tagebucheintrag für heute ist aufgeschrieben" + (cal === "ok" ? " und im Kalender abgehakt." : ".") + (entry.stimmung ? " Stimmung: " + entry.stimmung.replace(/^\S+\s*/, "") + "." : ""));
+  }
+  /** Im Google Kalender abhaken: ganztägiger grüner Termin „✅ Tagebuch geschrieben“ (einmal pro Tag) */
+  async function markDiaryInCalendar(c, entry) {
+    try { await getToken(true); } catch { return "nicht verbunden"; }
+    const d = new Date(), next = new Date(d); next.setDate(d.getDate() + 1);
+    const desc = (entry.titel ? entry.titel + (entry.stimmung ? " · " + entry.stimmung : "") + "\n\n" : "") + "Eingetragen von Jarvis (Zweites Gehirn).";
+    const base = "https://www.googleapis.com/calendar/v3/calendars/primary/events";
+    try {
+      if (c.calEventId) {
+        await gApi(`${base}/${encodeURIComponent(c.calEventId)}`, { method: "PATCH", body: JSON.stringify({ description: desc }) });
+      } else {
+        const ev = await gApi(base, { method: "POST", body: JSON.stringify({
+          summary: "✅ Tagebuch geschrieben" + (entry.stimmung ? " " + entry.stimmung.split(/\s+/)[0] : ""),
+          description: desc, start: { date: dayKey(d) }, end: { date: dayKey(next) },
+          transparency: "transparent", colorId: "10", reminders: { useDefault: false, overrides: [] } }) });
+        c.calEventId = ev && ev.id; saveLocal(); scheduleDriveSave(); uploadChat(c);
+      }
+      return "ok";
+    } catch (e) { return e.message || "Fehler"; }
   }
   function diaryDateFrom(t) {
     const d = new Date(); d.setHours(12, 0, 0, 0);

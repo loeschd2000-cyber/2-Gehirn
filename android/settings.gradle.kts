@@ -14,3 +14,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "ZweitesGehirn"
 include(":app")
+include(":wear")

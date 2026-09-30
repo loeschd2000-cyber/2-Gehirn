@@ -176,6 +176,7 @@
 
   /* ================= Android Auto: Aufnahme vom Auto-Mikrofon → mitschreiben → Befehl ================= */
   if (CAR) {
+    if (WATCH) voiceOn = false;   // Antwort erscheint auf der Uhr – das Handy in der Tasche soll nicht reden
     const carDone = () => {
       const wait = () => { if (busy || speaking) { setTimeout(wait, 300); return; }
         // Hat Jarvis eine Rückfrage gestellt (z. B. „Soll ich eintragen?“)? Dann gleich wieder zuhören.

@@ -56,6 +56,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     // Orts-Erinnerungen (Geofencing) und aktueller Standort
     implementation("com.google.android.gms:play-services-location:21.3.0")
+    // Smartwatch (Galaxy Watch / Wear OS): Nachrichten zwischen Uhr und Handy
+    implementation("com.google.android.gms:play-services-wearable:18.2.0")
     // Android Auto (Jarvis-Bildschirm im Auto)
     implementation("androidx.car.app:app:1.4.0")
     // Handy-KI: Gemma 4 direkt auf dem Handy (LiteRT-LM, Nachfolger von MediaPipe LLM Inference)

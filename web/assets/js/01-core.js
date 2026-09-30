@@ -3,7 +3,9 @@
   // Läuft die Seite in der Zweites-Gehirn-Android-App, übernimmt die App Mikrofon und Stimme (Webseiten dürfen das dort nicht).
   const AND = window.ZGAndroid || null;
   const MINI = !!(AND && AND.isMini && AND.isMini());
-  const CAR = !!(AND && AND.isCar && AND.isCar());   // läuft unsichtbar für Android Auto
+  const CAR = !!(AND && AND.isCar && AND.isCar());   // läuft unsichtbar für Android Auto (oder die Smartwatch)
+  const WATCH = CAR && !!(AND.isWatch && AND.isWatch());   // Fragen kommen von der Smartwatch
+  const CAR_WHERE = WATCH ? "von der Uhr aus" : "im Auto";
   if (MINI) document.body.classList.add("mini");
   if (AND) (function installAndroid() {
     const active = {};

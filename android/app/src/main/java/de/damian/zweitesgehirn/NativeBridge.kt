@@ -41,7 +41,7 @@ import java.util.Locale
  * Wird von der großen App (MainActivity) und vom kleinen Kreis (MiniActivity) benutzt.
  * Die Web-App spricht über das JavaScript-Objekt "ZGAndroid" damit.
  */
-class NativeBridge(private val act: android.content.Context, val web: WebView, private val mini: Boolean, private val car: Boolean = false) {
+class NativeBridge(private val act: android.content.Context, val web: WebView, private val mini: Boolean, private val car: Boolean = false, private val watch: Boolean = false) {
     /** Nur in der App (nicht im Auto) vorhanden */
     private val activity: Activity? get() = act as? Activity
     /** Im Auto: Anrufe/Navigation über Android Auto starten (sonst würde es aufs Handy-Display gehen) */
@@ -636,6 +636,8 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
         }
         // Auto (Android Auto)
         @JavascriptInterface fun isCar(): Boolean = car
+        /** Unsichtbares Jarvis für die Smartwatch (wie im Auto, aber Antworten gehen auf die Uhr) */
+        @JavascriptInterface fun isWatch(): Boolean = watch
         // Amazon (nur Warenkorb, nie kaufen), Zwischenablage, Links, Preis-Wächter
         @JavascriptInterface fun amazonInstalled(): Boolean = Amazon.installed(act)
         @JavascriptInterface fun amazonCart(asin: String, qty: Int) {

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ZGWatch" parent="android:Theme.DeviceDefault.NoActionBar">
+        <item name="android:windowBackground">@color/zg_bg</item>
+        <item name="android:colorAccent">@color/zg_cyan</item>
+    </style>
+</resources>

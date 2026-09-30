@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vorschaubild der Kachel in der Kachel-Auswahl -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="192dp" android:height="192dp" android:viewportWidth="192" android:viewportHeight="192">
+    <path android:fillColor="#040B16" android:pathData="M96,0a96,96 0,1 1,0 192a96,96 0,1 1,0 -192z" />
+    <path android:fillColor="#3FD6FF" android:pathData="M36,84h120a28,28 0,0 1,0 56h-120a28,28 0,0 1,0 -56z" />
+    <path android:fillColor="#040B16" android:pathData="M90,98a6,6 0,0 1,12 0v16a6,6 0,0 1,-12 0z M84,112a12,12 0,0 0,24 0h3a15,15 0,0 1,-13.5 14.9v5.1h-3v-5.1a15,15 0,0 1,-13.5 -14.9z" />
+    <path android:fillColor="#3FD6FF" android:pathData="M70,52h52v8h-52z" />
+</vector>

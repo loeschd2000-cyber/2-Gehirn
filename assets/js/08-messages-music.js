@@ -48,7 +48,7 @@
     const x = waParse(text);
     if (!x) return false;
     if (!AND) { assistantSay("WhatsApp-Nachrichten gehen nur in der Android-App auf deinem Handy."); return true; }
-    if (CAR) { assistantSay("WhatsApp kann ich im Auto nicht schicken, weil ich dafür WhatsApp auf dem Handy öffnen müsste. Sag im Auto einfach „Hey Google, schick eine WhatsApp an …“."); return true; }
+    if (CAR) { assistantSay(WATCH ? "WhatsApp kann ich von der Uhr aus nicht schicken, weil ich dafür WhatsApp auf dem Handy öffnen müsste. Das geht direkt mit der WhatsApp-App auf deiner Uhr." : "WhatsApp kann ich im Auto nicht schicken, weil ich dafür WhatsApp auf dem Handy öffnen müsste. Sag im Auto einfach „Hey Google, schick eine WhatsApp an …“."); return true; }
     if (typeof AND.whatsappSend !== "function") { assistantSay("Dafür brauchst du die neueste Version der App."); return true; }
     if (!AND.whatsappReady()) { assistantSay("WhatsApp ist auf diesem Handy nicht installiert."); return true; }
     if (!AND.phoneReady()) { AND.requestPhone(); assistantSay("Ich brauche einmal die Erlaubnis für deine Kontakte. Erlaube sie bitte und sag es dann nochmal."); return true; }

@@ -2,8 +2,9 @@
     if (pending) {
       if (NO.test(text)) { await resolvePending(false, false); return true; }   // „nein“/„bitte nicht“ zuerst prüfen
       if (YES.test(text)) { await resolvePending(true, false); return true; }
-      closeCard(pending); pending = null;
+      closeCard(pending); pending = null; agentRest = [];
     }
+    if (!diaryMode && !learn && await handleSearch(text)) return true;   // „Was hab ich über … gesagt?“
     if (await handleDiary(text)) return true;
     if (await handleExtras(text)) return true;
     if (await handleFinance(text)) return true;
@@ -53,7 +54,96 @@
     const p = pending; pending = null;
     if (!p) return;
     closeCard(p);
-    if (p.type === "event") return finishEvent(p, ok, byClick);
-    if (p.type === "draft") return finishDraft(p, ok);
-    if (p.type === "whatsapp") return finishWhatsApp(p, ok);
+    if (!ok) agentRest = [];   // „nein“ bricht auch die restlichen Befehle ab
+    if (p.type === "event") await finishEvent(p, ok, byClick);
+    else if (p.type === "draft") await finishDraft(p, ok);
+    else if (p.type === "whatsapp") await finishWhatsApp(p, ok);
+    continueAgent();
+  }
+
+  /* ---------- KI-Helfer für freie Sätze ----------
+     Wenn kein fester Befehl passt, übersetzt die KI den Satz in einen oder mehrere
+     bekannte Befehle („Standard-Sätze“). Die laufen dann durch die normalen Befehle.
+     So klappt auch „Kannst du morgen früh um 6 klingeln und Milch auf die Liste setzen?“ */
+  const AGENT_HINT = /\b(stell\w*|setz\w*|schreib\w*|schick\w*|spiel\w*|erinner\w*|zeig\w*|trag\w*|merk\w*|ruf\w*|lösch\w*|streich\w*|navigier\w*|bring\w*|weck\w*|mach\w*|leg\w*|pack\w*|notier\w*|klingel\w*|check\w*|prüf\w*|schau\w*|guck\w*|sag mir|hab ich|brauch\w*|kannst du|könntest du|würdest du|und dann|danach|außerdem|wecker|timer|liste|budget|kohle|geld|konto|wetter|regen|jacke|musik|lied|song|termin|tagebuch|abfrag\w*|wallet|kurs|briefing|stundenplan|arbeit|test|schulaufgabe|klausur|pizza|einkauf\w*)\b/i;
+  const AGENT_SKIP = /^\s*(was ist|was sind|was bedeutet|wer (ist|war)|warum|wieso|weshalb|wie funktioniert|erklär\w*|erzähl\w*( mir)? (was|etwas|einen)|schreib( mir)? (einen?|ein) (text|gedicht|aufsatz|geschichte|witz|bewerbung|zusammenfassung))\b/i;
+  const AGENT_CATALOG = `Wecker/Timer: "Stell den Wecker um 6 Uhr" · "Stell den Wecker morgen um 6:30 nur auf dem Handy" · "Stell einen Timer auf 12 Minuten"
+Erinnerung: "Erinner mich morgen um 16 Uhr an die Hausaufgaben" · "Erinner mich in 20 Minuten an die Pizza" · "Welche Erinnerungen habe ich?"
+Listen: "Setz Milch und Eier auf die Einkaufsliste" · "Was steht auf der Einkaufsliste?" · "Streich Milch von der Einkaufsliste" · "Setz Mathe-Hausaufgaben auf meine To-dos" · "Mathe ist erledigt"
+Kalender: "Trag morgen um 10 Uhr Zahnarzt ein" · "Welche Termine hab ich diese Woche?"
+Mails: "Hab ich neue Mails?" · "Lies meine letzte Mail" · "Schreib Papa eine Mail, dass ich später komme"
+WhatsApp/Anruf: "Schreib Papa auf WhatsApp hallo" · "Ruf Papa an"
+Musik: "Spiel Gzuz" · "Spiel weiter" · "Pause" · "Nächstes Lied" · "Lauter" · "Leiser"
+Wetter: "Wie wird das Wetter morgen?" · "Brauch ich heute eine Jacke?" · "Regnet es übermorgen in Würzburg?"
+Tag: "Guten Morgen" (Briefing: Wetter, Termine, Mails, Schule, Konto)
+Gedächtnis: "Merk dir, mein Ausbilder heißt Herr Müller" · "Was weißt du über mich?" · "Vergiss das mit Herrn Müller"
+Schule: "Was hab ich morgen in der Schule?" · "Wann ist die nächste Arbeit?" · "Am 15. Oktober schreiben wir eine Arbeit in SPS" · "Frag mich SPS ab"
+Geld: "Wie sieht's aus mit meinen Finanzen?" · "Was sind meine Fixkosten?" · "Zeig mir eine Statistik von meinem Konto" · "Wie steht mein Budget?" · "Setz mein Monatsbudget auf 600 Euro" · "Wie sieht's aus in meiner Phantom Wallet?" · "Sag mir Bescheid, wenn SOL unter 100 Dollar fällt"
+Navigation: "Navigier mich nach Hause" · "Wie lange brauche ich nach Schweinfurt?"
+Tagebuch: "Tagebuch" · "Lies mir mein Tagebuch von gestern vor"
+Suche: "Was hab ich über Lukas gesagt?" · "Wann hab ich über den Führerschein geredet?"`;
+
+  let agentRest = [];      // Befehle, die nach einer Rückfrage (z. B. „Senden?“) noch dran sind
+  let agentRunning = false;
+
+  function looksLikeCommand(text) {
+    if (text.length > 260 || AGENT_SKIP.test(text)) return false;
+    return AGENT_HINT.test(text);
+  }
+
+  async function agentRoute(text) {
+    const now = new Date();
+    const prompt = `Du bist der Befehls-Übersetzer des Sprachassistenten Jarvis. Heute ist ${WD[now.getDay()]}, ${ymd(now)}, ${pad(now.getHours())}:${pad(now.getMinutes())} Uhr.
+Jarvis versteht nur diese Standard-Sätze (Beispiele, Namen/Zeiten/Inhalte darfst du anpassen):
+${AGENT_CATALOG}
+
+Aufgabe: Will der Nutzer, dass Jarvis etwas TUT oder in seinen Daten NACHSCHAUT, schreib seinen Wunsch als einen oder mehrere Standard-Sätze in der Form oben (höchstens 4, in der richtigen Reihenfolge). Übernimm alle Namen, Zeiten und Inhalte genau. Erfinde nichts dazu.
+Ist es nur eine Frage, ein Gespräch, eine Erklärung oder passt kein Standard-Satz, gib eine leere Liste zurück.
+Nachricht: "${text.replace(/"/g, "'")}"`;
+    const schema = { type: "object", properties: { befehle: { type: "array", items: { type: "string" } } }, required: ["befehle"] };
+    const r = await llmJson(prompt, schema);
+    const list = (r && Array.isArray(r.befehle) ? r.befehle : []).map(s => String(s || "").trim()).filter(Boolean).slice(0, 4);
+    // nicht denselben Satz zurückgeben (sonst Schleife) und nichts Uferloses
+    return list.filter(s => s.length < 200 && s.toLowerCase() !== text.trim().toLowerCase());
+  }
+
+  function waitIdle(maxMs = 25000) {
+    return new Promise(res => {
+      const t0 = Date.now();
+      const tick = () => (!speaking && !busy) || Date.now() - t0 > maxMs ? res() : setTimeout(tick, 150);
+      setTimeout(tick, 200);
+    });
+  }
+
+  async function runAgentList(list) {
+    agentRunning = true;
+    let did = 0;
+    try {
+      while (list.length) {
+        const cmd = list.shift();
+        if (did) await waitIdle();
+        if (await handleActions(cmd)) did++;
+        if (pending) { agentRest = list.slice(); break; }   // erst die Rückfrage beantworten lassen
+      }
+    } finally { agentRunning = false; }
+    return did;
+  }
+
+  /** true = erledigt; false = normal mit der KI weiterreden */
+  async function handleAgent(text) {
+    if (agentRunning || !backend || !looksLikeCommand(text)) return false;
+    const bubble = add("msg ai wait", "Versteht …");
+    busy = true; refreshUi();
+    let list = [];
+    try { list = await agentRoute(text); } catch { list = []; }
+    bubble.remove(); busy = false; refreshUi();
+    if (!list.length) return false;
+    return (await runAgentList(list)) > 0;
+  }
+
+  async function continueAgent() {
+    if (!agentRest.length || pending) return;
+    const rest = agentRest; agentRest = [];
+    await waitIdle();
+    await runAgentList(rest);
   }

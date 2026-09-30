@@ -62,6 +62,11 @@ def llm_answer(body):
     if "Bewerte fair" in body: return {"richtig": True, "erklaerung": "Genau."}
     if "Tagebuch erzählt" in body: return {"titel": "Guter Tag", "text": "Heute war ein guter Tag.", "stimmung": "😊 gut"}
     if "WhatsApp schreiben" in body: return {"nachricht": "Ich komme später."}
+    if "Fundstellen aus seinen alten" in body: return {"antwort": "Du hast gesagt, dass Lukas am 12. März Geburtstag hat."}
+    if "Befehls-Übersetzer" in body:
+        if "Käse" in body: return {"befehle": ["Setz Käse und Brot auf die Einkaufsliste", "Was steht auf der Einkaufsliste?"]}
+        if "klingeln" in body: return {"befehle": ["Stell den Wecker um 7 Uhr"]}
+        return {"befehle": []}
     if '"aktion"' in body or "aktion" in body[:3000]: return {"aktion": "keine"}
     return None
 
@@ -124,6 +129,9 @@ CASES = [
     ("fertig", ["Gespeichert"]),
     ("Lies mir mein Tagebuch von heute vor", ["Dein Tagebuch von heute"]),
     ("Was weißt du über mich?", ["Dinge gemerkt"]),
+    ("Was hab ich über Lukas gesagt?", ["Fundstelle", "12. März Geburtstag"]),
+    ("Such in meinem Tagebuch nach Berufsschule", ["Tagebuch"]),
+    ("Was hab ich über Quantenphysik gesagt?", ["nichts gefunden"]),
     # --- Fehler, die bei der Durchsicht gefunden wurden (dürfen nie wieder auftreten) ---
     ("Schreib Papa auf WhatsApp hallo", ["Soll ich das senden"]),
     ("bitte nicht", ["nicht gesendet"], ["whatsapp 0171"]),
@@ -136,6 +144,9 @@ CASES = [
     ("Vergiss PS", ["nichts gespeichert"], []),
     ("Erinner mich morgen Abend um 8 an den Müll", ["20 Uhr"], []),
     ("Schreib Papa eine Nachricht per Mail, dass ich später komme", [], ["Soll ich das senden"]),
+    # --- freie Sätze über den KI-Helfer (auch mehrere Befehle auf einmal) ---
+    ("Kannst du bitte Käse und Brot bei den Einkäufen notieren und mir danach sagen was alles drauf ist", ["Käse und Brot", "Käse, Brot"]),
+    ("Lass es morgen früh um 7 klingeln", ["alexa 7:0"]),
     ("Frag mich SPS ab", ["Lernmodus: SPS"]),
     ("Stopp", ["Lernmodus beendet"]),
 ]

@@ -357,3 +357,10 @@
 
   /* Sehr schmale Handys (360 px): Kopfzeile passt sonst nicht */
   @media (max-width: 380px) { .brand b { letter-spacing: .12em; font-size: 12px; } .clock .t { font-size: 15px; letter-spacing: .06em; } .ibtn { width: 36px; height: 36px; } }
+
+  /* Gedächtnis-Suche */
+  .card.search { width: 100%; max-width: min(640px, 100%); }
+  .card.search .hit { all: unset; box-sizing: border-box; display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 12px; border: 1px solid transparent; cursor: pointer; }
+  .card.search .hit:hover, .card.search .hit:focus-visible { border-color: var(--line-hi); background: rgba(63, 214, 255, .07); }
+  .card.search .hit:disabled { cursor: default; }
+  .card.search .hit .body { margin: 0; border-left: 0; padding-left: 0; }

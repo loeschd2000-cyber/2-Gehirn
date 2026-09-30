@@ -263,6 +263,8 @@
     messages.push({ role: "user", content: text, ts: Date.now() });
     // Befehle wie Musik, Anrufen, Wecker, Wallet klappen auch ohne KI
     if (await handleActions(text)) { if (!speaking && !busy) { maybeListenAgain(); scheduleWake(700); } return; }
+    // freie Sätze: KI übersetzt in bekannte Befehle (auch mehrere auf einmal)
+    if (await handleAgent(text)) { if (!speaking && !busy) { maybeListenAgain(); scheduleWake(700); } return; }
     if (!backend) { note("Keine KI erreichbar. Tipp links auf „KI-Quelle“ oder starte den PC."); return; }
     const ctx = messages.slice(-10).map(m => ({ role: m.role, content: m.content }));
     await streamReply([{ role: "system", content: RULES() }, ...ctx]);

@@ -181,7 +181,7 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
     fun onWakeStopped() { main.post { web.evaluateJavascript("window.__zgWakeState && __zgWakeState(false)", null) } }
     fun isListening(): Boolean = !srEnded || recorder.active
 
-    private val recorder by lazy { VoiceRecorder { type, sid, extra ->
+    private val recorder: VoiceRecorder by lazy { VoiceRecorder { type, sid, extra ->
         emit("__zgRec", JSONObject().put("type", type).put("sid", sid).put("info", extra ?: ""))
         if (type == "end" || type == "error") main.postDelayed({ if (srEnded && !recorder.active && tts?.isSpeaking != true) releaseFocus() }, 500)
     } }

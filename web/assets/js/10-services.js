@@ -858,8 +858,8 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
       {
         const has = !!secGet("zg_tk_key");
         const s = svSection(body, "⛽", "Tankerkönig (Tankpreise)", has ? "verbunden" : "aus", has);
-        svInfo(s, "1. Auf der Seite unten „API-Key“ beantragen (nur E-Mail, kostenlos). 2. Den Schlüssel aus der Mail hier einfügen.");
-        svLink(s, "→ Tankerkönig-Schlüssel beantragen", "https://onboarding.tankerkoenig.de/");
+        svInfo(s, "1. Seite unten öffnen, oben auf „API-Key“ und kostenlos beantragen (nur E-Mail). 2. Den Schlüssel aus der Mail hier einfügen.");
+        svLink(s, "→ Tankerkönig-Schlüssel beantragen", "https://creativecommons.tankerkoenig.de/");
         const k = svEl("input", { type: "password", placeholder: "00000000-0000-0000-0000-000000000000", autocomplete: "off" }, s);
         svBtn(s, "Speichern & testen", async () => {
           const v = k.value.trim(); if (!/^[0-9a-f-]{36}$/i.test(v)) throw new Error("Der Schlüssel sieht so aus: 8-4-4-4-12 Zeichen mit Bindestrichen");

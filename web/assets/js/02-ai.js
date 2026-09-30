@@ -128,7 +128,8 @@
       }
       lastStatus = r.status; lastText = await r.text();
       // Modell abgeschaltet („no longer available“ …)? Aus der Liste streichen und ein neueres nehmen
-      if (/no longer available|not found|deprecated|not supported|update your code|is not available/i.test(lastText)) {
+      // (aber nicht, wenn nur die Google-Suche/ein Werkzeug fehlt – dann ist das Modell selbst in Ordnung)
+      if (/no longer available|not found|deprecated|not supported|update your code|is not available/i.test(lastText) && !(body.tools && /search|grounding|tool/i.test(lastText))) {
         geminiCandidates = geminiCandidates.filter(x => x !== m);
         if (lsGet("zg_gem_model") === m) lsSet("zg_gem_model", "");
         const hint = /models\/(gemini-[\w.-]+)/.exec(lastText.replace(m, ""));
@@ -137,7 +138,7 @@
         continue;
       }
       const overloaded = r.status === 503 || r.status === 500 || r.status === 429 || r.status === 404 || /high demand|overloaded|unavailable/i.test(lastText);
-      if (!overloaded) break;
+      if (!overloaded || (body.tools && r.status === 429 && /search|grounding|limit:\s*0/i.test(lastText))) break;   // Suche beim Gratis-Schlüssel gesperrt: nicht alle Modelle durchprobieren
     }
     throw new Error(gemError(lastStatus, lastText));
   }

@@ -77,6 +77,87 @@ object Amazon {
     }
 }
 
+/**
+ * Amazon direkt vom Handy aus durchsuchen (wie ein normaler Browser, eine Anfrage pro Befehl).
+ * Braucht KEINE Gemini-Suche – die gibt es beim kostenlosen Gemini-Schlüssel nicht mehr.
+ */
+object AmazonWeb {
+    private const val UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+
+    private fun get(url: String): String? {
+        try { if (java.net.CookieHandler.getDefault() == null) java.net.CookieHandler.setDefault(java.net.CookieManager()) } catch (_: Throwable) {}
+        return try {
+            val c = URL(url).openConnection() as HttpURLConnection
+            c.connectTimeout = 12000; c.readTimeout = 15000; c.instanceFollowRedirects = true
+            c.setRequestProperty("User-Agent", UA)
+            c.setRequestProperty("Accept", "text/html,application/xhtml+xml")
+            c.setRequestProperty("Accept-Language", "de-DE,de;q=0.9")
+            val code = c.responseCode
+            val body = if (code in 200..299) c.inputStream.bufferedReader().readText() else null
+            c.disconnect(); body
+        } catch (_: Throwable) { null }
+    }
+
+    private fun captcha(html: String) = html.contains("validateCaptcha") || html.contains("Geben Sie die Zeichen") || html.contains("api-services-support@amazon")
+
+    private fun unHtml(s: String) = s.replace(Regex("<[^>]+>"), " ").replace("&amp;", "&").replace("&quot;", "\"").replace("&#39;", "'")
+        .replace("&nbsp;", " ").replace(Regex("&#(\\d+);")) { m -> m.groupValues[1].toIntOrNull()?.toChar()?.toString() ?: "" }
+        .replace(Regex("\\s+"), " ").trim()
+
+    fun euro(s: String?): Double? {
+        val m = Regex("(\\d{1,3}(?:\\.\\d{3})*|\\d+)(?:,(\\d{1,2}))?").find(s ?: "") ?: return null
+        return (m.groupValues[1].replace(".", "") + "." + m.groupValues[2].ifEmpty { "0" }).toDoubleOrNull()
+    }
+
+    /** Suchergebnisse (ohne Werbung): ok/items[{asin,title,price}] oder msg */
+    fun search(q: String): JSONObject {
+        val out = JSONObject()
+        val html = get("https://www.amazon.de/s?k=" + Uri.encode(q)) ?: return out.put("ok", false).put("msg", "Amazon nicht erreichbar")
+        if (captcha(html)) return out.put("ok", false).put("msg", "captcha")
+        val items = JSONArray()
+        val marker = "data-component-type=\"s-search-result\""
+        var idx = html.indexOf(marker)
+        while (idx >= 0 && items.length() < 8) {
+            val next = html.indexOf(marker, idx + marker.length)
+            val start = html.lastIndexOf('<', idx)
+            val end = if (next > 0) html.lastIndexOf('<', next) else minOf(html.length, idx + 40000)
+            val block = html.substring(maxOf(0, start), maxOf(start + 1, end))
+            val tagEnd = block.indexOf('>')
+            val tag = if (tagEnd > 0) block.substring(0, tagEnd) else block
+            val asin = Regex("data-asin=\"([A-Z0-9]{10})\"").find(tag)?.groupValues?.get(1)
+            val sponsored = tag.contains("AdHolder") || block.contains("puis-sponsored-label") || block.contains("s-sponsored-label") || block.contains(">Gesponsert<")
+            if (asin != null && !sponsored) {
+                val title = Regex("<h2[^>]*aria-label=\"([^\"]+)\"").find(block)?.groupValues?.get(1)?.let { unHtml(it) }
+                    ?: Regex("<h2[^>]*>([\\s\\S]*?)</h2>").find(block)?.groupValues?.get(1)?.let { unHtml(it) }
+                    ?: Regex("class=\"s-image\"[^>]*alt=\"([^\"]+)\"").find(block)?.groupValues?.get(1)?.let { unHtml(it) }
+                val price = Regex("<span class=\"a-price\"[^>]*>\\s*<span class=\"a-offscreen\">([^<]+)<").find(block)?.groupValues?.get(1)?.let { euro(it) }
+                if (!title.isNullOrBlank() && !title.startsWith("Gesponsert"))
+                    items.put(JSONObject().put("asin", asin).put("title", title.take(200)).put("price", price ?: -1.0))
+            }
+            idx = next
+        }
+        return if (items.length() == 0) out.put("ok", false).put("msg", "keine Treffer") else out.put("ok", true).put("items", items)
+    }
+
+    /** Aktueller Preis eines Produkts (null = unbekannt) */
+    fun price(asin: String): Double? {
+        if (!Regex("^[A-Z0-9]{10}$").matches(asin)) return null
+        val html = get("https://www.amazon.de/dp/$asin") ?: return null
+        if (captcha(html)) return null
+        for (anchor in listOf("id=\"corePrice_feature_div\"", "id=\"corePriceDisplay_desktop_feature_div\"", "id=\"apex_desktop\"")) {
+            val i = html.indexOf(anchor); if (i < 0) continue
+            val part = html.substring(i, minOf(html.length, i + 8000))
+            Regex("<span class=\"a-offscreen\">\\s*([^<]*\\d[^<]*)<").find(part)?.let { m -> euro(m.groupValues[1])?.let { return it } }
+            val whole = Regex("a-price-whole\">([\\d.]+)").find(part)?.groupValues?.get(1)
+            if (whole != null) {
+                val frac = Regex("a-price-fraction\">(\\d{2})").find(part)?.groupValues?.get(1) ?: "00"
+                return (whole.replace(".", "") + "." + frac).toDoubleOrNull()
+            }
+        }
+        return Regex("\"priceAmount\":\\s*([0-9]+(?:\\.[0-9]+)?)").find(html)?.groupValues?.get(1)?.toDoubleOrNull()
+    }
+}
+
 /** Text in die Zwischenablage (z. B. fertige Kleinanzeige) und Apps/Seiten öffnen */
 object Share {
     fun copy(ctx: Context, label: String, text: String) {
@@ -122,8 +203,9 @@ object PriceWatch {
             AlarmManager.INTERVAL_HOUR * 6, pending(ctx))
     }
 
-    /** Preis über Gemini + Google-Suche abfragen (Hintergrund-Thread!). null = unbekannt */
+    /** Preis abfragen (Hintergrund-Thread!): zuerst direkt bei Amazon, sonst Gemini + Google-Suche (nur mit bezahltem Schlüssel). null = unbekannt */
     fun lookup(ctx: Context, asin: String, name: String): Double? {
+        AmazonWeb.price(asin)?.let { return it }
         val key = Secure.vaultGet(ctx, "zg_gemini_key"); if (key.isBlank()) return null
         val model = p(ctx).getString("model", "") ?: ""
         for (m in listOf(model, "models/gemini-flash-latest").filter { it.isNotBlank() }.distinct()) {

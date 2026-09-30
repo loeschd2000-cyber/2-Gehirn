@@ -52,6 +52,10 @@ window.ZGAndroid = {
   priceAlertAdd: (c, s, b, p) => { L('price ' + c + ' ' + b + ' ' + p); return 1; }, priceAlertList: () => '[]', priceAlertCancel: () => {},
   diaryReminder: (h, m) => L('diaryReminder ' + h + ':' + m), musicAccess: () => true,
   amazonInstalled: () => true, amazonCart: (a, q) => { L('amazonCart ' + a + ' ' + q); setTimeout(() => __zgShop.emit({ type: 'cart', ok: true, msg: 'im Warenkorb' }), 20); },
+  amazonFind: (q, id) => { L('amazonFind ' + q); const it = /airpods/i.test(q) ? [{ asin: 'B0D1XD1ZV3', title: 'Apple AirPods Pro 2 (2. Generation) mit USB-C', price: 229 }]
+      : /zahnpasta/i.test(q) ? [{ asin: 'B0AAAAAAAA', title: 'Zahnbürsten-Halterung für Bad', price: 9.99 }, { asin: 'B08N5WRWNW', title: 'Oral-B Pro-Expert Zahnpasta, 75 ml', price: 3.99 }]
+      : [{ asin: 'B07XYZ1234', title: 'Varta Batterien AA, 20 Stück', price: 8.49 }];
+    setTimeout(() => __zgShop.emit({ type: 'find', id, ok: true, items: it }), 20); },
   amazonSearch: q => L('amazonSearch ' + q), copyText: t => L('copy ' + t.slice(0, 30)), openLink: (u, p) => L('open ' + u),
   priceWatchAdd: (a, n, l, now) => { L('pricewatch ' + a + ' ' + l); return 1; }, priceWatchList: () => '[]', priceWatchCancel: () => {}, priceWatchModel: () => {},
 };
@@ -65,12 +69,7 @@ def llm_answer(body):
     if "Bewerte fair" in body: return {"richtig": True, "erklaerung": "Genau."}
     if "Tagebuch erzählt" in body: return {"titel": "Guter Tag", "text": "Heute war ein guter Tag.", "stimmung": "😊 gut"}
     if "WhatsApp schreiben" in body: return {"nachricht": "Ich komme später."}
-    if "google_search" in body:
-        if "Suche auf amazon.de" in body:
-            if "AirPods" in body: return "__TEXT__ASIN: B0D1XD1ZV3\nNAME: Apple AirPods Pro 2\nPREIS: 229,00"
-            return "__TEXT__ASIN: B08N5WRWNW\nNAME: Oral-B Zahnpasta Pro-Expert\nPREIS: 3,99"
-        if "Kleinanzeigen" in body: return "__TEXT__" + json.dumps({"titel": "Xbox Controller schwarz", "preis": 25, "preis_spanne": "20–30 €", "beschreibung": "Verkaufe meinen Xbox Controller. [Zustand ergänzen]. Privatverkauf, keine Garantie.", "tipp": "Gute Fotos machen."})
-        if "echten Angeboten" in body: return "__TEXT__" + json.dumps({"jobs": [{"titel": "Python-Skript für Excel-Auswertung", "wo": "Fiverr · online", "verdienst": "50 €", "warum": "passt zu deinen Programmierkenntnissen", "link": "https://www.fiverr.com/"}]})
+    if "Kleinanzeigen" in body: return "__TEXT__" + json.dumps({"titel": "Xbox Controller schwarz", "preis": 25, "preis_spanne": "20–30 €", "beschreibung": "Verkaufe meinen Xbox Controller. [Zustand ergänzen]. Privatverkauf, keine Garantie.", "tipp": "Gute Fotos machen."})
     if "ehrlicher Spar-Coach" in body: return {"tipps": [{"titel": "Spotify auf Studententarif", "euro_pro_monat": 5, "wie": "Tarif wechseln"}, {"titel": "Weniger Fast Food", "euro_pro_monat": 10, "wie": "zweimal weniger im Monat"}]}
     if "freundliche Bewerbung" in body: return {"betreff": "Anfrage zu Ihrem Auftrag", "text": "Hallo, ich bin Damian und habe Interesse. [Beispiele ergänzen]"}
     if "wortwörtlich" in body: return "__TEXT__Was steht auf der Einkaufsliste?"
@@ -83,6 +82,7 @@ def llm_answer(body):
     return None
 
 TTS_HITS = []
+GS_HITS = []
 PC_HITS = []
 async def route(r):
     u = r.request.url
@@ -110,6 +110,9 @@ async def route(r):
             import base64
             pcm = base64.b64encode(b"\x00\x00" * 2400).decode()
             return await r.fulfill(json={"candidates": [{"content": {"parts": [{"inlineData": {"mimeType": "audio/L16;codec=pcm;rate=24000", "data": pcm}}]}}]}, headers=H)
+        if '"google_search"' in body:   # wie beim kostenlosen Schlüssel: Google-Suche gesperrt
+            GS_HITS.append(1)
+            return await r.fulfill(status=429, json={"error": {"code": 429, "message": "Quota exceeded for metric: generate_content_free_tier_requests google_search, limit: 0"}}, headers=H)
         out = llm_answer(body)
         if "streamGenerateContent" in u:
             text = "Das ist eine Testantwort."
@@ -206,9 +209,9 @@ CASES = [
     ("Verkauf meinen alten Xbox Controller", ["Kleinanzeige", "25 € VB"]),
     ("ja", ["copy Xbox Controller", "open https://www.kleinanzeigen.de"]),
     ("Wo kann ich sparen?", ["Spar-Coach", "15"]),
-    ("Such mir Programmier-Jobs", ["Job-Finder", "Python-Skript"]),
-    ("Schreib mir eine Bewerbung für Job 1", ["Bewerbung"]),
-    ("ja", ["copy Anfrage", "open https://www.fiverr.com"]),
+    ("Such mir Programmier-Jobs", ["Job-Finder", "Arduino", "Suche öffnen"], ["nicht geklappt", "Limit"]),
+    ("Finde einen Job", ["Minijobs in deiner Nähe", "Arbeitsagentur"], ["nicht geklappt"]),
+    ("Schreib mir eine Bewerbung für Job 1", ["Anzeige"]),
     ("js:pcCtl = true; PC_BASE = 'http://pc.test'", []),
     ("Mach am PC leiser", ["PC: Leiser"]),
     ("Öffne Spotify am PC", ["Ich öffne Spotify am PC"]),

@@ -1,12 +1,21 @@
   /* ================= Amazon-Warenkorb, Preis-Wächter, Verkaufs-Helfer, Spar-Coach, Job-Finder ================= */
 
-  // Gemini mit Google-Suche (aktuelle Infos aus dem Internet)
+  // Gemini mit Google-Suche (aktuelle Infos aus dem Internet).
+  // Achtung: Beim KOSTENLOSEN Gemini-Schlüssel erlaubt Google diese Suche nicht (Fehler 429/400).
+  // Nach so einem Fehler probieren wir es 12 Stunden lang nicht nochmal (spart Anfragen) und nehmen die Ersatzwege.
+  const searchOff = () => +(lsGet("zg_gs_off") || 0) > Date.now();
   async function gemSearch(prompt, ms = 45000) {
     if (!geminiKey) throw new Error("kein-key");
+    if (searchOff()) throw new Error("keine-suche");
     if (!geminiModel) await checkGemini();
     const ab = abortable(ms);
     try {
-      const r = await gemFetch("generateContent", { contents: [{ role: "user", parts: [{ text: prompt }] }], tools: [{ google_search: {} }] }, ab.sig);
+      let r;
+      try { r = await gemFetch("generateContent", { contents: [{ role: "user", parts: [{ text: prompt }] }], tools: [{ google_search: {} }] }, ab.sig); }
+      catch (e) {
+        if (!(e && e.name === "AbortError") && !/fetch|network/i.test(String(e && e.message))) lsSet("zg_gs_off", String(Date.now() + 12 * 3600e3));
+        throw e;
+      }
       const j = await r.json();
       const c = (j.candidates || [])[0] || {};
       const text = ((c.content || {}).parts || []).filter(p => !p.thought).map(p => p.text || "").join("");
@@ -45,8 +54,41 @@
     if (footer) { const f = document.createElement("span"); f.className = "sub"; f.textContent = footer; card.append(f); }
     log.append(card); log.scrollTop = log.scrollHeight;
   }
+  // Amazon-Suche direkt vom Handy (Android-App, ohne Gemini)
+  const amzWait = {};
+  const canFindAmazon = () => !!(AND && AND.amazonFind);
+  function amazonFindNative(q) {
+    return new Promise(res => {
+      const id = "f" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      const t = setTimeout(() => { delete amzWait[id]; res(null); }, 25000);
+      amzWait[id] = r => { clearTimeout(t); delete amzWait[id]; res(r); };
+      try { AND.amazonFind(q, id); } catch { clearTimeout(t); delete amzWait[id]; res(null); }
+    });
+  }
+  // Bestes Ergebnis: möglichst viele Wörter aus der Anfrage im Titel, weiter oben besser, Zubehör nur wenn gewünscht
+  function pickAmazon(q, items) {
+    const words = q.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(w => w.length > 2);
+    const extra = /\b(hülle|case|cover|schutzfolie|panzerglas|ersatz\w*|adapter|kabel|halterung|tasche|aufkleber|skin)\b/i;
+    let best = null, bs = -9;
+    items.forEach((x, i) => {
+      if (!x || !/^[A-Z0-9]{10}$/.test(x.asin || "") || !x.title) return;
+      const tl = x.title.toLowerCase();
+      let s = (words.length ? words.filter(w => tl.includes(w.length > 5 ? w.slice(0, -1) : w)).length / words.length : 0) - i * 0.04;
+      if (extra.test(tl) && !extra.test(q)) s -= 0.5;
+      if (s > bs) { bs = s; best = x; }
+    });
+    return best;
+  }
+  const shortTitle = t => { const s = String(t).split(/\s[|–-]\s|,\s|\s\(/)[0].trim(); const w = s.split(/\s+/); return (w.length > 9 ? w.slice(0, 9).join(" ") + " …" : s).slice(0, 80); };
+
   // Produkt auf amazon.de finden: ASIN + Name + Preis
   async function findAmazon(item) {
+    if (canFindAmazon()) {
+      const r = await amazonFindNative(item);
+      const b = r && r.ok ? pickAmazon(item, r.items || []) : null;
+      if (b) return { asin: b.asin, name: shortTitle(b.title), price: +b.price > 0 ? +b.price : NaN };
+    }
+    if (!geminiKey || searchOff()) return null;
     const r = await gemSearch(`Suche auf amazon.de das beste passende, gut bewertete Produkt für: "${item.replace(/"/g, "'")}". Kein Zubehör, außer es ist ausdrücklich gemeint.
 Antworte NUR mit diesen drei Zeilen, ohne weiteren Text:
 ASIN: <die 10-stellige Amazon-Produktnummer, wie in der Adresse amazon.de/dp/…>
@@ -95,9 +137,9 @@ PREIS: <aktueller Preis in Euro, z. B. 12,99 – oder unbekannt>`);
       assistantSay(`Ich habe „${item}“ auf deine Einkaufsliste gesetzt, ${anrede()}. Zuhause sag „Bestell ${item} auf Amazon“, dann lege ich es in den Warenkorb.`);
       return true;
     }
-    if (!geminiKey) {
+    if (!canFindAmazon() && (!geminiKey || searchOff())) {
       if (AND && AND.amazonSearch) AND.amazonSearch(item); else openUrl("https://www.amazon.de/s?k=" + encodeURIComponent(item));
-      assistantSay("Ich habe dir die Amazon-Suche geöffnet. Mit Gemini-Schlüssel kann ich das Produkt selbst aussuchen.");
+      assistantSay(`Ich habe dir die Amazon-Suche nach „${item}“ geöffnet, ${anrede()}. Das Produkt selbst aussuchen kann ich nur in der Android-App.`);
       return true;
     }
     const done = busyBubble("Sucht auf Amazon …");
@@ -125,6 +167,7 @@ PREIS: <aktueller Preis in Euro, z. B. 12,99 – oder unbekannt>`);
   }
   window.__zgShop = {
     emit(r) {
+      if (r.type === "find") { const f = amzWait[r.id]; if (f) f(r); return; }
       if (r.type !== "cart") return;
       lastViaVoice = false;
       if (!r.ok) assistantSay("Amazon hat nicht geklappt: " + (r.msg || "Fehler"));
@@ -156,7 +199,6 @@ PREIS: <aktueller Preis in Euro, z. B. 12,99 – oder unbekannt>`);
     const limit = parseEuro(m[2]);
     if (!isFinite(limit) || limit <= 0) return false;
     if (!AND || !AND.priceWatchAdd) { assistantSay("Der Preis-Wächter geht nur in der Android-App, weil das Handy im Hintergrund nachschauen muss."); return true; }
-    if (!geminiKey) { assistantSay("Für den Preis-Wächter brauche ich deinen Gemini-Schlüssel (KI-Quelle)."); return true; }
     const done = busyBubble("Sucht das Produkt …");
     let p = null;
     try { p = await findAmazon(item); } catch {}
@@ -188,7 +230,7 @@ Schätze einen realistischen Verkaufspreis für Deutschland (was solche Sachen g
 Erfinde KEINE Details, die er nicht genannt hat (Zustand, Zubehör, Farbe): schreib stattdessen Platzhalter in eckigen Klammern wie [Zustand ergänzen].
 Antworte nur mit einem JSON-Objekt: {"titel": "max. 60 Zeichen", "preis": Zahl in Euro, "preis_spanne": "z. B. 20–30 €", "beschreibung": "4 bis 8 kurze Zeilen, mit Hinweis Privatverkauf, keine Garantie/Rücknahme", "tipp": "ein kurzer Verkaufstipp (z. B. gute Fotos, Versand)"}`;
     try {
-      if (geminiKey) { const r = await gemSearch(prompt); a = jsonIn(r.text); }
+      if (geminiKey && !searchOff()) try { const r = await gemSearch(prompt); a = jsonIn(r.text); } catch (e) { if (e && e.name === "AbortError") throw e; }   // ohne Internet-Suche: normale KI schätzt
       if (!a) a = await llmJson(prompt, { type: "object", properties: { titel: { type: "string" }, preis: { type: "number" }, preis_spanne: { type: "string" }, beschreibung: { type: "string" }, tipp: { type: "string" } }, required: ["titel", "preis", "beschreibung"] });
     } catch (e) { done(); if (!(e && e.name === "AbortError")) assistantSay("Die Anzeige hat gerade nicht geklappt. " + (e.message || "")); return true; }
     done();
@@ -252,27 +294,49 @@ Antworte nur mit einem JSON-Objekt: {"titel": "max. 60 Zeichen", "preis": Zahl i
   /* ---------- 5) Job-Finder: „Such mir Programmier-Jobs“ → echte Angebote + fertige Bewerbung ---------- */
   const JOB_RE = /^(?:such|find)\w*\s+(?:mir\s+)?(?:bitte\s+)?(?:mal\s+)?(?:einen?\s+|ein\s+paar\s+|paar\s+|neue\s+)?(?:neben-?jobs?|mini-?jobs?|aufträge|auftrag|programmier-?(?:jobs?|aufträge)|freelance-?(?:jobs?|aufträge)|jobs?|gigs?)\b|wie\s+(?:kann|könnte)\s+ich\s+(?:nebenbei\s+|schnell\s+|mehr\s+)?(?:geld\s+verdienen|was\s+dazu\s*verdienen|geld\s+dazu\s*verdienen)|^(?:ich\s+)?(?:will|möchte|brauche?)\s+(?:mehr\s+|nebenbei\s+)?geld\s+verdienen/i;
   const APPLY_RE = /(?:schreib\w*|mach\w*|erstell\w*)\s+(?:mir\s+)?(?:eine\s+)?(?:bewerbung|nachricht|anschreiben)\s+(?:für|zu|an)\s+(?:den\s+|das\s+)?(?:job|angebot|auftrag|nummer)?\s*(\d|eins|zwei|drei|vier|fünf)|bewirb\s+mich\s+(?:auf|für|bei)\s+(?:den\s+|das\s+)?(?:job|angebot|auftrag|nummer)?\s*(\d|eins|zwei|drei|vier|fünf)/i;
+  // Ohne Internet-Suche: die passenden Job-Seiten mit fertiger Suche (Ort, Minijob, Stichwort) – funktioniert immer
+  function jobPortals(wantsCode, where) {
+    const city = String(where).replace(/\s*\(.*?\)\s*/g, " ").trim() || "Haßfurt", e = encodeURIComponent;
+    const local = [
+      { title: "Minijobs in deiner Nähe", sub: `Jobbörse der Arbeitsagentur · ${city} + 25 km`, text: "Die offizielle Jobbörse, schon auf Minijobs gefiltert.", url: `https://www.arbeitsagentur.de/jobsuche/suche?angebotsart=1&arbeitszeit=mj&wo=${e(city)}&umkreis=25` },
+      { title: "Aushilfe Elektro / Technik", sub: `Indeed · ${city}`, text: "Nebenjobs, bei denen deine Ausbildung zählt.", url: `https://de.indeed.com/jobs?q=${e("Aushilfe Elektro")}&l=${e(city)}` },
+      { title: "Nebenjobs über Google", sub: `Google Jobs · ${city}`, text: "Sammelt Anzeigen von vielen Seiten auf einmal.", url: `https://www.google.com/search?q=${e("Nebenjob " + city)}&ibp=htl;jobs` },
+    ];
+    const code = [
+      { title: "Arduino- & ESP32-Aufträge", sub: "Upwork · online", text: "Kleine Elektronik-/Programmier-Aufträge, passen zu deiner Ausbildung.", url: "https://www.upwork.com/nx/search/jobs/?q=arduino" },
+      { title: "Python-Automatisierung", sub: "Upwork · online", text: "Skripte, Excel-Auswertungen, kleine Tools – gut mit KI-Hilfe machbar.", url: "https://www.upwork.com/nx/search/jobs/?q=" + e("python automation") },
+      { title: "SPS-/PLC-Aufträge", sub: "Upwork · online", text: "Seltener, aber besser bezahlt – genau dein Fach.", url: "https://www.upwork.com/nx/search/jobs/?q=PLC" },
+      { title: "Eigenes Angebot erstellen", sub: "Fiverr · online", text: "Statt suchen: „Ich programmiere dein Arduino-Projekt“ anbieten, Kunden kommen zu dir.", url: "https://www.fiverr.com/start_selling" },
+    ];
+    return wantsCode ? [...code, local[0]] : [local[0], local[1], code[0], code[1], local[2]];
+  }
+  function showJobPortals(wantsCode, where, why) {
+    const rows = jobPortals(wantsCode, where);
+    linkCard("💼 Job-Finder", rows.map(x => ({ ...x, linkText: "Suche öffnen" })),
+      "Tipp: Gefällt dir eine Anzeige, schick mir den Text und sag „Schreib mir eine Bewerbung dafür“. Als Azubi musst du einen Nebenjob deinem Ausbildungsbetrieb melden.");
+    assistantSay(`${why}Ich habe dir ${rows.length} Job-Seiten mit der passenden Suche vorbereitet, ${anrede()}. Tipp einfach auf „Suche öffnen“. Am besten fängst du mit ${rows[0].title} an.`);
+  }
   async function handleJobs(text) {
     const ap = APPLY_RE.exec(clean(text));
     if (ap) return applyJob(ap[1] || ap[2]);
     if (!JOB_RE.test(clean(text))) return false;
-    if (!geminiKey) { assistantSay("Für die Job-Suche brauche ich deinen Gemini-Schlüssel, weil ich dafür im Internet suchen muss."); return true; }
     const me = dataGet("me", {});
     const where = me.city || me.home || "Haßfurt (Unterfranken)";
     const wantsCode = /programm|code|freelance|auftr|gig|online/i.test(text);
+    if (!geminiKey || searchOff()) { showJobPortals(wantsCode, where, ""); return true; }
     const done = busyBubble("Sucht Jobs …");
     let r = null;
     try {
       r = await gemSearch(`Suche im Internet nach AKTUELLEN, echten Angeboten (keine erfundenen!) für einen Azubi zum Elektroniker für Automatisierungstechnik, der nebenbei Geld verdienen will.
 ${wantsCode ? "Schwerpunkt: kleine Programmier-Aufträge (z. B. Python-Skripte, Webseiten, Excel/VBA, Arduino/ESP32, SPS), die man online erledigen kann." : `Mischung aus: kleine Programmier-/Technik-Aufträge online (z. B. Arduino, Python, Webseiten, SPS) UND Minijobs/Nebenjobs in der Nähe von ${where} (z. B. Elektro-Helfer, Technik-Aushilfe, Nachhilfe).`}
 Gib 5 Treffer. Antworte nur mit einem JSON-Objekt: {"jobs":[{"titel":"…","wo":"Plattform/Firma und Ort oder online","verdienst":"ungefähr, falls bekannt","warum":"1 kurzer Satz, warum es passt","link":"https://… direkte Adresse der Anzeige oder Plattform"}]}`);
-    } catch (e) { done(); if (!(e && e.name === "AbortError")) assistantSay("Die Suche hat gerade nicht geklappt. " + (e.message || "")); return true; }
+    } catch (e) { done(); if (!(e && e.name === "AbortError")) showJobPortals(wantsCode, where, "Live im Internet suchen darf ich mit dem kostenlosen Gemini-Schlüssel leider nicht. "); return true; }
     done();
     const j = jsonIn(r && r.text);
     let jobs = (j && Array.isArray(j.jobs) ? j.jobs : []).filter(x => x && x.titel).slice(0, 5);
     // Links: nur echte https-Adressen; sonst die Quelle aus der Google-Suche
     jobs = jobs.map((x, i) => ({ ...x, link: /^https:\/\/\S+$/.test(x.link || "") ? x.link : ((r.links[i] || {}).uri || "") }));
-    if (!jobs.length) { assistantSay("Ich habe gerade keine passenden Angebote gefunden. Versuch es später nochmal."); return true; }
+    if (!jobs.length) { showJobPortals(wantsCode, where, "Konkrete Anzeigen habe ich gerade nicht gefunden. "); return true; }
     dataSet("jobs", jobs);
     linkCard("💼 Job-Finder", jobs.map(x => ({ title: x.titel, sub: [x.wo, x.verdienst].filter(Boolean).join(" · "), text: x.warum, url: x.link, linkText: "Anzeige öffnen" })),
       "Tipp: Als Azubi musst du einen Nebenjob deinem Ausbildungsbetrieb melden. Sag „Schreib mir eine Bewerbung für Job 2“ – den Auftrag selbst machen wir dann zusammen.");
@@ -282,7 +346,7 @@ Gib 5 Treffer. Antworte nur mit einem JSON-Objekt: {"jobs":[{"titel":"…","wo":
   async function applyJob(nr) {
     const n = isNaN(+nr) ? ({ eins: 1, zwei: 2, drei: 3, vier: 4, fünf: 5 }[String(nr).toLowerCase()] || 1) : +nr;
     const job = dataGet("jobs", [])[n - 1];
-    if (!job) { assistantSay("Such zuerst Jobs mit „Such mir Nebenjobs“, dann kann ich eine Bewerbung schreiben."); return true; }
+    if (!job) { assistantSay("Ich habe keine konkrete Anzeige gespeichert. Kopier den Text einer Anzeige, schick ihn mir und sag „Schreib mir eine Bewerbung dafür“."); return true; }
     if (!backend) { assistantSay("Dafür brauche ich die KI."); return true; }
     const done = busyBubble("Schreibt die Bewerbung …");
     let r = null;

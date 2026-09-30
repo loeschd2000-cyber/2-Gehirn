@@ -630,6 +630,13 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
             main.post { Amazon.addToCart(act, asin, qty) { ok, msg -> emit("__zgShop", JSONObject().put("type", "cart").put("ok", ok).put("msg", msg)) } }
         }
         @JavascriptInterface fun amazonSearch(q: String) { main.post { Amazon.search(act, q) } }
+        /** Produkt auf amazon.de suchen (ohne Gemini); Antwort kommt als __zgShop-Ereignis „find“ */
+        @JavascriptInterface fun amazonFind(q: String, id: String) {
+            Thread {
+                val r = try { AmazonWeb.search(q.take(120)) } catch (_: Throwable) { JSONObject().put("ok", false).put("msg", "Fehler") }
+                emit("__zgShop", r.put("type", "find").put("id", id))
+            }.start()
+        }
         @JavascriptInterface fun amazonProduct(asin: String) { main.post { Amazon.product(act, asin) } }
         @JavascriptInterface fun copyText(text: String) { main.post { Share.copy(act, "Jarvis", text) } }
         @JavascriptInterface fun openLink(url: String, pkg: String) { main.post { Share.open(act, url, pkg) } }

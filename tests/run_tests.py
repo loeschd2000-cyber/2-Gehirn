@@ -176,6 +176,8 @@ CASES = [
     ("Nenn mich Boss", ["Alles klar, Boss"]),
     ("Bestell Zahnpasta auf Amazon", ["Oral-B", "Warenkorb"]),
     ("ja", ["amazonCart B08N5WRWNW 1", "Liegt im Warenkorb"]),
+    ("Kannst du mir bitte Zahnpasta auf Amazon bestellen?", ["Oral-B", "Warenkorb"]),
+    ("nein", ["nicht in den Warenkorb"]),
     ("Leg zwei Packungen Batterien in den Warenkorb", ["Warenkorb", "2 Stück"]),
     ("nein", ["nicht in den Warenkorb"], ["amazonCart"]),
     ("Sag mir Bescheid, wenn die AirPods Pro unter 180 Euro fallen", ["pricewatch B0D1XD1ZV3 180"]),

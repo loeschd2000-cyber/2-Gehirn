@@ -62,11 +62,30 @@ PREIS: <aktueller Preis in Euro, z. B. 12,99 – oder unbekannt>`);
   /* ---------- 1) Amazon: „Bestell Zahnpasta auf Amazon“ → Warenkorb (nie kaufen) ---------- */
   const AMZ_RE = /^(?:bestell\w*|kauf\w*|leg\w*|pack\w*|tu\w*|setz\w*|füg\w*|hol\w*)\s+(?:mir\s+|bitte\s+|mal\s+|noch\s+)*(.+?)\s+(?:auf|bei|über|von|in)\s+amazon(?:\s+(?:in\s+den|in\s+meinen)\s+(?:warenkorb|einkaufswagen))?(?:\s+(?:rein|ein|hinzu))?$/i;
   const AMZ_RE2 = /^(?:leg\w*|pack\w*|tu\w*|setz\w*|füg\w*)\s+(?:mir\s+|bitte\s+|mal\s+)*(.+?)\s+(?:in|zu)\s+(?:den|meinen|meinem)\s+(?:amazon[- ]?)?(?:warenkorb|einkaufswagen)(?:\s+(?:bei|auf)\s+amazon)?(?:\s+(?:rein|hinzu))?$/i;
+  // Frei gesprochen: „Kannst du mir Zahnpasta auf Amazon bestellen?“, „Ich brauch Batterien von Amazon“, „Amazon: Zahnpasta in den Warenkorb“
+  function amazonItemLoose(text) {
+    const tl = text.toLowerCase();
+    if (!/amazon|warenkorb|einkaufswagen/.test(tl)) return null;
+    if (!/(?:^|[^\wäöüß])(bestell\w*|kauf\w*|leg\w*|pack\w*|tu[en]?|tust|setz\w*|füg\w*|hol\w*|brauch\w*|order\w*|warenkorb|einkaufswagen)(?![\wäöüß])/.test(tl)) return null;
+    if (/(?:^|\s)(was|wie|wann|wo|welche\w*|zeig\w*|lösch\w*|entfern\w*|storn\w*|status|lieferung|geliefert|paket|bestellungen)(?![\wäöüß])/.test(tl) && !/(bestell|kauf|leg|pack|setz|füg)\w*\s+(?:mir\s+)?\S/.test(tl.replace(/^(?:was|wie)\b.*$/, ""))) return null;
+    let it = " " + tl.replace(/[?!.,;:„“"]/g, " ") + " ";
+    const drop = [
+      /\s(?:hey\s+)?jarvis\s/g, /\s(?:kannst|könntest|würdest|kann|könnt)\s+du\s/g, /\s(?:ich|wir)\s+(?:brauch\w*|will|möchte|möchten|hätte\s+gern\w*|würde\s+gern\w*)\s/g,
+      /\s(?:auf|bei|über|von|in|mit)\s+amazon(?:\s+prime)?\s/g, /\s(?:in|zu|auf)\s+(?:den|meinen|meinem|dem|mein)\s+(?:amazon[\s-]*)?(?:warenkorb|einkaufswagen)\s/g,
+      /\samazon[\s-]*(?:warenkorb|einkaufswagen)\s/g, /\s(?:warenkorb|einkaufswagen)\s/g, /\samazon\s/g,
+      /\s(?:bestell\w*|kauf\w*|leg\w*|pack\w*|tu|tue|tun|tust|setz\w*|füg\w*|hol\w*|brauch\w*|order\w*)\s/g,
+      /\s(?:bitte|mal|mir|mich|uns|für\s+mich|noch|schnell|gleich|jetzt|dann|doch|einfach|so|rein|hinzu|dazu|ein|drauf)\s/g,
+    ];
+    for (let k = 0; k < 3; k++) for (const re of drop) it = it.replace(re, " ");
+    it = it.replace(/\s+/g, " ").trim();
+    return it.length >= 2 && it.split(" ").length <= 8 ? it : "";
+  }
   async function handleAmazon(text) {
     const t = clean(text);
     const m = AMZ_RE.exec(t) || AMZ_RE2.exec(t);
-    if (!m) return false;
-    let item = m[1].trim(), qty = 1;
+    let loose = null;
+    if (!m) { loose = amazonItemLoose(text); if (loose === null) return false; if (!loose) { assistantSay(`Was soll ich dir auf Amazon in den Warenkorb legen, ${anrede()}?`); return true; } }
+    let item = (m ? m[1] : loose).trim(), qty = 1;
     const q = /^(\d{1,2}|ein|eine|einen|zwei|drei|vier|fünf|sechs|zehn)\s+(?:mal\s+|x\s+|stück\s+|packungen?\s+(?:von\s+|mit\s+)?|flaschen\s+|sets?\s+)?(.+)$/i.exec(item);
     if (q) { qty = isNaN(+q[1]) ? (AMZ_NUM[q[1].toLowerCase()] || 1) : +q[1]; item = q[2]; }
     item = item.replace(/^(?:die|das|den|der|neue[nsm]?|ne|nen)\s+/i, "").trim();

@@ -77,8 +77,16 @@
     }).catch(e => {
       if (ep !== ttsEpoch) return;
       try { AND && AND.setSpeaking && AND.setSpeaking(false); } catch {}
-      aiBlockedUntil = Date.now() + 10 * 60000;   // 10 Minuten normale Stimme, dann neu versuchen
-      note("KI-Stimme gerade nicht verfügbar (" + (e.message || e) + ") – ich nehme die normale Stimme.");
+      const limit = /429/.test(String(e && e.message));
+      if (limit) {   // Tageslimit von Gemini erreicht: bis morgen früh normale Stimme (Limit wird ca. 9 Uhr zurückgesetzt)
+        const t = new Date(); t.setHours(9, 30, 0, 0); if (t <= new Date()) t.setDate(t.getDate() + 1);
+        aiBlockedUntil = +t;
+      } else aiBlockedUntil = Date.now() + 10 * 60000;   // 10 Minuten normale Stimme, dann neu versuchen
+      const today = new Date().toDateString();
+      if (lsGet("zg_aiv_note") !== today) {   // höchstens einmal am Tag Bescheid sagen
+        lsSet("zg_aiv_note", today);
+        note(limit ? "Die KI-Stimme hat ihr kostenloses Tageslimit erreicht – bis morgen spreche ich mit der normalen Stimme." : "KI-Stimme gerade nicht verfügbar – ich nehme die normale Stimme.");
+      }
       fallback();
     });
   }

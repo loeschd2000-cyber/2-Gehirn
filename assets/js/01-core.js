@@ -599,6 +599,12 @@
     return true;
   }
   window.__zgWake = () => nativeWake();
+  window.__zgAsk = q => {
+    if (busy || listening || typeof ask !== "function") return false;
+    const p = AND && AND.consumeAsk ? AND.consumeAsk() : q;   // nur einmal ausführen (Start-Routine kann es auch abholen)
+    if (p) { hush(); ask(p, true); }
+    return true;
+  };
   window.__zgWakeState = on => { wakeOn = !!on; lsSet("zg_wake", on ? "1" : "0"); updateWakeUi(); };
   window.__zgResume = () => {
     try { mergeInto(JSON.parse(lsGet(STORE_KEY) || "[]"), JSON.parse(lsGet("zg_deleted") || "[]")); renderAll(); } catch {}

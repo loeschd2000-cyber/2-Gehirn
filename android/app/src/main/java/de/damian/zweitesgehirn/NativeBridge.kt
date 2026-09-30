@@ -144,6 +144,15 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         }, 250)
     }
 
+    /** Widget-Knopf (z. B. Briefing): Satz an die Web-App geben (oder merken, falls sie noch lädt) */
+    @Volatile var pendingAsk: String? = null
+    fun deliverAsk(text: String) {
+        pendingAsk = text
+        main.postDelayed({
+            if (!destroyed) web.evaluateJavascript("(window.__zgAsk && __zgAsk(" + JSONObject.quote(text) + ")) ? 'ok' : 'wait'") { r -> if (r?.contains("ok") == true) pendingAsk = null }
+        }, 600)
+    }
+
     @Volatile var pendingDiary = false
     fun deliverDiary() {
         pendingDiary = true
@@ -552,6 +561,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
 
         // Tagebuch
         @JavascriptInterface fun consumeDiary(): Boolean { val d = pendingDiary; pendingDiary = false; return d }
+        @JavascriptInterface fun consumeAsk(): String { val a = pendingAsk ?: ""; pendingAsk = null; return a }
         @JavascriptInterface fun diaryReminder(h: Int, m: Int) { DiaryReminder.set(act, h, m) }
         @JavascriptInterface fun diaryReminderTime(): String = DiaryReminder.time(act)?.let { "%02d:%02d".format(it.first, it.second) } ?: ""
         /** Protokoll des letzten Abspielversuchs (für die Einstellungsseite) */

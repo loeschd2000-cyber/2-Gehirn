@@ -145,6 +145,7 @@ class MainActivity : Activity() {
     }
 
     private fun handleIntent(i: Intent?) {
+        i?.getStringExtra("ask")?.let { q -> i.removeExtra("ask"); if (q.isNotBlank() && q.length < 300) bridge.deliverAsk(q) }
         if (i?.getBooleanExtra("diary", false) == true) {
             i.removeExtra("diary")
             bridge.deliverDiary()

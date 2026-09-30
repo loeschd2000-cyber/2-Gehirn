@@ -70,6 +70,7 @@ def llm_answer(body):
     if '"aktion"' in body or "aktion" in body[:3000]: return {"aktion": "keine"}
     return None
 
+TTS_HITS = []
 async def route(r):
     u = r.request.url
     if u.startswith("file:"): return await r.continue_()
@@ -89,6 +90,11 @@ async def route(r):
     if "generativelanguage" in u:
         if "/models?" in u: return await r.fulfill(json={"models": [{"name": "models/gemini-3.8-flash", "supportedGenerationMethods": ["generateContent"]}]}, headers=H)
         body = r.request.post_data or ""
+        if '"AUDIO"' in body:
+            TTS_HITS.append(body)
+            import base64
+            pcm = base64.b64encode(b"\x00\x00" * 2400).decode()
+            return await r.fulfill(json={"candidates": [{"content": {"parts": [{"inlineData": {"mimeType": "audio/L16;codec=pcm;rate=24000", "data": pcm}}]}}]}, headers=H)
         out = llm_answer(body)
         if "streamGenerateContent" in u:
             text = "Das ist eine Testantwort."
@@ -181,6 +187,12 @@ async def main():
             wrong = [f for f in forbid if f in hay]
             if missing or wrong: fail += 1; print(f"✗ {sentence}\n    fehlt: {missing}  falsch: {wrong}\n    bekam: {hay[:300]}")
             else: ok += 1; print(f"✓ {sentence}")
+        # KI-Stimme: Satz für Satz über Gemini, mit Vorab-Laden des nächsten Satzes
+        await pg.evaluate("() => { gemAllModels.push('models/gemini-test-flash-tts'); aiVoiceName = 'Charon'; assistantSay('Das ist der erste Satz. Und hier kommt der zweite Satz.'); }")
+        await pg.wait_for_timeout(2500)
+        if len(TTS_HITS) >= 2 and not await pg.evaluate("speaking"): ok += 1; print("✓ KI-Stimme spricht Satz für Satz")
+        else: fail += 1; print(f"✗ KI-Stimme: {len(TTS_HITS)} Anfragen, speaking={await pg.evaluate('speaking')}")
+        await pg.evaluate("() => { aiVoiceName = ''; }")
         if errs: fail += 1; print("✗ JavaScript-Fehler:", errs)
         await b.close()
     print(f"\n{ok} bestanden, {fail} fehlgeschlagen")

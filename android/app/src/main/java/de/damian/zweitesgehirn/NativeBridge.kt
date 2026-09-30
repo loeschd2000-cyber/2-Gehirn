@@ -409,6 +409,10 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             }
         }
         @JavascriptInterface fun wakeOn(): Boolean = Prefs.wake(act)
+        @JavascriptInterface fun bargeInGet(): Boolean = Prefs.bargeIn(act)
+        @JavascriptInterface fun bargeInSet(on: Boolean) { Prefs.setBargeIn(act, on); WakeService.bargeIn = on }
+        /** Für die KI-Stimme (spielt in der Web-App): Hintergrund-Dienst wissen lassen, dass Jarvis spricht */
+        @JavascriptInterface fun setSpeaking(on: Boolean) { WakeService.setSpeaking(on) }
         @JavascriptInterface fun consumeWake(): Boolean { val w = pendingWake; pendingWake = false; return w }
         @JavascriptInterface fun wakeScore(): Float = WakeService.lastScore
 

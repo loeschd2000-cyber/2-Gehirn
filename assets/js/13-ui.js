@@ -158,6 +158,14 @@
     $("cPro").onclick = () => { lsSet("zg_pro_on", lsGet("zg_pro_on") === "0" ? "1" : "0"); proUi(); proactiveSync(); toast(lsGet("zg_pro_on") === "0" ? "Morgen-Hinweise aus" : "Morgen-Hinweise an (7:30 Uhr)", "🔔"); };
   }
 
+  // Unterbrechen mit „Hey Jarvis“ (Android)
+  if (AND && AND.bargeInGet && !MINI) {
+    $("cBarge").hidden = false;
+    const bUi = () => { $("cBargeState").textContent = AND.bargeInGet() ? "AN" : "AUS"; };
+    bUi();
+    $("cBarge").onclick = () => { AND.bargeInSet(!AND.bargeInGet()); bUi(); toast(AND.bargeInGet() ? "Du kannst Jarvis jetzt mit „Hey Jarvis“ unterbrechen" : "Unterbrechen aus", "✋"); };
+  }
+
   /* ---------- Ausklapp-Blatt (Hilfe, Neuigkeiten) ---------- */
   function openSheet(title, build) {
     closeDrawers();

@@ -255,31 +255,41 @@
   const voiceActive = () => !!synth && voiceOn;
 
   let ttsEpoch = 0;   // wird bei jedem Stoppen erhöht, damit alte Sätze nicht weiterlaufen
-  function speak(text, onShow) {
-    // Für die Stimme aufbereiten: Zeichen aussprechbar machen, Emojis weg – klingt deutlicher
-    const clean = text.replace(/[*#_`>]/g, "")
+  // Für die Stimme aufbereiten: Zeichen aussprechbar machen, Emojis weg – klingt deutlicher
+  const cleanSpeech = text => text.replace(/[*#_`>]/g, "")
       .replace(/\p{Extended_Pictographic}|[\u{FE0F}\u{200D}✓✗☐▲▼•◎]/gu, "")
       .replace(/(\d)\s*€/g, "$1 Euro").replace(/€/g, "Euro").replace(/(\d)\s*%/g, "$1 Prozent").replace(/°\s*C/g, " Grad")
       .replace(/\bz\.\s*B\./g, "zum Beispiel").replace(/\bca\./g, "circa").replace(/\bbzw\./g, "beziehungsweise").replace(/\bu\.\s*a\./g, "unter anderem")
       .replace(/\s+&\s+/g, " und ").replace(/\s[–—]\s/g, ", ").replace(/\s{2,}/g, " ").trim();
+  function speak(text, onShow) {
+    const clean = cleanSpeech(text);
     if (!voiceActive() || !clean) { onShow && onShow(); return; }
     const ep = ttsEpoch;
-    const u = new SpeechSynthesisUtterance(clean);
-    u.lang = "de-DE"; if (voice) u.voice = voice; u.rate = AND ? 1.0 : 1.05;
     let shownOnce = false;
     const show = () => { if (!shownOnce) { shownOnce = true; onShow && onShow(); } };
     queue++; speaking = true; refreshUi();
-    u.onstart = show;
-    u.onend = u.onerror = () => {
+    const finish = () => {
       if (ep !== ttsEpoch) return;
       show();
       queue = Math.max(0, queue - 1);
       if (!queue) pump();
       if (!queue) { speaking = false; refreshUi(); if (!busy) revealAll(); maybeListenAgain(); scheduleWake(700); }
     };
-    synth.speak(u);
+    const viaSystem = () => {
+      const u = new SpeechSynthesisUtterance(clean);
+      u.lang = "de-DE"; if (voice) u.voice = voice; u.rate = AND ? 1.0 : 1.05;
+      u.onstart = show;
+      u.onend = u.onerror = finish;
+      synth.speak(u);
+    };
+    // KI-Stimme (Gemini): klingt natürlicher; bei Fehlern automatisch die normale Stimme
+    if (typeof aiVoiceUsable === "function" && aiVoiceUsable()) {
+      aiSpeak(clean, ep, show, finish, viaSystem);
+      return;
+    }
+    viaSystem();
   }
-  function hush() { ttsEpoch++; if (synth) synth.cancel(); queue = 0; speaking = false; spokenUpTo = fullAnswer.length; revealAll(); refreshUi(); }
+  function hush() { ttsEpoch++; if (synth) synth.cancel(); try { aiStop(); } catch {} queue = 0; speaking = false; spokenUpTo = fullAnswer.length; revealAll(); refreshUi(); }
 
   // Fließend sprechen: immer nur ein Stück gleichzeitig, danach alles bis dahin Fertige in einem Rutsch
   let spokenUpTo = 0, genDone = false;
@@ -289,6 +299,17 @@
     if (!rest.trim()) return;
     const words = t => t.trim().split(/\s+/).filter(Boolean).length;
     let cut = -1, m;
+    if (typeof aiVoiceUsable === "function" && aiVoiceUsable()) {
+      // KI-Stimme: Satz für Satz (immer gleich geschnitten), damit der nächste Satz schon vorab geladen werden kann
+      cut = aiCut(rest, genDone);
+      if (cut > 0) {
+        const chunk = rest.slice(0, cut); spokenUpTo += cut;
+        speak(chunk, () => reveal(chunk));
+        const nxt = fullAnswer.slice(spokenUpTo), c2 = aiCut(nxt, genDone);
+        if (c2 > 0) aiPrefetch(cleanSpeech(nxt.slice(0, c2)));
+      }
+      return;
+    }
     if (genDone) cut = rest.length;
     else {
       const re = /[.!?…:;]+["»“)]?\s+|\n+/g;
@@ -566,10 +587,15 @@
   });
   // Android-App: „Hey Jarvis“ wurde im Hintergrund gehört -> sofort zuhören
   function nativeWake() {
-    if (busy || !backend) return false;
+    if (!backend) return false;
     if (listening) return true;
+    if (busy && !speaking) return false;              // gerade eine Aktion (z. B. Bank) – nicht stören
+    const interrupted = busy || speaking;
+    if (busy) { try { ctl && ctl.abort(); } catch {} } // Unterbrechen: laufende Antwort abbrechen
     hush(); beep();
-    setTimeout(() => listen(), 150);
+    let tries = 0;
+    const go = () => { if (busy && tries++ < 15) { setTimeout(go, 100); return; } listen(); };
+    setTimeout(go, interrupted ? 250 : 150);
     return true;
   }
   window.__zgWake = () => nativeWake();

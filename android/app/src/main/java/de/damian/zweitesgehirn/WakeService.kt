@@ -35,6 +35,8 @@ class WakeService : Service() {
         private const val NOTE_ID = 1
         const val ACTION_STOP = "de.damian.zweitesgehirn.STOP_WAKE"
         const val THRESHOLD = 0.5f
+        const val THRESHOLD_SPEAKING = 0.8f   // beim Unterbrechen strenger, damit Jarvis sich nicht selbst hört
+        @Volatile var bargeIn = true
 
         @Volatile var running = false
         @Volatile private var micBusy = false
@@ -70,6 +72,7 @@ class WakeService : Service() {
             Log.e(TAG, "Vordergrund-Dienst nicht erlaubt", e)
             running = false; stopSelf(); return START_NOT_STICKY
         }
+        bargeIn = Prefs.bargeIn(this)
         if (worker?.isAlive != true) {
             stopFlag = false
             worker = Thread({ loop() }, "wake-listener").also { it.start() }
@@ -114,22 +117,30 @@ class WakeService : Service() {
             while (!stopFlag) {
                 // Pause, solange die App selbst zuhört/spricht oder du telefonierst
                 val inCall = audio.mode == AudioManager.MODE_IN_CALL || audio.mode == AudioManager.MODE_IN_COMMUNICATION || audio.mode == AudioManager.MODE_RINGTONE
-                val paused = micBusy || speaking || inCall || System.currentTimeMillis() - lastTrigger < 3000
+                val interrupt = speaking && bargeIn
+                val paused = micBusy || (speaking && !bargeIn) || inCall || System.currentTimeMillis() - lastTrigger < 3000
                 if (paused) {
                     rec?.let { try { it.stop() } catch (_: Throwable) {}; it.release() }
-                    rec = null
+                    rec = null; releaseAec()
                     wasPaused = true
                     Thread.sleep(150)
                     continue
                 }
+                // Beim Unterbrechen eine Aufnahme mit Echo-Unterdrückung nehmen (Jarvis' eigene Stimme wird herausgerechnet)
+                if (rec != null && recEcho != interrupt) { try { rec.stop() } catch (_: Throwable) {}; rec.release(); rec = null; releaseAec(); detector.reset() }
                 if (rec == null) {
                     if (wasPaused) { detector.reset(); wasPaused = false }
                     val min = AudioRecord.getMinBufferSize(16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
                     val r = try {
-                        AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, 16000, AudioFormat.CHANNEL_IN_MONO,
-                            AudioFormat.ENCODING_PCM_16BIT, maxOf(min, 1280 * 2 * 4))
+                        AudioRecord(if (interrupt) MediaRecorder.AudioSource.VOICE_COMMUNICATION else MediaRecorder.AudioSource.VOICE_RECOGNITION,
+                            16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, maxOf(min, 1280 * 2 * 4))
                     } catch (e: SecurityException) { Log.e(TAG, "Kein Mikrofon-Recht", e); main.post { stopSelf() }; break }
                     if (r.state != AudioRecord.STATE_INITIALIZED) { r.release(); Thread.sleep(1000); continue }
+                    if (interrupt) try {
+                        if (android.media.audiofx.AcousticEchoCanceler.isAvailable())
+                            aec = android.media.audiofx.AcousticEchoCanceler.create(r.audioSessionId)?.apply { enabled = true }
+                    } catch (_: Throwable) {}
+                    recEcho = interrupt
                     r.startRecording()
                     rec = r
                 }
@@ -142,9 +153,9 @@ class WakeService : Service() {
                 if (n < chunk.size) { rec.release(); rec = null; Thread.sleep(300); continue }
                 val score = detector.process(chunk)
                 lastScore = score
-                if (score >= THRESHOLD && !micBusy && !speaking) {
+                if (score >= (if (recEcho) THRESHOLD_SPEAKING else THRESHOLD) && !micBusy && (!speaking || recEcho)) {
                     lastTrigger = System.currentTimeMillis()
-                    rec.stop(); rec.release(); rec = null; wasPaused = true
+                    rec.stop(); rec.release(); rec = null; wasPaused = true; releaseAec()
                     main.post { onWake() }
                 }
             }
@@ -152,10 +163,15 @@ class WakeService : Service() {
             Log.e(TAG, "Fehler beim Zuhören", e)
         } finally {
             rec?.let { try { it.stop() } catch (_: Throwable) {}; it.release() }
+            releaseAec()
             detector.close()
             running = false
         }
     }
+
+    private var aec: android.media.audiofx.AcousticEchoCanceler? = null
+    @Volatile private var recEcho = false
+    private fun releaseAec() { try { aec?.release() } catch (_: Throwable) {}; aec = null }
 
     private fun onWake() {
         micBusy = true   // Mikrofon für die App freihalten, bis sie selbst meldet, dass sie fertig ist

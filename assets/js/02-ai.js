@@ -2,7 +2,7 @@
   const AI_MODES = ["auto", "pc", "gemini"];
   let aiMode = AI_MODES.includes(lsGet("zg_ai_mode")) ? lsGet("zg_ai_mode") : "auto";
   let geminiKey = secGet("zg_gemini_key");
-  let geminiModel = null, geminiCandidates = [], pcOk = false, backend = null;   // backend: "pc" | "gemini" | null
+  let geminiModel = null, geminiCandidates = [], gemAllModels = [], pcOk = false, backend = null;   // backend: "pc" | "gemini" | null
   const GEM = "https://generativelanguage.googleapis.com/v1beta";
 
   async function checkPc() {
@@ -26,6 +26,7 @@
       const r = await fetch(`${GEM}/models?pageSize=200`, { headers: { "x-goog-api-key": geminiKey } });
       if (!r.ok) throw new Error(r.status);
       const ms = ((await r.json()).models || []).filter(m => (m.supportedGenerationMethods || []).includes("generateContent")).map(m => m.name);
+      gemAllModels = ms;
       const ver = n => { const m = /gemini-(\d+(?:\.\d+)?)/.exec(n); return m ? parseFloat(m[1]) : 0; };
       // Reihenfolge: stabile Flash-Modelle (neueste zuerst), dann Vorschau-Versionen, dann Flash-Lite als Notlösung
       const bad = /image|tts|audio|live|embed|thinking|computer|robotics/;

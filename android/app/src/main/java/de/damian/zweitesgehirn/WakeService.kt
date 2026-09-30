@@ -65,13 +65,17 @@ class WakeService : Service() {
             stopSelf()
             return START_NOT_STICKY
         }
-        startInForeground()
-        if (worker == null) {
+        try { startInForeground() } catch (e: Exception) {
+            // Android 14+: Mikrofon-Dienst darf nicht aus dem Hintergrund starten (z. B. Neustart durch das System)
+            Log.e(TAG, "Vordergrund-Dienst nicht erlaubt", e)
+            running = false; stopSelf(); return START_NOT_STICKY
+        }
+        if (worker?.isAlive != true) {
             stopFlag = false
             worker = Thread({ loop() }, "wake-listener").also { it.start() }
         }
         running = true
-        return START_STICKY
+        return START_NOT_STICKY   // die App startet den Dienst beim Öffnen selbst wieder
     }
 
     private fun startInForeground() {
@@ -124,7 +128,7 @@ class WakeService : Service() {
                     val r = try {
                         AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, 16000, AudioFormat.CHANNEL_IN_MONO,
                             AudioFormat.ENCODING_PCM_16BIT, maxOf(min, 1280 * 2 * 4))
-                    } catch (e: SecurityException) { Log.e(TAG, "Kein Mikrofon-Recht", e); break }
+                    } catch (e: SecurityException) { Log.e(TAG, "Kein Mikrofon-Recht", e); main.post { stopSelf() }; break }
                     if (r.state != AudioRecord.STATE_INITIALIZED) { r.release(); Thread.sleep(1000); continue }
                     r.startRecording()
                     rec = r
@@ -149,6 +153,7 @@ class WakeService : Service() {
         } finally {
             rec?.let { try { it.stop() } catch (_: Throwable) {}; it.release() }
             detector.close()
+            running = false
         }
     }
 

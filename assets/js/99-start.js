@@ -4,6 +4,7 @@
     updateLoopUi(); updatePauseUi(); updateGoogleUi(); refreshUi();
     renderChat();
     await initStore();
+    renderTiles();   // jetzt mit geladenen Daten (Tagebuch-Status usw.)
     renderAll();   // beim Öffnen immer mit einem neuen Gespräch starten, alte stehen rechts unter „Gespräche“
     await checkAi();
     warmUp();

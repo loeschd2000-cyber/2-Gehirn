@@ -46,18 +46,18 @@ object Reminders {
         catch (_: SecurityException) { am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pending(ctx, id)) }
     }
 
-    fun add(ctx: Context, at: Long, text: String): Int {
+    @Synchronized fun add(ctx: Context, at: Long, text: String): Int {
         val id = 30000 + ((at / 1000 + text.hashCode()) % 900000).toInt().let { if (it < 0) -it else it }
         val a = list(ctx); a.put(JSONObject().put("id", id).put("at", at).put("text", text)); save(ctx, a)
         arm(ctx, id, at); return id
     }
-    fun cancel(ctx: Context, id: Int) {
+    @Synchronized fun cancel(ctx: Context, id: Int) {
         val a = list(ctx); val keep = JSONArray()
         for (i in 0 until a.length()) { val o = a.getJSONObject(i)
             if (id == -1 || o.getInt("id") == id) ctx.getSystemService(AlarmManager::class.java).cancel(pending(ctx, o.getInt("id"))) else keep.put(o) }
         save(ctx, keep)
     }
-    fun fire(ctx: Context, id: Int) {
+    @Synchronized fun fire(ctx: Context, id: Int) {
         val a = list(ctx); val keep = JSONArray(); var text = "Erinnerung"
         for (i in 0 until a.length()) { val o = a.getJSONObject(i); if (o.getInt("id") == id) text = o.optString("text") else keep.put(o) }
         save(ctx, keep)
@@ -85,13 +85,13 @@ object PriceAlerts {
     private fun pending(ctx: Context) = PendingIntent.getBroadcast(ctx, 8080, Intent(ctx, PriceReceiver::class.java),
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
 
-    fun add(ctx: Context, coinId: String, symbol: String, below: Boolean, price: Double, currency: String): Int {
-        val id = (System.currentTimeMillis() / 1000 % 1000000).toInt()
+    @Synchronized fun add(ctx: Context, coinId: String, symbol: String, below: Boolean, price: Double, currency: String): Int {
+        val id = ((System.nanoTime() / 1000) % 900000).toInt().let { if (it < 0) -it else it } + 1000
         val a = list(ctx)
         a.put(JSONObject().put("id", id).put("coin", coinId).put("sym", symbol).put("below", below).put("price", price).put("cur", currency))
         save(ctx, a); return id
     }
-    fun cancel(ctx: Context, id: Int) {
+    @Synchronized fun cancel(ctx: Context, id: Int) {
         val a = list(ctx); val keep = JSONArray()
         for (i in 0 until a.length()) if (id != -1 && a.getJSONObject(i).getInt("id") != id) keep.put(a.getJSONObject(i))
         save(ctx, keep)
@@ -104,7 +104,7 @@ object PriceAlerts {
             AlarmManager.INTERVAL_FIFTEEN_MINUTES, pending(ctx))
     }
     /** Hintergrund-Thread! */
-    fun check(ctx: Context) {
+    @Synchronized fun check(ctx: Context) {
         val a = list(ctx); if (a.length() == 0) return
         val ids = (0 until a.length()).map { a.getJSONObject(it).optString("coin") }.distinct().joinToString(",")
         val json = try {

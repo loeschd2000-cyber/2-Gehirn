@@ -31,5 +31,5 @@ Nachricht: "${text}"`;
     return llmJson(prompt, schema);
   }
 
-  const YES = /^\s*(ja|jo|jep|jawohl|genau|klar|okay|ok|passt|mach( das)?|bitte|speicher|trag( es)? ein)\b/i;
-  const NO = /^\s*(nein|nee|ne|nö|abbrechen|stopp|lass( es)?|verwerfen)\b/i;
+  const YES = /^\s*(ja|jo|jep|jawohl|genau|klar|okay|ok|passt|mach( das)?|speicher\w*|trag( es)? ein|senden|schick\w*|bitte$|ja bitte)(?![\wäöüß])/i;
+  const NO = /^\s*(nein|nee|ne|nö|abbrechen|stopp?|lass( es)?|verwerfen|lieber nicht|doch nicht)(?![\wäöüß])|\b(nicht|kein\w*)\b/i;

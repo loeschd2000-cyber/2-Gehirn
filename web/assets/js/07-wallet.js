@@ -27,7 +27,7 @@
     let last;
     for (const url of RPCS) {
       try {
-        const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }) });
+        const r = await fetchT(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }) });
         const j = await r.json();
         if (j.error) throw new Error(j.error.message || "RPC-Fehler");
         return j.result;
@@ -53,7 +53,7 @@
     // 2) Preise (Jupiter) in Dollar + 24-h-Änderung
     const prices = {};
     for (let i = 0; i < mints.length; i += 50) {
-      const r = await fetch("https://lite-api.jup.ag/price/v3?ids=" + mints.slice(i, i + 50).join(","));
+      const r = await fetchT("https://lite-api.jup.ag/price/v3?ids=" + mints.slice(i, i + 50).join(","));
       Object.assign(prices, await r.json());
     }
     // 3) Namen
@@ -61,13 +61,13 @@
     try {
       const pricedMints = mints.filter(m => prices[m]);
       for (let i = 0; i < pricedMints.length; i += 50) {
-        const r = await fetch("https://lite-api.jup.ag/tokens/v2/search?query=" + pricedMints.slice(i, i + 50).join(","));
+        const r = await fetchT("https://lite-api.jup.ag/tokens/v2/search?query=" + pricedMints.slice(i, i + 50).join(","));
         for (const t of await r.json()) names[t.id] = t.symbol || t.name;
       }
     } catch {}
     // 4) Dollar -> Euro
     let eur = 0.86;
-    try { const r = await fetch("https://api.frankfurter.dev/v1/latest?from=USD&to=EUR"); const j = await r.json(); if (j.rates && j.rates.EUR) eur = j.rates.EUR; } catch {}
+    try { const r = await fetchT("https://api.frankfurter.dev/v1/latest?from=USD&to=EUR"); const j = await r.json(); if (j.rates && j.rates.EUR) eur = j.rates.EUR; } catch {}
     const rows = [];
     let total = 0, change = 0;
     for (const m of mints) {

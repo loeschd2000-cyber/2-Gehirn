@@ -31,6 +31,11 @@
     return null;
   }
   const dateSay = d => d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
+  // Später etwas sagen, aber erst wenn Jarvis gerade nicht selbst spricht oder nachdenkt
+  function sayWhenIdle(msg, noteText) {
+    const go = () => { if (busy || speaking) { setTimeout(go, 500); return; } if (noteText) note(noteText); assistantSay(msg); };
+    go();
+  }
 
   // ---------- 4) Gedächtnis: „Merk dir …“ ----------
   function memoryContext() {
@@ -82,7 +87,8 @@
     // Vergessen
     m = /^vergiss\s+(?:bitte\s+)?(?:das\s+mit\s+|dass\s+)?(.+)$/i.exec(t);
     if (m && !/^(es|das)$/i.test(m[1])) {
-      const words = m[1].toLowerCase().split(/\s+/).filter(w => w.length > 2);
+      const words = m[1].toLowerCase().split(/\s+/).filter(w => w.length > 1);
+      if (!words.length) { assistantSay("Was genau soll ich vergessen?"); return true; }
       const f = dataGet("facts", []), keep = f.filter(x => !words.every(w => x.t.toLowerCase().includes(w)));
       const b = dataGet("birthdays", []), keepB = b.filter(x => !words.some(w => x.name.toLowerCase().includes(w)) || !/geburtstag/i.test(m[1]));
       const n = f.length - keep.length + b.length - keepB.length;
@@ -112,7 +118,7 @@
   const WCODE = { 0: "klar", 1: "überwiegend klar", 2: "teils bewölkt", 3: "bewölkt", 45: "neblig", 48: "neblig mit Reif", 51: "leichter Nieselregen", 53: "Nieselregen", 55: "starker Nieselregen", 56: "gefrierender Niesel", 57: "gefrierender Niesel", 61: "leichter Regen", 63: "Regen", 65: "starker Regen", 66: "gefrierender Regen", 67: "gefrierender Regen", 71: "leichter Schneefall", 73: "Schneefall", 75: "starker Schneefall", 77: "Schneegriesel", 80: "leichte Schauer", 81: "Schauer", 82: "heftige Schauer", 85: "Schneeschauer", 86: "starke Schneeschauer", 95: "Gewitter", 96: "Gewitter mit Hagel", 99: "Gewitter mit Hagel" };
   const WICON = c => c === 0 ? "☀️" : c <= 2 ? "🌤" : c === 3 ? "☁️" : c <= 48 ? "🌫" : c <= 67 || (c >= 80 && c <= 82) ? "🌧" : c <= 86 ? "❄️" : "⛈";
   async function geo(city) {
-    const r = await fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&language=de&name=" + encodeURIComponent(city));
+    const r = await fetchT("https://geocoding-api.open-meteo.com/v1/search?count=1&language=de&name=" + encodeURIComponent(city));
     const j = await r.json(); const g = j.results && j.results[0];
     if (!g) throw new Error(`Ich finde den Ort „${city}“ nicht.`);
     return { lat: g.latitude, lon: g.longitude, name: g.name };
@@ -124,7 +130,7 @@
       if (!me.city) return null;
       g = me.geo || await geo(me.city); if (!me.geo) { me.geo = g; dataSet("me", me); }
     } else g = await geo(city);
-    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${g.lat}&longitude=${g.lon}&current=temperature_2m,weather_code,wind_speed_10m,apparent_temperature&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=3`);
+    const r = await fetchT(`https://api.open-meteo.com/v1/forecast?latitude=${g.lat}&longitude=${g.lon}&current=temperature_2m,weather_code,wind_speed_10m,apparent_temperature&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=3`);
     const j = await r.json(); j.place = g.name; return j;
   }
   function weatherSentence(w, dayIdx) {
@@ -185,8 +191,8 @@
       dataSet("lists", lists); assistantSay(`Abgehakt. Auf der ${listName(k)} ${lists[k].length === 1 ? "steht noch ein Punkt" : lists[k].length ? `stehen noch ${lists[k].length} Punkte` : "steht nichts mehr"}.`);
       return true;
     }
-    // anzeigen / vorlesen
-    if ((m = new RegExp(LIST_RE, "i").exec(tl))) {
+    // anzeigen / vorlesen – nur bei echten Listen-Wörtern, nicht bei „für den Einkauf ausgegeben“ oder „Aufgaben einer SPS“
+    if ((m = /(einkaufsliste|einkaufszettel|to-?do-?liste|to-?dos?|todo-?liste|todos?|aufgabenliste|meine\s+aufgaben)/.exec(tl)) && !/(ausgegeben|ausgeben|euro|kosten|erklär|was\s+(?:ist|sind)\s+(?:die|eine?))/.test(tl)) {
       const k = listKey(m[1]), items = lists[k] || [];
       if (!items.length) { assistantSay(`Deine ${listName(k)} ist leer.`); return true; }
       extraCard((k === "einkauf" ? "🛒 " : "✅ ") + listName(k), items.map(x => "☐ " + x));
@@ -210,7 +216,8 @@
     const when = parseAlarmTime(tl);
     if (!when) { assistantSay("Wann soll ich dich erinnern? Sag zum Beispiel: Erinner mich morgen um 16 Uhr an die Hausaufgaben."); return true; }
     let what = t.replace(/^.*?\b(?:erinner\w*\s+mich|sag\s+mir)\b/i, "")
-      .replace(/\b(heute|morgen|übermorgen|am\s+\w+tag|am\s+mittwoch|in\s+\S+\s+(?:minuten?|stunden?)|um\s+\S+(?:\s*uhr(?:\s+\d{1,2})?)?|halb\s+\S+|viertel\s+(?:vor|nach)\s+\S+|\d{1,2}[:.]\d{2}\s*(?:uhr)?|abends|morgens|nachmittags)\b/gi, " ")
+      .replace(/(?:^|\s)übermorgen\b/gi, " ")
+      .replace(/\b(heute|morgen|am\s+\w+tag|am\s+mittwoch|in\s+\S+\s+(?:minuten?|stunden?)|um\s+\S+(?:\s*uhr(?:\s+\d{1,2})?)?|halb\s+\S+|viertel\s+(?:vor|nach)\s+\S+|\d{1,2}[:.]\d{2}\s*(?:uhr)?|abends?|morgens?|nachmittags?|früh|heute\s+abend|mittags?)\b/gi, " ")
       .replace(/^\s*(?:,|daran|an|dass|zu)\s+/i, "").replace(/\s+/g, " ").trim();
     what = what.replace(/^(?:an\s+|dass\s+|daran,?\s*(?:dass\s+)?)/i, "").trim() || "Erinnerung";
     const at = when.at.getTime();
@@ -220,7 +227,7 @@
     } else {
       const ms = at - Date.now();
       if (ms > 12 * 3600000) { assistantSay("Am PC kann ich nur Erinnerungen für die nächsten Stunden stellen, und nur solange das Fenster offen ist. Sag es mir am Handy, dann klappt es immer."); return true; }
-      setTimeout(() => { note("⏰ Erinnerung: " + what); assistantSay("Erinnerung: " + what); }, ms);
+      setTimeout(() => sayWhenIdle("Erinnerung: " + what, "⏰ Erinnerung: " + what), ms);
       assistantSay(`Okay, um ${zeitText(when.h, when.m)} erinnere ich dich an: ${what}. Lass dafür dieses Fenster offen.`);
     }
     return true;
@@ -240,7 +247,7 @@
     sec = Math.round(sec);
     const say = sec >= 3600 ? `${Math.floor(sec / 3600)} Stunde${sec >= 7200 ? "n" : ""}${sec % 3600 ? " und " + Math.round(sec % 3600 / 60) + " Minuten" : ""}` : sec >= 60 ? `${Math.round(sec / 60)} Minute${sec >= 120 ? "n" : ""}` : `${sec} Sekunden`;
     if (AND && AND.timer) { AND.timer(sec, label); assistantSay(`Timer auf ${say} läuft.`); }
-    else { setTimeout(() => { note("⏱ Timer abgelaufen: " + label); assistantSay("Dein Timer ist abgelaufen."); try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch {} }, sec * 1000); assistantSay(`Timer auf ${say} läuft. Lass das Fenster offen.`); }
+    else { setTimeout(() => { sayWhenIdle("Dein Timer ist abgelaufen.", "⏱ Timer abgelaufen: " + label); try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch {} }, sec * 1000); assistantSay(`Timer auf ${say} läuft. Lass das Fenster offen.`); }
     lastViaVoice = false;
     return true;
   }
@@ -290,7 +297,7 @@
       assistantSay(cat ? `Budget für ${cat[0]}: ${eur(v)} im Monat. Ich warne dich ab 80 Prozent.` : `Dein Monatsbudget ist jetzt ${eur(v)}. Ich warne dich ab 80 Prozent.`);
       return true;
     }
-    if (/lösch|aus|entfern/.test(tl)) { dataSet("budgets", { total: 0, cats: {} }); assistantSay("Alle Budgets sind gelöscht."); return true; }
+    if (!/\bwie\b/.test(tl) && /\b(lösch\w*|entfern\w*)\b|^(?:mach\w*\s+|schalt\w*\s+)?(?:das\s+|die\s+|mein\w*\s+)?budgets?\s+aus$/.test(tl)) { dataSet("budgets", { total: 0, cats: {} }); assistantSay("Alle Budgets sind gelöscht."); return true; }
     // Stand abfragen
     let d = null; try { d = AND && AND.bankCached ? JSON.parse(AND.bankCached() || "null") : null; } catch {}
     if (!d || !d.ok) { assistantSay(b.total ? `Dein Monatsbudget ist ${eur(b.total)}. Für den Stand brauche ich dein verbundenes Konto am Handy.` : "Du hast noch kein Budget. Sag zum Beispiel: Setz mein Monatsbudget auf 600 Euro."); return true; }
@@ -308,7 +315,7 @@
   const COINS = { sol: "solana", solana: "solana", btc: "bitcoin", bitcoin: "bitcoin", eth: "ethereum", ethereum: "ethereum", bonk: "bonk", doge: "dogecoin", dogecoin: "dogecoin", xrp: "ripple", ripple: "ripple", jup: "jupiter-exchange-solana", jupiter: "jupiter-exchange-solana", wif: "dogwifcoin", pepe: "pepe", ada: "cardano", cardano: "cardano", bnb: "binancecoin", ton: "the-open-network", sui: "sui", trump: "official-trump", pengu: "pudgy-penguins", ray: "raydium", raydium: "raydium" };
   async function coinId(sym) {
     const k = sym.toLowerCase(); if (COINS[k]) return { id: COINS[k], sym: sym.toUpperCase() };
-    const r = await fetch("https://api.coingecko.com/api/v3/search?query=" + encodeURIComponent(sym)); const j = await r.json();
+    const r = await fetchT("https://api.coingecko.com/api/v3/search?query=" + encodeURIComponent(sym)); const j = await r.json();
     const c = j.coins && j.coins[0]; if (!c) throw new Error(`Den Coin „${sym}“ finde ich nicht.`);
     return { id: c.id, sym: (c.symbol || sym).toUpperCase() };
   }
@@ -322,7 +329,7 @@
       assistantSay(`Du hast ${l.length} Kurs-Alarm${l.length > 1 ? "e" : ""}.`); return true;
     }
     if (/lösch\w*\s+(?:alle\s+)?(?:meine\s+)?(?:kurs-?\s*|preis-?\s*)alarme?/.test(tl)) { if (AND && AND.priceAlertCancel) AND.priceAlertCancel(-1); assistantSay("Alle Kurs-Alarme sind gelöscht."); return true; }
-    const m = /(?:wenn|sobald|falls)\s+([a-z0-9$]{2,15})\s+(?:unter|über|auf|die|den)?\s*(?:marke\s+(?:von\s+)?)?(unter|über|auf)?\s*([\d.,]+)\s*(dollar|\$|usd|euro|€|eur|cent)?\s*(fällt|steigt|geht|kommt|ist|erreicht|springt)?/.exec(tl);
+    const m = /(?:wenn|sobald|falls)\s+(?:der|die|das|mein\w*\s+)?([a-z0-9$]{2,15})\s+(?:unter|über|auf|die|den)?\s*(?:marke\s+(?:von\s+)?)?(unter|über|auf)?\s*([\d.,]+)\s*(dollar|\$|usd|euro|€|eur|cent)?\s*(fällt|steigt|geht|kommt|ist|erreicht|springt)?/.exec(tl);
     if (!m || !/(bescheid|benachrichtig|alarm|meld|sag\s+mir|informier|ping)/.test(tl)) return false;
     if (!AND || !AND.priceAlertAdd) { assistantSay("Kurs-Alarme gehen nur in der Android-App, weil das Handy im Hintergrund nachschauen muss."); return true; }
     const cur = /euro|€|eur/.test(m[4] || "") ? "eur" : "usd";
@@ -330,7 +337,7 @@
     busy = true; refreshUi();
     try {
       const c = await coinId(m[1].replace("$", ""));
-      const pr = await (await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${c.id}&vs_currencies=usd,eur`)).json();
+      const pr = await (await fetchT(`https://api.coingecko.com/api/v3/simple/price?ids=${c.id}&vs_currencies=usd,eur`)).json();
       const now = pr[c.id] && pr[c.id][cur];
       busy = false; refreshUi();
       let below = /unter|fällt/.test(tl) ? true : /über|steigt/.test(tl) ? false : (now != null ? now > price : true);
@@ -355,7 +362,9 @@
     }
     // Arbeit / Prüfung eintragen
     m = /\b(arbeit|klausur|test|prüfung|schulaufgabe|kurzarbeit|ex|lernzielkontrolle|lzk)\b/.exec(tl);
-    const setExam = m && /(schreiben\s+wir|haben\s+wir|hab\s+ich|habe\s+ich|ist\s+(?:eine?|die)|trag\w*)/.test(tl) && !/(wann|welche|nächste)/.test(tl);
+    const isQuestion = /\?\s*$/.test(text) || /^(?:hab|habe|haben|hast|ist|sind|was|wann|welche\w*|wie|gibt)\b/.test(tl);
+    const isAddress = /\bmeine?\s+(?:arbeit|betrieb|firma|schule|berufsschule)\s+(?:ist|liegt)\b/.test(tl);
+    const setExam = m && !isQuestion && !isAddress && /(schreiben\s+wir|haben\s+wir|hab\s+ich|habe\s+ich|ist\s+(?:eine?|die)|trag\w*)/.test(tl) && !/(wann|welche|nächste)/.test(tl);
     if (setExam) {
       const d = futureDate(tl);
       if (!d) { assistantSay("An welchem Tag? Sag zum Beispiel: Am 15. Oktober schreiben wir eine Arbeit in SPS."); return true; }
@@ -374,7 +383,7 @@
       if (!ex.length) { assistantSay("Ich habe keine Arbeiten eingetragen. Sag zum Beispiel: Am 15. Oktober schreiben wir eine Arbeit in SPS."); return true; }
       const n = ex[0], d = new Date(n.date + "T12:00"), days = Math.round((d - new Date().setHours(12, 0, 0, 0)) / 86400000);
       if (ex.length > 1) extraCard("📝 Anstehende Arbeiten", ex.map(x => `${new Date(x.date + "T12:00").toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" })} – ${x.kind}${x.subject ? " " + x.subject : ""}`));
-      assistantSay(`Die nächste ${n.kind}${n.subject ? " in " + n.subject : ""} ist ${days === 0 ? "heute" : days === 1 ? "morgen" : "in " + days + " Tagen, am " + dateSay(d)}.` + (days <= 7 && days > 0 ? " Soll ich dich abfragen? Sag einfach: Frag mich " + (n.subject || "ab") + " ab." : ""));
+      assistantSay(`Die nächste ${n.kind}${n.subject ? " in " + n.subject : ""} ist ${days === 0 ? "heute" : days === 1 ? "morgen" : "in " + days + " Tagen, am " + dateSay(d)}.` + (days <= 7 && days > 0 ? " Soll ich dich abfragen? Sag einfach: Frag mich " + (n.subject ? n.subject + " ab" : "ab") + "." : ""));
       return true;
     }
     // Stundenplan abfragen
@@ -397,7 +406,7 @@
 
   // ---------- 5) Lernmodus ----------
   let learn = null;   // { topic, q, a, n, right }
-  const LEARN_START = /\b(frag\s+mich\s+(.+?\s+)?ab|lernmodus|quiz|prüf\w*\s+mich|lass\s+uns\s+lernen|ich\s+will\s+lernen|abfrage\w*|übungsfragen)\b/i;
+  const LEARN_START = /(?:^|[^\wäöüß])(frag\s+mich\s+(.+?\s+)?ab|lernmodus|quiz|prüf\w*\s+mich|lass\s+uns\s+lernen|ich\s+will\s+lernen|übungsfragen)(?![\wäöüß])/i;
   const LEARN_END = /^\W*(stopp?|ende|fertig|genug|aufhören|hör\s+auf|lernmodus\s+(?:beenden|aus|ende)|das\s+reicht|schluss)\W*$/i;
   async function learnNext() {
     const weak = dataGet("learn_weak", []).filter(w => !learn.topicLow || w.topic.toLowerCase().includes(learn.topicLow) || learn.topicLow.includes(w.topic.toLowerCase()));
@@ -496,7 +505,7 @@
     const todo = (dataGet("lists", {}).todo || []); if (todo.length) { parts.push(`Auf deiner To-do-Liste ${todo.length === 1 ? "steht ein Punkt" : "stehen " + todo.length + " Punkte"}.`); lines.push("✅ " + todo.slice(0, 5).join(", ")); }
     // Geld
     try {
-      if (AND && AND.bankCached) { const d = JSON.parse(AND.bankCached() || "null"); if (d && d.ok) { parts.push(`Auf dem Konto sind ${eur(d.balance)}.`); lines.push(`🏦 ${eur(d.balance)}`); budgetWarnings(finAnalyze(d)).forEach(x => { parts.push(x); lines.push("⚠ " + x); }); } }
+      if (AND && AND.bankCached) { const d = JSON.parse(AND.bankCached() || "null"); if (d && d.ok) { parts.push(`Auf dem Konto sind ${d.balance < 0 ? "minus " : ""}${eur(d.balance)}.`); lines.push(`🏦 ${d.balance < 0 ? "−" : ""}${eur(d.balance)}`); budgetWarnings(finAnalyze(d)).forEach(x => { parts.push(x); lines.push("⚠ " + x); }); } }
     } catch {}
     const w = wGet(); if (w.last) { lines.push(`◎ Wallet ${eur(w.last.total)}`); }
     busy = false; refreshUi();

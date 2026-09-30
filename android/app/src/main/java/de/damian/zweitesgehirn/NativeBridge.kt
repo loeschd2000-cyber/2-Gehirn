@@ -84,7 +84,9 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         }
         val googleTts = try { act.packageManager.getPackageInfo("com.google.android.tts", 0); true } catch (_: Throwable) { false }
         val onInit = TextToSpeech.OnInitListener { status ->
-            if (status == TextToSpeech.SUCCESS) {
+            if (destroyed) {
+                // Fenster wurde schon geschlossen
+            } else if (status == TextToSpeech.SUCCESS) {
                 tts?.setLanguage(Locale.GERMANY)
                 bestVoice()?.let { tts?.setVoice(it) }
                 tts?.setPitch(1.0f)
@@ -95,9 +97,18 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                     override fun onError(id: String, errorCode: Int) { ttsFinished(id, "error") }
                     override fun onStop(id: String, interrupted: Boolean) { ttsFinished(id, "end") }
                 })
-                main.post { web.evaluateJavascript("window.__zgTTS && __zgTTS.voices()", null) }
-            }
+                main.post {
+                    ttsReady = true
+                    val q = ArrayList(ttsQueue); ttsQueue.clear(); q.forEach { it() }
+                    if (!destroyed) web.evaluateJavascript("window.__zgTTS && __zgTTS.voices()", null)
+                }
+            } else if (googleTts && !ttsFallbackTried) {
+                // Google-Stimme startet nicht: Standard-Stimme des Handys nehmen
+                ttsFallbackTried = true
+                main.post { try { tts?.shutdown() } catch (_: Throwable) {}; ttsInit?.let { tts = TextToSpeech(act, it) } }
+            } else main.post { val q = ArrayList(ttsQueue); ttsQueue.clear(); q.forEach { it() } }   // meldet dann Fehler statt zu hängen
         }
+        ttsInit = onInit
         // Die Google-Sprachausgabe klingt meist deutlich natürlicher als die Samsung-Stimme
         tts = if (googleTts) TextToSpeech(act, onInit, "com.google.android.tts") else TextToSpeech(act, onInit)
     }
@@ -145,16 +156,35 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
     fun onWakeStopped() { main.post { web.evaluateJavascript("window.__zgWakeState && __zgWakeState(false)", null) } }
     fun isListening(): Boolean = !srEnded
 
+    @Volatile private var ttsReady = false
+    private var ttsFallbackTried = false
+    private var ttsInit: TextToSpeech.OnInitListener? = null
+    private val ttsQueue = ArrayList<() -> Unit>()
+    @Volatile private var destroyed = false
     fun destroy() {
-        speech?.destroy(); speech = null
-        tts?.stop(); tts?.shutdown(); tts = null
+        destroyed = true
+        srEnded = true
+        main.removeCallbacksAndMessages(null)
+        try { speech?.destroy() } catch (_: Throwable) {}; speech = null
+        try { tts?.stop(); tts?.shutdown() } catch (_: Throwable) {}; tts = null
         WakeService.setMicBusy(false); WakeService.setSpeaking(false)
+        try { web.removeJavascriptInterface("ZGAndroid"); web.stopLoading(); web.destroy() } catch (_: Throwable) {}
+    }
+
+    /** Laufende Erkennung sauber beenden (cancel/destroy melden sonst nie „Ende“ an die Web-App) */
+    private fun endActive() {
+        if (!srEnded) {
+            srEnded = true
+            emit("__zgSR", JSONObject().put("type", "end").put("sid", srActiveSid))
+            main.postDelayed({ if (srEnded) WakeService.setMicBusy(false) }, 400)
+        }
     }
 
     // ---------- Hilfen ----------
     private fun emit(target: String, obj: JSONObject) {
+        if (destroyed) return
         val code = "window.$target && $target.emit($obj)"
-        main.post { try { web.evaluateJavascript(code, null) } catch (_: Throwable) {} }
+        main.post { if (!destroyed) try { web.evaluateJavascript(code, null) } catch (_: Throwable) {} }
     }
 
     private fun ttsFinished(id: String, type: String) {
@@ -165,7 +195,8 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
     // ---------- Spracherkennung ----------
     private fun startRecognition(sid: Int, lang: String, interim: Boolean) {
         WakeService.setMicBusy(true)
-        speech?.destroy()
+        endActive()
+        try { speech?.destroy() } catch (_: Throwable) {}
         srActiveSid = sid
         srEnded = false
         fun endSession() {
@@ -231,7 +262,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             }
         }
         // kurz warten, damit der Hintergrund-Dienst das Mikrofon sicher freigegeben hat
-        main.postDelayed({ if (srActiveSid == sid && !srEnded) sr.startListening(intent) }, 180)
+        main.postDelayed({ if (!destroyed && srActiveSid == sid && !srEnded) try { sr.startListening(intent) } catch (_: Throwable) { endSession() } }, 180)
     }
 
     /** Google-Spracherkennung bevorzugen (Samsung nimmt sonst oft die eigene, schlechtere) */
@@ -304,7 +335,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         @JavascriptInterface fun srAbort(sid: Int) {
             main.post {
                 if (sid != srActiveSid || srEnded) return@post
-                speech?.cancel()
+                try { speech?.cancel() } catch (_: Throwable) {}
                 emit("__zgSR", JSONObject().put("type", "error").put("sid", sid).put("error", "aborted"))
                 srEnded = true
                 emit("__zgSR", JSONObject().put("type", "end").put("sid", sid))
@@ -315,12 +346,25 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         // Vorlesen
         @JavascriptInterface fun ttsSpeak(id: String, text: String, voice: String, rate: Float) {
             main.post {
-                val t = tts ?: return@post
-                val v = if (voice.isNotBlank()) t.voices?.firstOrNull { it.name == voice } else null
-                (v ?: bestVoice())?.let { if (t.voice?.name != it.name) t.setVoice(it) }
-                t.setSpeechRate(rate)
-                WakeService.setSpeaking(true)
-                t.speak(text, TextToSpeech.QUEUE_ADD, null, id)
+                val job: () -> Unit = {
+                    val t = tts
+                    if (t == null) emit("__zgTTS", JSONObject().put("type", "error").put("id", id))
+                    else {
+                        try {
+                            val v = if (voice.isNotBlank()) t.voices?.firstOrNull { it.name == voice } else null
+                            (v ?: bestVoice())?.let { if (t.voice?.name != it.name) t.setVoice(it) }
+                        } catch (_: Throwable) {}
+                        t.setSpeechRate(rate)
+                        WakeService.setSpeaking(true)
+                        val r = t.speak(text, TextToSpeech.QUEUE_ADD, null, id)
+                        if (r != TextToSpeech.SUCCESS) { WakeService.setSpeaking(false); emit("__zgTTS", JSONObject().put("type", "error").put("id", id)) }
+                    }
+                }
+                if (ttsReady) job() else {
+                    // Stimme startet noch: kurz merken; kommt sie nicht, Fehler melden (Web-App wartet sonst ewig)
+                    ttsQueue.add(job)
+                    main.postDelayed({ if (!ttsReady && ttsQueue.remove(job)) emit("__zgTTS", JSONObject().put("type", "error").put("id", id)) }, 4000)
+                }
             }
         }
         @JavascriptInterface fun ttsEngine(): String = try { tts?.defaultEngine ?: "" } catch (_: Throwable) { "" }
@@ -363,7 +407,9 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
         // Einrichtung
         @JavascriptInterface fun getAppUrl(): String = Prefs.appUrl(act)
         @JavascriptInterface fun setAppUrl(url: String) {
-            Prefs.setAppUrl(act, url.trim())
+            val u = url.trim()
+            if (!u.startsWith("https://")) return      // nur sichere Adressen (kein http)
+            Prefs.setAppUrl(act, u)
             main.post { loadStart() }
         }
         @JavascriptInterface fun openSetup() { main.post { web.loadUrl("file:///android_asset/setup.html") } }
@@ -389,7 +435,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             val wasBig = !mini
             main.post {
                 WakeService.setMicBusy(false)
-                speech?.cancel()
+                try { speech?.cancel() } catch (_: Throwable) {}; endActive()
                 // erst im Hintergrund versuchen, nur wenn das nicht geht kurz über Spotify
                 Music.play(app, query, artist, wasBig) { ok, how, msg ->
                     emit("__zgMusic", JSONObject().put("ok", ok).put("how", how).put("msg", msg)
@@ -421,7 +467,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             val app = act.applicationContext; val big = !mini
             var r = false
             main.post {
-                WakeService.setMicBusy(false); speech?.cancel()
+                WakeService.setMicBusy(false); try { speech?.cancel() } catch (_: Throwable) {}; endActive()
                 r = WhatsApp.send(app, number, text, big) { ok, msg ->
                     emit("__zgWa", JSONObject().put("ok", ok).put("msg", msg).put("auto", WhatsApp.autoSendEnabled(app)))
                 }
@@ -463,11 +509,11 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             }.start()
         }
         // Erinnerungen, Kurs-Alarm, Timer, Navigation
-        @JavascriptInterface fun reminderAdd(at: String, text: String): Int = Reminders.add(act, at.toLong(), text)
+        @JavascriptInterface fun reminderAdd(at: String, text: String): Int = at.toLongOrNull()?.let { Reminders.add(act, it, text) } ?: -1
         @JavascriptInterface fun reminderList(): String = Reminders.list(act).toString()
         @JavascriptInterface fun reminderCancel(id: Int) { Reminders.cancel(act, id) }
         @JavascriptInterface fun priceAlertAdd(coin: String, sym: String, below: Boolean, price: String, cur: String): Int =
-            PriceAlerts.add(act, coin, sym, below, price.toDouble(), cur)
+            price.replace(',', '.').toDoubleOrNull()?.let { PriceAlerts.add(act, coin, sym, below, it, cur) } ?: -1
         @JavascriptInterface fun priceAlertList(): String = PriceAlerts.list(act).toString()
         @JavascriptInterface fun priceAlertCancel(id: Int) { PriceAlerts.cancel(act, id) }
         @JavascriptInterface fun timer(seconds: Int, label: String) { main.post { Phone.timer(act, seconds, label) } }
@@ -507,7 +553,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
             }.start()
         }
         /** at = Zeitpunkt in Millisekunden (als Text, weil JavaScript-Zahlen zu groß für Int sind) */
-        @JavascriptInterface fun alexaAlarm(at: String, label: String): Int = AlexaAlarm.schedule(act, at.toLong(), label)
+        @JavascriptInterface fun alexaAlarm(at: String, label: String): Int = at.toLongOrNull()?.let { AlexaAlarm.schedule(act, it, label) } ?: -1
         @JavascriptInterface fun alexaAlarms(): String = AlexaAlarm.list(act).toString()
         @JavascriptInterface fun alexaCancel(id: Int) { AlexaAlarm.cancel(act, id) }
         /** Wecker in der Uhr-App des Handys stellen, ohne sie zu öffnen */
@@ -561,7 +607,7 @@ class NativeBridge(private val act: Activity, val web: WebView, private val mini
                 val canCall = act.checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
                 val i = Intent(if (canCall) Intent.ACTION_CALL else Intent.ACTION_DIAL, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 WakeService.setMicBusy(false)
-                speech?.cancel()
+                try { speech?.cancel() } catch (_: Throwable) {}; endActive()
                 try { act.startActivity(i) } catch (_: Throwable) {}
                 if (mini) main.postDelayed({ act.finish() }, 300)
             }

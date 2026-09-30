@@ -51,6 +51,10 @@ object Music {
 
     /** Hat der Nutzer den Benachrichtigungszugriff erlaubt? */
     fun accessGranted(ctx: Context): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= 27) try {
+            return ctx.getSystemService(android.app.NotificationManager::class.java)
+                .isNotificationListenerAccessGranted(ComponentName(ctx, MediaListener::class.java))
+        } catch (_: Throwable) {}
         val s = Settings.Secure.getString(ctx.contentResolver, "enabled_notification_listeners") ?: return false
         return s.split(":").any { it.startsWith(ctx.packageName + "/") }
     }

@@ -1,7 +1,7 @@
   async function handleActions(text) {
     if (pending) {
+      if (NO.test(text)) { await resolvePending(false, false); return true; }   // „nein“/„bitte nicht“ zuerst prüfen
       if (YES.test(text)) { await resolvePending(true, false); return true; }
-      if (NO.test(text)) { await resolvePending(false, false); return true; }
       closeCard(pending); pending = null;
     }
     if (await handleDiary(text)) return true;

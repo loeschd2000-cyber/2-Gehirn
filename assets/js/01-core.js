@@ -57,6 +57,8 @@
   const setDot = (id, cls) => { $(id).className = "dot" + (cls ? " " + cls : ""); };
   const lsGet = k => { try { return localStorage.getItem(k); } catch { return null; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+  // fetch mit Zeitlimit (Standard 15 s), damit Wetter/Kurse/Wallet nie ewig hängen
+  const fetchT = (url, opts = {}, ms = 15000) => fetch(url, { ...opts, signal: opts.signal || (AbortSignal.timeout ? AbortSignal.timeout(ms) : undefined) });
   const pad = n => String(n).padStart(2, "0");
   const ymd = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   const sayDate = d => `${WD[d.getDay()]}, ${d.getDate()}. ${d.toLocaleDateString("de-DE", { month: "long" })}`;
@@ -365,7 +367,13 @@
   micBtn.addEventListener("pointerdown", () => buzz(12));
   micBtn.onclick = () => {
     if (wakeRec) { stopWake(); listen(); return; }
-    if (busy) { if (ctl) ctl.abort(); hush(); return; }
+    if (busy) {
+      if (ctl) ctl.abort();
+      if (typeof finWait !== "undefined" && finWait) { const w = finWait; finWait = null; w(null); }
+      hush();
+      setTimeout(() => { if (busy) { busy = false; refreshUi(); } }, 2000);   // Notbremse, falls etwas hängt
+      return;
+    }
     if (speaking) { hush(); lastViaVoice = false; return; }
     if (listening) { stopListening(false); return; }
     listen();
@@ -434,10 +442,15 @@
     $("sChats").textContent = chats.filter(c => !c.hidden).length; $("sMsgs").textContent = msgs; $("sToday").textContent = todayN;
   }
   function renderAll() { renderList(); renderStats(); }
-  function openChat(c) { currentId = c.id; messages = c.messages.map(m => ({ ...m })); pending = null; renderChat(); renderAll(); }
+  // Laufende Modi (Lernmodus, Tagebuch) beenden, wenn man das Gespräch wechselt
+  function resetModes() {
+    if (typeof learn !== "undefined") learn = null;
+    if (typeof diaryMode !== "undefined" && diaryMode) { stopDiaryMode(); diaryParts = []; }
+  }
+  function openChat(c) { resetModes(); currentId = c.id; messages = c.messages.map(m => ({ ...m })); pending = null; renderChat(); renderAll(); }
   function newChat() {
     if (busy) return;
-    hush(); stopListening(true);
+    hush(); stopListening(true); resetModes();
     currentId = null; messages = []; pending = null; renderChat(); renderAll();
   }
 

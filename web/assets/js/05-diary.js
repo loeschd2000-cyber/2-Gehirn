@@ -51,6 +51,7 @@
     const body = document.createElement("div"); body.className = "body"; body.textContent = entry.text; card.append(body);
     log.append(card); log.scrollTop = log.scrollHeight;
     lastViaVoice = false;
+    try { renderTiles(); } catch {}
     const cal = await markDiaryInCalendar(c, entry);
     if (cal !== "ok" && cal !== "nicht verbunden") note("Kalender: " + cal);
     assistantSay("Gespeichert. Dein Tagebucheintrag für heute ist aufgeschrieben" + (cal === "ok" ? " und im Kalender abgehakt." : ".") + (entry.stimmung ? " Stimmung: " + entry.stimmung.replace(/^\S+\s*/, "") + "." : ""));
@@ -81,7 +82,7 @@
     const wd = ["sonntag", "montag", "dienstag", "mittwoch", "donnerstag", "freitag", "samstag"].findIndex(w => t.includes(w));
     if (wd >= 0) { let back = (d.getDay() - wd + 7) % 7; if (back === 0 && !/heute/.test(t)) back = 7; d.setDate(d.getDate() - back); return d; }
     const m = /\b(\d{1,2})\.\s*(\d{1,2})?\.?/.exec(t);
-    if (m) { d.setDate(+m[1]); if (m[2]) d.setMonth(+m[2] - 1); if (d > new Date()) d.setFullYear(d.getFullYear() - 1); return d; }
+    if (m) { d.setMonth(m[2] ? +m[2] - 1 : d.getMonth(), +m[1]); if (dayKey(d) > dayKey(new Date())) d.setFullYear(d.getFullYear() - 1); return d; }
     return d;   // heute
   }
   async function handleDiary(text) {

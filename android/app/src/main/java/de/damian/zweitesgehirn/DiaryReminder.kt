@@ -37,8 +37,7 @@ object DiaryReminder {
             set(Calendar.HOUR_OF_DAY, t.first); set(Calendar.MINUTE, t.second); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
             if (timeInMillis <= System.currentTimeMillis() + 5000) add(Calendar.DAY_OF_YEAR, 1)
         }
-        // Fenster von 5 Minuten reicht für eine Erinnerung und spart Akku
-        am.setWindow(AlarmManager.RTC_WAKEUP, c.timeInMillis, 5 * 60 * 1000L, pending(ctx))
+        am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, c.timeInMillis, pending(ctx))   // klingelt auch im Energiesparmodus
     }
 
     fun notify(ctx: Context) {

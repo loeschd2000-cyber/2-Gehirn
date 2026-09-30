@@ -35,7 +35,7 @@ object AlexaAlarm {
     private fun save(ctx: Context, arr: JSONArray) = p(ctx).edit().putString("alarms", arr.toString()).apply()
 
     /** Wecker stellen. Gibt die ID zurück. */
-    fun schedule(ctx: Context, atMillis: Long, label: String): Int {
+    @Synchronized fun schedule(ctx: Context, atMillis: Long, label: String): Int {
         val id = ((atMillis / 60000) % Int.MAX_VALUE).toInt()
         val arr = list(ctx)
         val keep = JSONArray()
@@ -46,7 +46,7 @@ object AlexaAlarm {
         return id
     }
 
-    fun cancel(ctx: Context, id: Int) {
+    @Synchronized fun cancel(ctx: Context, id: Int) {
         val arr = list(ctx)
         val keep = JSONArray()
         for (i in 0 until arr.length()) {
@@ -57,7 +57,7 @@ object AlexaAlarm {
         save(ctx, keep)
     }
 
-    fun remove(ctx: Context, id: Int) {
+    @Synchronized fun remove(ctx: Context, id: Int) {
         val arr = list(ctx)
         val keep = JSONArray()
         for (i in 0 until arr.length()) if (arr.getJSONObject(i).getInt("id") != id) keep.put(arr.getJSONObject(i))
@@ -99,7 +99,7 @@ object AlexaAlarm {
         repeat(3) { attempt ->
             try {
                 val c = URL(url).openConnection() as HttpURLConnection
-                c.connectTimeout = 10000; c.readTimeout = 10000
+                c.connectTimeout = 6000; c.readTimeout = 6000
                 val code = c.responseCode
                 val body = (if (code in 200..299) c.inputStream else c.errorStream)?.bufferedReader()?.readText() ?: ""
                 c.disconnect()
@@ -107,7 +107,7 @@ object AlexaAlarm {
                 last = "Voice Monkey antwortet mit Fehler $code"
                 if (code in 400..499 && code != 429) return false to last
             } catch (e: Throwable) { last = "Keine Verbindung (${e.javaClass.simpleName})" }
-            if (attempt < 2) Thread.sleep(5000L * (attempt + 1))
+            if (attempt < 2) Thread.sleep(2000L * (attempt + 1))   // insgesamt unter ~45 s bleiben (sonst bricht Android ab)
         }
         return false to last
     }

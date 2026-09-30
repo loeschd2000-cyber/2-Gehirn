@@ -53,8 +53,9 @@ object SpotifyApi {
     fun handleRedirect(ctx: Context, uri: Uri): Pair<Boolean, String> {
         uri.getQueryParameter("error")?.let { return false to "Spotify hat abgelehnt: $it" }
         val code = uri.getQueryParameter("code") ?: return false to "Kein Code von Spotify erhalten"
-        val state = uri.getQueryParameter("state")
-        if (state != p(ctx).getString("state", null)) return false to "Anmeldung passt nicht zusammen, bitte nochmal verbinden"
+        val state = uri.getQueryParameter("state"); val saved = p(ctx).getString("state", null)
+        if (state == null || saved == null || state != saved) return false to "Anmeldung passt nicht zusammen, bitte nochmal verbinden"
+        p(ctx).edit().remove("state").apply()   // jeder Anmelde-Link gilt nur einmal
         val body = form("grant_type" to "authorization_code", "code" to code, "redirect_uri" to REDIRECT,
             "client_id" to clientId(ctx), "code_verifier" to (p(ctx).getString("verifier", "") ?: ""))
         val (c, r) = http("POST", "https://accounts.spotify.com/api/token", null, body, form = true)

@@ -48,6 +48,7 @@ object WhatsApp {
 
     /** Ergebnis-Rückmeldung (geklappt, Text) */
     @Volatile var onResult: ((Boolean, String) -> Unit)? = null
+    @Volatile private var sendToken = 0
 
     fun send(ctx: Context, number: String, text: String, backToApp: Boolean, result: (Boolean, String) -> Unit): Boolean {
         val pkg = installedPackage(ctx) ?: run { result(false, "WhatsApp ist nicht installiert"); return false }
@@ -56,17 +57,18 @@ object WhatsApp {
         val auto = autoSendEnabled(ctx)
         if (auto) {
             WaService.backToApp = backToApp
+            val token = ++sendToken   // jede Nachricht hat ihre eigene Nummer, damit alte Zeitlimits neue nicht abbrechen
             WaService.pendingUntil = System.currentTimeMillis() + 15000
             onResult = result
             main.postDelayed({
-                if (WaService.pendingUntil != 0L) { WaService.pendingUntil = 0; onResult = null; result(false, "Senden-Knopf nicht gefunden – bitte selbst auf Senden tippen") }
+                if (sendToken == token && WaService.pendingUntil != 0L) { WaService.pendingUntil = 0; onResult = null; result(false, "Senden-Knopf nicht gefunden – bitte selbst auf Senden tippen") }
             }, 15500)
         }
         return try {
             ctx.startActivity(Intent(Intent.ACTION_VIEW, uri).setPackage(pkg).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             if (!auto) result(true, "manuell")
             true
-        } catch (e: Throwable) { WaService.pendingUntil = 0; result(false, "WhatsApp ließ sich nicht öffnen"); false }
+        } catch (e: Throwable) { WaService.pendingUntil = 0; onResult = null; result(false, "WhatsApp ließ sich nicht öffnen"); false }
     }
 }
 

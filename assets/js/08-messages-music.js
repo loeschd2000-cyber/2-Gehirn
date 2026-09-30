@@ -11,13 +11,14 @@
     new RegExp("^(?:schreib|schreibe|schick|schicke|sende)\\s+(?:an\\s+)?(.+?)\\s+(?:eine?\\s+)?(?:" + WA + "[\\s-]*)?(?:nachricht|message)\\s*[,:]?\\s*(.+)$", "i"),
   ];
   function waParse(text) {
+    if (/\b(e-?mail|mail|sms)\b/i.test(text)) return null;   // Mails/SMS sind kein WhatsApp
     const t = text.trim().replace(/^(?:hey\s+|hallo\s+|ok\s+)?jarvis[,\s]+/i, "").replace(/^(?:bitte|kannst\s+du(?:\s+bitte)?)\s+/i, "").replace(/\s+bitte$/i, "").trim();
     for (const re of WA_RES) {
       const m = re.exec(t);
       if (m) {
         const who = m[1].replace(/^(?:meine[nmrs]?|mein|den|die|der|dem)\s+/i, "").trim();
         const msg = m[2].replace(/^(?:folgendes|das)\s*[,:]\s*/i, "").replace(/[.]+$/, "").trim();
-        if (who && msg && who.split(/\s+/).length <= 4) return { who, msg };
+        if (who && msg && who.split(/\s+/).length <= 4 && !/^(?:per|als|über)\s/i.test(msg)) return { who, msg };
       }
     }
     return null;
@@ -82,10 +83,15 @@
     /^(?:bitte\s+)?telefonier\w*\s+(?:mit\s+)?(.+?)$/i,
   ];
   function callTarget(text) {
-    const t = text.trim().replace(/[.!?]+$/, "");
+    const t = text.trim().replace(/^(?:(?:hey\s+)?jarvis[,\s]+)/i, "").replace(/[.!?]+$/, "");
+    if (/\b(termin|erinner\w*|trag\w*|kalender|wecker)\b/i.test(t)) return null;   // „Termin: Zahnarzt anrufen“ ist kein Anruf
     for (const re of CALL_RES) {
       const m = re.exec(t);
-      if (m) return m[1].replace(/^(?:meine[nmrs]?|mein|den|die|der|dem)\s+/i, "").trim();
+      if (m) {
+        const who = m[1].replace(/^(?:ich\s+(?:will|möchte|muss)\s+)/i, "").replace(/^(?:meine[nmrs]?|mein|den|die|der|dem)\s+/i, "").trim();
+        if (/\d|:/.test(who) || who.split(/\s+/).length > 3) return null;
+        return who;
+      }
     }
     return null;
   }
@@ -193,8 +199,9 @@
     const t = mediaClean(text);
     const m = /^(?:spiel|spiele|play|hör|höre|leg|lege|mach)\s+(?:mir\s+)?(?:mal\s+)?(.+?)(?:\s+(?:auf|bei|in|über|mit)\s+spotify)?(?:\s+(?:auf|an|ab))?$/i.exec(t);
     if (!m || /^(?:ein\s+|eine\s+)?spiel\b/i.test(m[1])) return false;
-    // „mach …“ nur, wenn klar Musik gemeint ist
-    if (/^mach\b/.test(t) && !/\b(?:musik|lied|song|spotify|playlist)\b/.test(t)) return false;
+    // „mach/hör/leg …“ nur, wenn klar Musik gemeint ist („hör auf“, „leg los“ sind keine Lieder)
+    if (/^(?:mach|hör|höre|leg|lege)(?![\wäöüß])/.test(t) && !/\b(?:musik|lied|song|spotify|playlist|album)\b/.test(t)) return false;
+    if (/^(?:auf|zu|los|mit\s+mir\b.*|mal\s+zu|weiter\s+zu)$/.test(m[1].trim())) return false;
     let q = m[1].replace(/^(?:bitte\s+)?(?:etwas|was|musik|songs?|lieder|das\s+lied|den\s+song|die\s+playlist|ein\s+lied|einen\s+song)\s+/i, "").trim();
     let artist = "";
     const von = /^(?:(?:etwas|was|musik|songs?|lieder|ein\s+lied|einen\s+song)\s+)?von\s+(.+)$/i.exec(q);

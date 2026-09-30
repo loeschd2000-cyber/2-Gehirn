@@ -150,7 +150,9 @@ object BankApi {
     fun handleRedirect(ctx: Context, uri: Uri): Pair<Boolean, String> {
         uri.getQueryParameter("error")?.let { return false to "Bank hat abgelehnt: $it ${uri.getQueryParameter("error_description") ?: ""}" }
         val code = uri.getQueryParameter("code") ?: return false to "Kein Code von der Bank erhalten"
-        if (uri.getQueryParameter("state") != p(ctx).getString("state", null)) return false to "Freigabe passt nicht zusammen, bitte nochmal verbinden"
+        val state = uri.getQueryParameter("state"); val saved = p(ctx).getString("state", null)
+        if (state == null || saved == null || state != saved) return false to "Freigabe passt nicht zusammen, bitte nochmal verbinden"
+        p(ctx).edit().remove("state").apply()   // jeder Freigabe-Link gilt nur einmal
         val (c, r) = http(ctx, "POST", "/sessions", JSONObject().put("code", code))
         if (c !in 200..299) return false to err(c, r)
         val j = JSONObject(r)

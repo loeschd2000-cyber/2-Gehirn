@@ -43,6 +43,13 @@ class MiniActivity : Activity() {
         val web = WebView(this)
         web.setBackgroundColor(Color.TRANSPARENT)
         setContentView(web)
+        // Nicht unter der Navigationsleiste / Tastatur verschwinden (Android 15 zeichnet bis zum Rand)
+        web.setOnApplyWindowInsetsListener { v, insets ->
+            val bottom = if (Build.VERSION.SDK_INT >= 30)
+                insets.getInsets(android.view.WindowInsets.Type.navigationBars() or android.view.WindowInsets.Type.ime()).bottom
+            else @Suppress("DEPRECATION") insets.systemWindowInsetBottom
+            v.setPadding(0, 0, 0, bottom); insets
+        }
         bridge = NativeBridge(this, web, mini = true)
         bridge.setup()
         bridge.loadStart()

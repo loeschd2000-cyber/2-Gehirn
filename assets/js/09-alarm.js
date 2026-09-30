@@ -24,7 +24,8 @@
     else if ((x = new RegExp("\\bum\\s+" + N + "\\b").exec(t))) { h = numOf(x[1]); }
     if (isNaN(h)) return null;
     if (h === -1) h = 23;
-    if (/\b(abends|nachmittags|am abend|am nachmittag|nachts?)\b/.test(t) && h < 12 && !(/nachts?/.test(t) && h < 5)) h += 12;
+    if (/\b(abends?|nachmittags?|nachts?)\b/.test(t) && h < 12 && !(/nachts?/.test(t) && h < 5)) h += 12;
+    if (/\bnachts?\b/.test(t) && h === 12) h = 0;
     if (h > 23 || m > 59) return null;
     const at = new Date(now); at.setHours(h, m, 0, 0);
     let dayWord = "";

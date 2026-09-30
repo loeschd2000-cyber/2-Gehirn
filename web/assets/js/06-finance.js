@@ -138,7 +138,8 @@
     const body = document.createElement("div"); body.className = "body"; body.textContent = lines.join("\n"); card.append(body);
     log.append(card); log.scrollTop = log.scrollHeight;
   }
-  const FIN_Q = /\b(finanz\w*|konto\w*|kontostand|guthaben|ausgaben|ausgegeben|einnahmen|eingegangen|eingang|reingekommen|rausgegangen|fixkosten|fixe kosten|abos?|abonnements?|gehalt|lohn|ausbildungsverg\w*|budget|sparkasse|übrig|ausgeben|verbraucht|statistik\w*|diagramm\w*|grafik\w*|auswertung)\b|wie\s*viel\s+geld\s+hab/i;
+  // Nur echte Geld-Fragen (nicht „Eingang bei der SPS“ oder „Gehalt eines Elektronikers“)
+  const FIN_Q = /\b(finanz\w*|konto\w*|kontostand|guthaben|ausgaben|ausgegeben|einnahmen|eingegangen|reingekommen|rausgegangen|fixkosten|fixe kosten|abos?|abonnements?|budget|sparkasse|ausgeben|statistik\w*|auswertung)\b|\bmein\w*\s+(?:gehalt|lohn|ausbildungsverg\w*)|(?:^|\s)übrig\b|wie\s*viel\s+geld\s+hab|\b(?:diagramm|grafik)\w*\s+(?:von\s+|über\s+)?(?:meine\w*\s+)?(?:konto|ausgaben|finanzen|geld)/i;
   async function handleFinance(text) {
     if (!FIN_Q.test(text)) return false;
     const t = text.toLowerCase();

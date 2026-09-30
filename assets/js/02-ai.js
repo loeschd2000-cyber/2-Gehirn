@@ -191,19 +191,29 @@
     }
   }
   // Antwort als JSON (für Termine, Mails usw.)
+  // Abbrechbar (Mikrofon-Knopf „Stopp“) und mit Zeitlimit, damit nichts ewig hängt
+  function abortable(ms) {
+    const c = new AbortController(); ctl = c;
+    const sig = AbortSignal.any && AbortSignal.timeout ? AbortSignal.any([c.signal, AbortSignal.timeout(ms)]) : c.signal;
+    return { sig, done: () => { if (ctl === c) ctl = null; } };
+  }
   async function llmJson(prompt, schema) {
+    const ab = abortable(45000);
+    try { return await llmJsonInner(prompt, schema, ab.sig); } finally { ab.done(); }
+  }
+  async function llmJsonInner(prompt, schema, signal) {
     if (backend === "gemini") {
       const r = await gemFetch("generateContent", {
         contents: [{ role: "user", parts: [{ text: prompt + "\n\nAntworte nur mit einem JSON-Objekt nach diesem Schema, ohne weiteren Text:\n" + JSON.stringify(schema) }] }],
         generationConfig: { temperature: 0, responseMimeType: "application/json" },
-      });
+      }, signal);
       const j = await r.json();
       const txt = ((j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || []).filter(p => !p.thought).map(p => p.text || "").join("");
       const m = /\{[\s\S]*\}/.exec(txt);
       return JSON.parse(m ? m[0] : txt);
     }
     const r = await fetch(OLLAMA + "/api/chat", {
-      method: "POST",
+      method: "POST", signal,
       body: JSON.stringify({ model, stream: false, format: schema, keep_alive: "60m", options: { num_ctx: 2048, temperature: 0 }, messages: [{ role: "user", content: prompt }] }),
     });
     if (!r.ok) throw new Error(await r.text());

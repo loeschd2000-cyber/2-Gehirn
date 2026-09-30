@@ -49,7 +49,7 @@
     }
   }
   function renderTiles() {
-    const box = $("tiles"); if (!box) return;
+    const box = $("tiles"); if (!box || MINI) return;
     box.textContent = "";
     const add = (ic, label, value, sub, cls, ask) => {
       const b = document.createElement("button"); b.type = "button"; b.className = "tile";

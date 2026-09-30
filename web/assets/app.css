@@ -470,3 +470,8 @@
   .status-box .sum-dots i::before, .status-box .sum-dots i::after { display: none !important; }
   .status-box .sum-dots i { animation: none !important; box-shadow: none !important; outline: 0; }
   @media (max-width: 640px) { .core.has-heads:not(.chatting) .orbwrap { height: 25vh; margin-top: 0; } .core.has-heads .hello { gap: 7px; } .core.has-heads .head { padding: 7px 13px; } }
+  @media (min-width: 641px) {
+    .core:not(.chatting) .log { display: none; }
+    .core:not(.chatting) .orbwrap { height: clamp(170px, 30vh, 330px); }
+    .hello > b { font-size: 18px; }
+  }

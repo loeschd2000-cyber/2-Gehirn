@@ -395,7 +395,7 @@
       "answer": "62 Hosts",
       "value": 62,
       "unit": "Hosts",
-      "tolerance": 0.02,
+      "tolerance": 0.001,
       "explain": "Hostanteil = 32 − 26 = 6 Bit. Anzahl Adressen = 2⁶ = 64. Abzüglich Netzadresse und Broadcastadresse: 64 − 2 = 62 nutzbare Hostadressen.",
       "tags": [
         "Subnetting"
@@ -410,7 +410,7 @@
       "answer": "1022 Hosts",
       "value": 1022,
       "unit": "Hosts",
-      "tolerance": 0.02,
+      "tolerance": 0.001,
       "explain": "255.255.252.0 entspricht /22 (252 = 1111 1100). Hostanteil = 32 − 22 = 10 Bit. 2¹⁰ = 1024 Adressen, abzüglich Netz- und Broadcastadresse: 1024 − 2 = 1022 Hosts.",
       "tags": [
         "Subnetting"
@@ -425,7 +425,7 @@
       "answer": "8 Subnetze",
       "value": 8,
       "unit": "Subnetze",
-      "tolerance": 0.02,
+      "tolerance": 0.001,
       "explain": "Vom /24 zum /27 werden 27 − 24 = 3 zusätzliche Bit für das Subnetz verwendet. 2³ = 8 Subnetze mit je 32 Adressen (30 nutzbare Hosts).",
       "tags": [
         "Subnetting"

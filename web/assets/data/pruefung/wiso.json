@@ -147,7 +147,7 @@
         "unbefrist",
         "arbeitsverhältnis"
       ],
-      "explain": "Das regelt § 24 BBiG. Wer nach der Ausbildung nicht übernommen werden soll, muss das rechtzeitig vorher erfahren; eine stillschweigende Weiterbeschäftigung führt zu einem unbefristeten Arbeitsverhältnis.",
+      "explain": "Das regelt § 24 BBiG. Das Ausbildungsverhältnis endet mit dem Bestehen der Abschlussprüfung (Bekanntgabe des Ergebnisses); wird danach ohne ausdrückliche Vereinbarung weitergearbeitet, entsteht ein Arbeitsverhältnis auf unbestimmte Zeit.",
       "tags": [
         "BBiG",
         "Übernahme"
@@ -293,7 +293,7 @@
         "Nur unbefristet beschäftigte Arbeitnehmer, Auszubildende sind ausgeschlossen"
       ],
       "answer": 0,
-      "explain": "Wahlberechtigt (aktives Wahlrecht) sind alle Arbeitnehmer ab 16 Jahren, Auszubildende zählen als Arbeitnehmer. Wählbar (passives Wahlrecht) ist man ab 18 Jahren bei mindestens sechs Monaten Betriebszugehörigkeit. Ein Betriebsrat kann in Betrieben mit in der Regel mindestens fünf ständigen wahlberechtigten Arbeitnehmern gewählt werden.",
+      "explain": "Wahlberechtigt (aktives Wahlrecht) sind alle Arbeitnehmer ab 16 Jahren, Auszubildende zählen als Arbeitnehmer. Wählbar (passives Wahlrecht) ist man ab 18 Jahren bei mindestens sechs Monaten Betriebszugehörigkeit. Ein Betriebsrat kann in Betrieben mit in der Regel mindestens fünf ständigen wahlberechtigten Arbeitnehmern gewählt werden, von denen drei wählbar sind.",
       "tags": [
         "BetrVG",
         "Betriebsrat"
@@ -307,12 +307,12 @@
       "q": "Wer wählt die Jugend- und Auszubildendenvertretung (JAV)?",
       "options": [
         "Alle Arbeitnehmer des Betriebs",
-        "Arbeitnehmer unter 18 Jahren sowie Auszubildende unter 25 Jahren",
+        "Arbeitnehmer unter 18 Jahren sowie alle Auszubildenden, unabhängig von ihrem Alter",
         "Nur die Mitglieder des Betriebsrats",
         "Nur Auszubildende im ersten Ausbildungsjahr"
       ],
       "answer": 1,
-      "explain": "Die JAV vertritt die Interessen der Jugendlichen und Auszubildenden gegenüber dem Betriebsrat. Sie wird in Betrieben mit in der Regel mindestens fünf solcher Arbeitnehmer gewählt; die regelmäßige Amtszeit beträgt zwei Jahre.",
+      "explain": "Wahlberechtigt sind jugendliche Arbeitnehmer (unter 18) und die zu ihrer Berufsausbildung Beschäftigten; die frühere Altersgrenze von 25 Jahren für Auszubildende wurde 2021 aufgehoben. Die JAV vertritt deren Interessen im Zusammenspiel mit dem Betriebsrat. Sie wird in Betrieben mit in der Regel mindestens fünf solcher Arbeitnehmer gewählt; die regelmäßige Amtszeit beträgt zwei Jahre.",
       "tags": [
         "BetrVG",
         "JAV"

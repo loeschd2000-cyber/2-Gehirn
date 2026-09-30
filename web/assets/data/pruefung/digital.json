@@ -340,7 +340,7 @@
       "answer": "181",
       "value": 181,
       "unit": "",
-      "tolerance": 0.02,
+      "tolerance": 0.001,
       "explain": "Stellenwerte der Einsen addieren: 128 + 32 + 16 + 4 + 1 = 181.",
       "tags": [
         "Zahlensysteme",
@@ -356,7 +356,7 @@
       "answer": "500",
       "value": 500,
       "unit": "",
-      "tolerance": 0.02,
+      "tolerance": 0.001,
       "explain": "1 · 16² + 15 · 16¹ + 4 · 16⁰ = 256 + 240 + 4 = 500.",
       "tags": [
         "Zahlensysteme",
@@ -391,7 +391,7 @@
       "answer": "479",
       "value": 479,
       "unit": "",
-      "tolerance": 0.02,
+      "tolerance": 0.001,
       "explain": "Jede Tetrade einzeln umrechnen: 0100 = 4, 0111 = 7, 1001 = 9. Ergebnis: 479.",
       "tags": [
         "BCD",
@@ -443,7 +443,7 @@
       "answer": "4095",
       "value": 4095,
       "unit": "",
-      "tolerance": 0.02,
+      "tolerance": 0.001,
       "explain": "Mit 12 Bit gibt es 2¹² = 4096 Kombinationen von 0 bis 2¹² − 1 = 4095.",
       "tags": [
         "Dualzahl",
@@ -477,7 +477,7 @@
       "answer": "−20",
       "value": -20,
       "unit": "",
-      "tolerance": 0.02,
+      "tolerance": 0.001,
       "explain": "Das höchste Bit ist 1, also ist die Zahl negativ. Betrag über Zweierkomplement: invertieren ergibt 0001 0011 (19), plus 1 ergibt 0001 0100 = 20. Ergebnis: −20.",
       "tags": [
         "Zweierkomplement"

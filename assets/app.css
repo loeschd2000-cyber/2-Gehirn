@@ -496,3 +496,5 @@
   .svc-list { display: flex; flex-direction: column; gap: 6px; }
   .svc-list .hcmd { text-align: left; }
   .svc-form { display: flex; flex-direction: column; gap: 8px; }
+  .svc-bar { height: 8px; border-radius: 8px; background: rgba(255,255,255,.08); overflow: hidden; }
+  .svc-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #1aa7e8, #6ff0b0); transition: width .6s; }

@@ -467,7 +467,7 @@
       "answer": "19354 (gerundet)",
       "value": 19354,
       "unit": "",
-      "tolerance": 0.02,
+      "tolerance": 0.001,
       "explain": "Umgekehrt skalieren: Wert = 35 Hz / 50 Hz · 27648 = 0,7 · 27648 = 19353,6 → als INT gerundet 19354.",
       "tags": [
         "Analogwerte",
@@ -482,10 +482,10 @@
       "q": "Warum werden Aus-Taster und NOT-HALT-Befehlsgeräte als Öffner angeschlossen?",
       "answer": "Weil dann ein Drahtbruch wie eine Betätigung wirkt: Das Signal fällt auf 0 und die Anlage schaltet sicher ab (Drahtbruchsicherheit).",
       "keywords": [
-        "öffner",
-        "drahtbruch"
+        "drahtbruch",
+        "sicher"
       ],
-      "explain": "Bei einem Schließer würde ein Drahtbruch unbemerkt bleiben und der Ausschaltbefehl könnte nicht mehr wirken. Beim Öffner führt jede Unterbrechung zum Abschalten.",
+      "explain": "Bei einem Schließer würde ein Drahtbruch unbemerkt bleiben und der Ausschaltbefehl könnte nicht mehr wirken. Beim Öffner führt jede Unterbrechung zum Abschalten. NOT-HALT-Geräte müssen zusätzlich zwangsöffnende Kontakte haben (DIN EN ISO 13850).",
       "tags": [
         "Drahtbruchsicherheit",
         "NOT-HALT"
@@ -499,7 +499,7 @@
       "q": "Was versteht man unter einer Selbsthaltung in der SPS-Technik?",
       "answer": "Ein Ausgang hält sich über sein eigenes Signal eingeschaltet, nachdem der Ein-Taster losgelassen wurde, bis eine Aus-Bedingung ihn zurücksetzt.",
       "keywords": [
-        "eingeschaltet",
+        "eigen",
         "los"
       ],
       "explain": "Die Selbsthaltung wird z. B. als ODER-Verknüpfung aus Ein-Taster und Ausgang, in Reihe mit der Aus-Bedingung, oder mit einem Speicherbaustein (Setzen/Rücksetzen) programmiert.",
@@ -515,7 +515,7 @@
       "q": "Was bedeutet das Normieren bzw. Skalieren eines Analogwerts in der SPS?",
       "answer": "Der Rohwert der Analogbaugruppe (z. B. 0–27648 bei Siemens) wird in einen physikalischen Wert wie °C oder bar umgerechnet – oder umgekehrt.",
       "keywords": [
-        "umrechn",
+        "rechn",
         "physikalisch"
       ],
       "explain": "Dazu dient eine lineare Umrechnung (Geradengleichung). Oft gibt es dafür fertige Bausteine, z. B. NORM_X und SCALE_X bei Siemens.",

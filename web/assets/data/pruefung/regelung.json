@@ -310,10 +310,10 @@
         "Bei konstanter Regeldifferenz liefert der D-Anteil keine Stellgrößenänderung, er reagiert nur auf Änderungen",
         "Weil er zu langsam reagiert",
         "Weil er nur zwei Schaltzustände hat",
-        "Weil er immer eine bleibende Regelabweichung von genau 50 % erzeugt"
+        "Weil er auf eine sprunghafte Änderung der Regeldifferenz überhaupt nicht reagiert"
       ],
       "answer": 0,
-      "explain": "Der D-Anteil bewertet die Änderungsgeschwindigkeit von e. Bleibt e konstant, ist sein Beitrag null. Deshalb wird er nur in Kombination verwendet (PD, PID).",
+      "explain": "Der D-Anteil bewertet die Änderungsgeschwindigkeit von e. Bleibt e konstant, ist sein Beitrag null. Auf einen Sprung von e reagiert er dagegen besonders stark. Deshalb wird er nur in Kombination verwendet (PD, PID).",
       "tags": [
         "D-Anteil"
       ]

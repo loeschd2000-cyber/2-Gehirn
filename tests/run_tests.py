@@ -58,6 +58,10 @@ window.ZGAndroid = {
     setTimeout(() => __zgShop.emit({ type: 'find', id, ok: true, items: it }), 20); },
   amazonSearch: q => L('amazonSearch ' + q), copyText: t => L('copy ' + t.slice(0, 30)), openLink: (u, p) => L('open ' + u),
   http: (id, m, u, h, b) => fetch(u, { method: m, headers: JSON.parse(h || '{}'), body: m === 'GET' ? undefined : b }).then(async r => __zgNet.emit({ id, status: r.status, body: await r.text() })).catch(e => __zgNet.emit({ id, status: 0, error: String(e) })),
+  llmState: () => window.__llm || '{"state":"none"}', llmWarm: () => {}, llmCancel: () => {}, llmDownload: () => 'ok', llmDelete: () => {},
+  llmGenerate: (id, sys, prompt, t) => { L('handy ' + prompt.slice(-40)); const json = /JSON/.test(sys);
+    const parts = json ? ['{"aktion": ', '"keine"}'] : ['Ich bin die ', 'Handy-KI.'];
+    parts.forEach((p, i) => setTimeout(() => __zgLLM.emit({ id, piece: p }), 10 + i * 10)); setTimeout(() => __zgLLM.emit({ id, done: true }), 50); },
   untisReady: () => true,
   untisRange: (id, from, to) => { const ls = []; for (let d = from; d <= to; d++) { if (d % 100 > 31) continue;
       ls.push({ date: d, startTime: 745, endTime: 915, su: [{ name: 'SPS', longname: 'SPS' }], ro: [{ name: 'B12' }] });
@@ -137,6 +141,8 @@ async def route(r):
         if '"google_search"' in body:   # wie beim kostenlosen Schlüssel: Google-Suche gesperrt
             GS_HITS.append(1)
             return await r.fulfill(status=429, json={"error": {"code": 429, "message": "Quota exceeded for metric: generate_content_free_tier_requests google_search, limit: 0"}}, headers=H)
+        if "FALLBACKTEST" in body and "streamGenerateContent" in u:
+            return await r.fulfill(status=429, json={"error": {"code": 429, "message": "Resource exhausted"}}, headers=H)
         out = llm_answer(body)
         if "streamGenerateContent" in u:
             text = "Das ist eine Testantwort."
@@ -280,6 +286,12 @@ CASES = [
     ("Berichtsheft schreiben", ["Was hast du heute gemacht"]),
     ("Heute Schütze verdrahtet und einen Motor angeschlossen", ["Notiert"]),
     ("Wo ist Super am billigsten?", ["Super E5"]),
+    # --- Handy-KI ---
+    ("js:window.__llm = JSON.stringify({ state: 'ready', name: 'Gemma 4 E2B', backend: 'GPU' }); checkAi()", []),
+    ("Erzähl mir was über FALLBACKTEST Schütze", ["Handy-KI springt ein", "Ich bin die Handy-KI"]),
+    ("js:aiMode = 'handy'; checkAi()", []),
+    ("Wie funktioniert ein Frequenzumrichter?", ["Ich bin die Handy-KI", "handy "]),
+    ("js:aiMode = 'gemini'; window.__llm = ''; checkAi()", []),
     ("js:pcCtl = true; PC_BASE = 'http://pc.test'", []),
     ("Mach am PC leiser", ["PC: Leiser"]),
     ("Öffne Spotify am PC", ["Ich öffne Spotify am PC"]),

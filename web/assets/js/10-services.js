@@ -787,6 +787,31 @@ Schreibe daraus den Wochenbericht: sachlich, in Stichpunkten oder kurzen Sätzen
     openSheet("Weitere Dienste", body => {
       svInfo(body, "Hier verbindest du Jarvis mit weiteren Apps. Alles ist freiwillig – Schlüssel und Passwörter bleiben verschlüsselt auf deinem Handy.");
       const phone = !!AND;
+      // --- Handy-KI
+      if (phone && AND.llmState) {
+        const h = handyInfo(), gb = b => (b / 1e9).toLocaleString("de-DE", { maximumFractionDigits: 1 }) + " GB";
+        const ok = /^(ready|installed|loading)$/.test(h.state);
+        const s = svSection(body, "🧠", "Handy-KI (offline, ohne Limit)", ok ? "bereit" : h.state === "downloading" ? "lädt …" : h.state === "paused" ? "wartet auf WLAN" : "aus", ok);
+        svInfo(s, "Gemma 4 von Google läuft direkt auf deinem Handy: kein Internet nötig, kein Gemini-Limit, alles bleibt privat. Einmaliger Download: " + gb(h.size || 2.59e9) + " (am besten im WLAN). Antworten sind etwas einfacher als bei Gemini.");
+        if (h.state === "none" || h.state === "failed") {
+          if (h.state === "failed") svInfo(s, "Der letzte Download ist fehlgeschlagen – bitte nochmal starten.");
+          svBtn(s, "Herunterladen (nur WLAN)", () => { const r = AND.llmDownload(false); if (r !== "ok") throw new Error(r); toast("Download läuft – Fortschritt siehst du oben in der Benachrichtigung", "🧠", 4000); openServices(); }, true);
+          svBtn(s, "Auch über mobile Daten", () => { const r = AND.llmDownload(true); if (r !== "ok") throw new Error(r); toast("Download läuft (auch über mobile Daten)", "🧠", 4000); openServices(); });
+        } else if (h.state === "downloading" || h.state === "paused") {
+          const bar = svEl("div", { className: "svc-bar" }, s); const fill = svEl("i", {}, bar); const lbl = svInfo(s, "");
+          const upd = () => { const x = handyInfo(); if (!/^(downloading|paused)$/.test(x.state)) { if ($("sheet") && $("sheet").classList.contains("open")) openServices(); return; }
+            const pct = x.total ? Math.floor(x.done / x.total * 100) : 0; fill.style.width = pct + "%"; lbl.textContent = `${pct} % · ${gb(x.done || 0)} von ${gb(x.total || h.size)}${x.state === "paused" ? " · wartet auf WLAN/Netz" : ""}`;
+            if ($("sheet") && $("sheet").classList.contains("open") && document.body.contains(bar)) setTimeout(upd, 1500); };
+          upd();
+          svBtn(s, "Abbrechen", () => { AND.llmDelete(); openServices(); });
+        } else {
+          svInfo(s, `Bereit${h.backend ? " (läuft auf " + (h.backend === "GPU" ? "dem Grafikchip" : "dem Prozessor") + ")" : ""}. Unter „KI-Quelle“ kannst du „HANDY“ wählen – oder sie springt automatisch ein, wenn Gemini am Limit ist oder kein Internet da ist.`);
+          const fb = handyFallbackOn();
+          svBtn(s, fb ? "Automatisch einspringen: AN" : "Automatisch einspringen: AUS", () => { lsSet("zg_handy_fb", fb ? "0" : "1"); checkAi(); openServices(); });
+          svBtn(s, "Testen", async b => { b.textContent = "Denkt nach …"; const t0 = Date.now(); const r = await handyGenerate("Du bist Jarvis. Antworte kurz auf Deutsch.", "Sag in einem Satz, was ein Schütz ist.", 0.5, null); toast(`${r.trim().slice(0, 140)} (${((Date.now() - t0) / 1000).toFixed(1)} s)`, "🧠", 7000); b.textContent = "Testen"; }, true);
+          svBtn(s, "Löschen (Speicher freigeben)", () => { AND.llmDelete(); if (aiMode === "handy") { aiMode = "auto"; lsSet("zg_ai_mode", "auto"); } setTimeout(() => { checkAi(); openServices(); }, 600); });
+        }
+      }
       // --- WebUntis
       {
         const s = svSection(body, "🏫", "WebUntis (Stundenplan)", untisOn() ? "verbunden" : "aus", untisOn());

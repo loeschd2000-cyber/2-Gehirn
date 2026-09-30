@@ -162,7 +162,7 @@
         "Es kennzeichnet einen Anschluss mit positivem Potenzial"
       ],
       "answer": 0,
-      "explain": "Nach DIN EN 81346 steht „=“ für den Funktionsaspekt, „-“ für den Produktaspekt und „+“ für den Ortsaspekt. Beispiel: +S1-K3 = Hilfsschütz K3 im Schaltschrank S1.",
+      "explain": "Nach DIN EN 81346 steht „=“ für den Funktionsaspekt, „-“ für den Produktaspekt und „+“ für den Ortsaspekt. Beispiel: +S1-K3 = Betriebsmittel K3 (z. B. Hilfsschütz) am Einbauort S1 (z. B. Schaltschrank 1).",
       "tags": [
         "Betriebsmittelkennzeichnung"
       ]

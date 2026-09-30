@@ -203,7 +203,7 @@
         "Mit einem Gleichrichter vor der Last"
       ],
       "answer": 2,
-      "explain": "Kondensatoren nehmen kapazitive Blindleistung auf, die der induktiven Blindleistung entgegengesetzt ist. Parallel geschaltet decken sie den Blindleistungsbedarf der Last vor Ort, die Zuleitung wird entlastet.",
+      "explain": "Die kapazitive Blindleistung der Kondensatoren ist der induktiven Blindleistung der Last entgegengerichtet. Parallel geschaltet decken sie den Blindleistungsbedarf der Last vor Ort, die Blindleistung pendelt zwischen Kondensator und Last statt über das Netz – die Zuleitung wird entlastet.",
       "tags": [
         "Kompensation"
       ]

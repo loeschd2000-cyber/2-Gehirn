@@ -199,7 +199,7 @@
         "5 s"
       ],
       "answer": 2,
-      "explain": "Für Endstromkreise bis 32 A im TN-System (U0 = 230 V AC) gilt 0,4 s. 0,2 s gilt für das TT-System, 5 s für Verteilerstromkreise und Stromkreise über 32 A im TN-System.",
+      "explain": "Für Endstromkreise bis 32 A im TN-System (U0 = 230 V AC) gilt 0,4 s. 0,2 s gilt für Endstromkreise im TT-System (U0 = 230 V), 5 s für Verteilerstromkreise im TN-System.",
       "tags": [
         "Abschaltung",
         "TN-System"
@@ -275,7 +275,7 @@
         "An der Kennzeichnung IP20 auf dem Typschild"
       ],
       "answer": 1,
-      "explain": "Schutzklasse II bedeutet doppelte oder verstärkte Isolierung, ein Schutzleiter wird nicht angeschlossen. Das Erdungszeichen gehört zu Schutzklasse I, die Raute mit III zu Schutzklasse III (Schutzkleinspannung).",
+      "explain": "Schutzklasse II bedeutet doppelte oder verstärkte Isolierung, ein Schutzleiter wird nicht angeschlossen. Das Erdungszeichen gehört zu Schutzklasse I, die Raute mit III zu Schutzklasse III (Betrieb an SELV/PELV).",
       "tags": [
         "Schutzklassen"
       ]
@@ -493,7 +493,7 @@
       "level": 1,
       "part": "AP1",
       "q": "Wozu dient der Schutzpotentialausgleich?",
-      "answer": "Er verbindet Schutzleiter und fremde leitfähige Teile wie metallene Rohrleitungen, damit zwischen ihnen keine gefährlichen Spannungsunterschiede entstehen.",
+      "answer": "Er verbindet Schutzleiter und fremde leitfähige Teile wie metallene Rohrleitungen, damit sie auf gleichem Potential liegen und zwischen ihnen keine gefährlichen Spannungsunterschiede entstehen.",
       "keywords": [
         "potential",
         "leitfähig",
@@ -510,7 +510,7 @@
       "level": 1,
       "part": "AP1",
       "q": "Was versteht man unter Schutzklasse III?",
-      "answer": "Betriebsmittel der Schutzklasse III werden mit Schutzkleinspannung (SELV oder PELV) betrieben und haben keinen Schutzleiteranschluss.",
+      "answer": "Betriebsmittel der Schutzklasse III werden nur mit Kleinspannung aus einem SELV- oder PELV-Stromkreis betrieben und haben keinen Schutzleiteranschluss.",
       "keywords": [
         "kleinspannung",
         "schutzleiter"

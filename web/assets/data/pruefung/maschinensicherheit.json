@@ -153,15 +153,15 @@
       "type": "mc",
       "level": 2,
       "part": "AP1+AP2",
-      "q": "Welche Stopp-Kategorie nach DIN EN 60204-1 ist für die Not-Halt-Funktion NICHT zulässig?",
+      "q": "Welche Stopp-Kategorien sind nach DIN EN 60204-1 für die Not-Halt-Funktion zulässig?",
       "options": [
-        "Stopp-Kategorie 0",
-        "Stopp-Kategorie 1",
-        "Keine – alle Stopp-Kategorien sind zulässig",
-        "Stopp-Kategorie 2"
+        "Nur Stopp-Kategorie 0",
+        "Stopp-Kategorie 1 oder 2",
+        "Stopp-Kategorie 0, 1 oder 2",
+        "Stopp-Kategorie 0 oder 1"
       ],
       "answer": 3,
-      "explain": "Not-Halt muss in Stopp-Kategorie 0 oder 1 wirken. Bei Stopp-Kategorie 2 bleibt die Energie an den Antrieben auch im Stillstand erhalten – das ist für den Notfall nicht zulässig.",
+      "explain": "Not-Halt muss in Stopp-Kategorie 0 oder 1 wirken. Bei Stopp-Kategorie 2 bleibt die Energie an den Antrieben auch im Stillstand erhalten – das ist für den Not-Halt nicht zulässig.",
       "tags": [
         "Not-Halt",
         "Stopp-Kategorien"
@@ -255,7 +255,7 @@
         "Rot"
       ],
       "answer": 3,
-      "explain": "Für START/EIN sind Weiß (bevorzugt), Grau, Schwarz oder Grün zulässig, Rot dagegen nicht. Rot ist für Not-Halt und – neben Schwarz, Grau und Weiß – für STOPP/AUS vorgesehen.",
+      "explain": "Für START/EIN sind Weiß (bevorzugt), Grau, Schwarz oder Grün zulässig, Rot dagegen nicht. Rot wird für Not-Halt verwendet und ist für STOPP/AUS zulässig (dort bevorzugt Schwarz, außerdem Grau oder Weiß).",
       "tags": [
         "Farben",
         "DIN EN 60204-1"

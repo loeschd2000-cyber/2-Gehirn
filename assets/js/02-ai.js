@@ -1,5 +1,5 @@
   /* ================= KI-Motor: PC (Ollama) oder Gemini ================= */
-  const AI_MODES = ["auto", "pc", "gemini"];
+  const AI_MODES = ["auto", "pc", "gemini", "handy"];
   let aiMode = AI_MODES.includes(lsGet("zg_ai_mode")) ? lsGet("zg_ai_mode") : "auto";
   let geminiKey = secGet("zg_gemini_key");
   let geminiModel = null, geminiCandidates = [], gemAllModels = [], pcOk = false, backend = null;   // backend: "pc" | "gemini" | null
@@ -41,17 +41,62 @@
       return true;
     } catch { geminiModel = null; return false; }
   }
+  /* ---------- Handy-KI (Gemma 4 läuft direkt auf dem Handy, offline) ---------- */
+  function handyInfo() { try { return AND && AND.llmState ? JSON.parse(AND.llmState() || "{}") : { state: "none" }; } catch { return { state: "none" }; } }
+  const handyReady = () => /^(ready|installed|loading)$/.test(handyInfo().state || "");
+  const handyFallbackOn = () => lsGet("zg_handy_fb") !== "0";   // springt ein, wenn Gemini/PC nicht gehen
+  const llmWait = {};
+  window.__zgLLM = { emit(r) { const w = r && llmWait[r.id]; if (w) w(r); } };
+  // Chat-Verlauf in eine Anfrage für die Handy-KI umbauen (kurz halten: das Modell hat weniger Platz)
+  function handyPrompt(msgs) {
+    const sys = msgs.filter(m => m.role === "system").map(m => m.content).join("\n\n");
+    const rest = msgs.filter(m => m.role !== "system");
+    const last = rest[rest.length - 1];
+    const hist = rest.slice(-9, -1).map(m => (m.role === "assistant" ? "Jarvis: " : "Nutzer: ") + String(m.content).slice(0, 600)).join("\n");
+    const prompt = (hist ? "Bisheriges Gespräch:\n" + hist + "\n\nNeue Nachricht:\n" : "") + (last ? String(last.content) : "");
+    return { sys: sys.slice(0, 6000) + "\n\nWichtig: Antworte auf Deutsch, kurz und natürlich (höchstens 4 Sätze), ohne Markdown.", prompt };
+  }
+  function handyGenerate(system, prompt, temperature, onPiece, signal) {
+    return new Promise((res, rej) => {
+      const id = "l" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      let timer = null, full = "";
+      const arm = ms => { clearTimeout(timer); timer = setTimeout(() => { delete llmWait[id]; try { AND.llmCancel(id); } catch {} rej(new Error("Die Handy-KI antwortet nicht")); }, ms); };
+      llmWait[id] = r => {
+        if (r.piece) { full += r.piece; if (onPiece) onPiece(r.piece); arm(30000); }
+        if (r.done) { clearTimeout(timer); delete llmWait[id]; if (r.error) rej(new Error("Handy-KI: " + r.error)); else res(full); }
+      };
+      if (signal) signal.addEventListener("abort", () => { clearTimeout(timer); delete llmWait[id]; try { AND.llmCancel(id); } catch {} const e = new Error("abgebrochen"); e.name = "AbortError"; rej(e); }, { once: true });
+      arm(90000);   // erster Start lädt das Modell (bis ca. 10 s), danach geht es schnell
+      try { AND.llmGenerate(id, system, prompt, temperature); } catch (e) { clearTimeout(timer); delete llmWait[id]; rej(e); }
+    });
+  }
+  async function handyStream(msgs, onPiece, signal) { const p = handyPrompt(msgs); await handyGenerate(p.sys, p.prompt, 0.7, onPiece, signal); }
+  async function handyJson(prompt, schema, signal) {
+    const txt = await handyGenerate("Du bist ein genauer Helfer. Antworte ausschließlich mit einem einzigen gültigen JSON-Objekt, ohne Erklärung, ohne Markdown.",
+      prompt + "\n\nAntworte nur mit einem JSON-Objekt nach diesem Schema:\n" + JSON.stringify(schema), 0.1, null, signal);
+    const m = /\{[\s\S]*\}/.exec(txt.replace(/```(?:json)?/g, ""));
+    return JSON.parse(m ? m[0] : txt);
+  }
+  let handyNoted = 0;
+  const handyNote = why => { if (Date.now() - handyNoted > 10 * 60000) { handyNoted = Date.now(); note("Handy-KI springt ein (" + why + ")."); } };
+  // Fehler, bei denen die Handy-KI übernehmen soll (Limit, Überlastung, kein Internet, PC aus)
+  const handyWorthy = e => !(e && e.name === "AbortError") && /limit|überlastet|429|503|fetch|network|netzwerk|internet|nicht erreichbar|failed|timeout|zeitüberschreitung|gemini-fehler/i.test(String(e && e.message || e));
+
   async function checkAi() {
     await checkPc();
     const gemOk = await checkGemini();
+    const hOk = handyReady();
     backend = aiMode === "pc" ? (pcOk ? "pc" : null)
             : aiMode === "gemini" ? (gemOk ? "gemini" : null)
-            : (pcOk ? "pc" : gemOk ? "gemini" : null);
+            : aiMode === "handy" ? (hOk ? "handy" : null)
+            : (pcOk ? "pc" : gemOk ? "gemini" : hOk ? "handy" : null);
     ollamaOk = !!backend;
     modelSel.hidden = !(backend === "pc" && modelSel.options.length > 1);
-    $("cAiState").textContent = aiMode === "auto" ? "AUTO" : aiMode === "pc" ? "PC" : "GEMINI";
+    $("cAiState").textContent = aiMode === "auto" ? "AUTO" : aiMode === "pc" ? "PC" : aiMode === "handy" ? "HANDY" : "GEMINI";
     if (backend === "pc") { setDot("aiDot", "ok"); $("aiV").textContent = "PC (privat, ohne Limit) · " + model; }
-    else if (backend === "gemini") { setDot("aiDot", "ok"); $("aiV").textContent = "Gemini (immer an) · " + geminiModel.replace("models/", ""); }
+    else if (backend === "gemini") { setDot("aiDot", "ok"); $("aiV").textContent = "Gemini (immer an) · " + geminiModel.replace("models/", "") + (hOk && handyFallbackOn() ? " · Handy-KI als Ersatz" : ""); }
+    else if (backend === "handy") { const h = handyInfo(); setDot("aiDot", "ok"); $("aiV").textContent = "Handy-KI (offline, ohne Limit) · " + (h.name || "Gemma") + (h.backend ? " · " + h.backend : ""); if (aiMode === "handy") try { AND.llmWarm(); } catch {} }
+    else if (aiMode === "handy") { setDot("aiDot", "bad"); $("aiV").textContent = "Handy-KI noch nicht geladen: Menü → Weitere Dienste → Handy-KI."; }
     else {
       setDot("aiDot", "bad");
       $("aiV").textContent = aiMode === "pc" ? "PC nicht erreichbar. Ist der PC an und läuft Ollama?"
@@ -72,6 +117,7 @@
   }
   $("cAi").onclick = async () => {
     aiMode = AI_MODES[(AI_MODES.indexOf(aiMode) + 1) % AI_MODES.length];
+    if (aiMode === "handy" && !(AND && AND.llmState)) aiMode = "auto";   // Handy-KI gibt es nur in der Android-App
     lsSet("zg_ai_mode", aiMode);
     if (aiMode === "gemini" && !geminiKey) { $("kSetup").hidden = false; $("kId").focus(); }
     await checkAi(); warmUp();
@@ -152,6 +198,13 @@
 
   // Antwort Stück für Stück holen; onPiece bekommt jeweils den neuen Text
   async function llmStream(msgs, onPiece, signal) {
+    if (backend === "handy") return handyStream(msgs, onPiece, signal);
+    if (!handyFallbackOn() || !handyReady()) return llmStreamInner(msgs, onPiece, signal);
+    let got = false;
+    try { return await llmStreamInner(msgs, p => { got = true; onPiece(p); }, signal); }
+    catch (e) { if (got || !handyWorthy(e)) throw e; handyNote(backend === "pc" ? "PC nicht erreichbar" : "Gemini geht gerade nicht"); return handyStream(msgs, onPiece, signal); }
+  }
+  async function llmStreamInner(msgs, onPiece, signal) {
     if (backend === "gemini") {
       const r = await gemFetch("streamGenerateContent?alt=sse", { ...toGemini(msgs), generationConfig: { temperature: 0.7, maxOutputTokens: 1024 } }, signal);
       const reader = r.body.getReader(), dec = new TextDecoder();
@@ -204,6 +257,12 @@
     try { return await llmJsonInner(prompt, schema, ab.sig); } finally { ab.done(); }
   }
   async function llmJsonInner(prompt, schema, signal) {
+    if (backend === "handy") return handyJson(prompt, schema, signal);
+    if (!handyFallbackOn() || !handyReady()) return llmJsonCore(prompt, schema, signal);
+    try { return await llmJsonCore(prompt, schema, signal); }
+    catch (e) { if (!handyWorthy(e)) throw e; handyNote(backend === "pc" ? "PC nicht erreichbar" : "Gemini geht gerade nicht"); return handyJson(prompt, schema, signal); }
+  }
+  async function llmJsonCore(prompt, schema, signal) {
     if (backend === "gemini") {
       const r = await gemFetch("generateContent", {
         contents: [{ role: "user", parts: [{ text: prompt + "\n\nAntworte nur mit einem JSON-Objekt nach diesem Schema, ohne weiteren Text:\n" + JSON.stringify(schema) }] }],

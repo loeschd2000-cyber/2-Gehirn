@@ -73,7 +73,7 @@
         "DIN VDE 0100-410"
       ],
       "answer": 2,
-      "explain": "DIN VDE 0105-100 regelt den Betrieb elektrischer Anlagen einschließlich wiederkehrender Prüfungen. DIN VDE 0100-600 gilt für die Erstprüfung, DIN VDE 0701-0702 für die Prüfung elektrischer Geräte.",
+      "explain": "DIN VDE 0105-100 regelt den Betrieb elektrischer Anlagen einschließlich wiederkehrender Prüfungen. DIN VDE 0100-600 gilt für die Erstprüfung, DIN VDE 0701-0702 für die Prüfung elektrischer Geräte. Hinweis: DIN VDE 0701-0702 wurde inzwischen durch DIN EN 50678 (VDE 0701) und DIN EN 50699 (VDE 0702) abgelöst; diese Grenzwerte gelten dort weiter.",
       "tags": [
         "Wiederholungsprüfung"
       ]
@@ -101,7 +101,7 @@
       "type": "mc",
       "level": 2,
       "part": "AP2",
-      "q": "Welchen Richtwert für die Prüffrist nennt die DGUV Vorschrift 3 für elektrische Anlagen und ortsfeste Betriebsmittel?",
+      "q": "Welche Prüffrist nennt die DGUV Vorschrift 3 (Durchführungsanweisungen) für elektrische Anlagen und ortsfeste Betriebsmittel, die nicht in Betriebsstätten, Räumen oder Anlagen besonderer Art betrieben werden?",
       "options": [
         "4 Jahre",
         "6 Monate",
@@ -109,7 +109,7 @@
         "10 Jahre"
       ],
       "answer": 0,
-      "explain": "Für elektrische Anlagen und ortsfeste Betriebsmittel nennt die DGUV Vorschrift 3 einen Richtwert von 4 Jahren. Ortsveränderliche Betriebsmittel werden meist deutlich häufiger geprüft, abhängig von der Beanspruchung.",
+      "explain": "Für elektrische Anlagen und ortsfeste Betriebsmittel nennt die DGUV Vorschrift 3 eine Prüffrist von 4 Jahren; in Betriebsstätten, Räumen und Anlagen besonderer Art gilt 1 Jahr. Ortsveränderliche Betriebsmittel werden meist deutlich häufiger geprüft, abhängig von der Beanspruchung.",
       "tags": [
         "DGUV V3",
         "Prüffristen"
@@ -128,7 +128,7 @@
         "Mit der Sichtprüfung"
       ],
       "answer": 3,
-      "explain": "Zuerst wird besichtigt (z. B. Gehäuse, Anschlussleitung, Knickschutz, Stecker). Viele Mängel sind schon so erkennbar; ein beschädigtes Gerät wird nicht weiter unter Spannung geprüft. Danach folgen die Messungen und zuletzt die Funktionsprüfung.",
+      "explain": "Zuerst wird besichtigt (z. B. Gehäuse, Anschlussleitung, Knickschutz, Stecker). Viele Mängel sind schon so erkennbar; ein beschädigtes Gerät wird nicht weiter unter Spannung geprüft. Danach folgen die Messungen und zuletzt die Funktionsprüfung. Hinweis: DIN VDE 0701-0702 wurde inzwischen durch DIN EN 50678 (VDE 0701) und DIN EN 50699 (VDE 0702) abgelöst; diese Grenzwerte gelten dort weiter.",
       "tags": [
         "DIN VDE 0701-0702"
       ]
@@ -146,7 +146,7 @@
         "≥ 1 MΩ"
       ],
       "answer": 1,
-      "explain": "Bis 5 m Leitungslänge gilt ≤ 0,3 Ω, für jede weiteren 7,5 m kommen 0,1 Ω hinzu (höchstens 1 Ω). ≥ 1 MΩ ist ein Mindestwert für den Isolationswiderstand, nicht für den Schutzleiter.",
+      "explain": "Bis 5 m Leitungslänge gilt ≤ 0,3 Ω, für jede weiteren 7,5 m kommen 0,1 Ω hinzu (höchstens 1 Ω). ≥ 1 MΩ ist ein Mindestwert für den Isolationswiderstand, nicht für den Schutzleiter. Hinweis: DIN VDE 0701-0702 wurde inzwischen durch DIN EN 50678 (VDE 0701) und DIN EN 50699 (VDE 0702) abgelöst; diese Grenzwerte gelten dort weiter.",
       "tags": [
         "DIN VDE 0701-0702",
         "Schutzleiter"
@@ -183,7 +183,7 @@
         "≥ 100 MΩ"
       ],
       "answer": 2,
-      "explain": "Für Schutzklasse I gilt ≥ 1 MΩ, für Schutzklasse II ≥ 2 MΩ. Gemessen wird mit 500 V Gleichspannung zwischen den kurzgeschlossenen aktiven Leitern und dem Schutzleiter bzw. berührbaren leitfähigen Teilen.",
+      "explain": "Für Schutzklasse I gilt ≥ 1 MΩ, für Schutzklasse II ≥ 2 MΩ. Gemessen wird mit 500 V Gleichspannung zwischen den kurzgeschlossenen aktiven Leitern und dem Schutzleiter bzw. berührbaren leitfähigen Teilen. Hinweis: DIN VDE 0701-0702 wurde inzwischen durch DIN EN 50678 (VDE 0701) und DIN EN 50699 (VDE 0702) abgelöst; diese Grenzwerte gelten dort weiter.",
       "tags": [
         "DIN VDE 0701-0702",
         "Isolationswiderstand"
@@ -257,7 +257,7 @@
         "30 mA"
       ],
       "answer": 1,
-      "explain": "Allgemein gilt für den Schutzleiterstrom ≤ 3,5 mA (Ausnahmen z. B. für Geräte mit großer Heizleistung). 0,5 mA ist der Grenzwert für den Berührungsstrom an berührbaren leitfähigen Teilen, z. B. bei Schutzklasse II.",
+      "explain": "Allgemein gilt für den Schutzleiterstrom ≤ 3,5 mA (Ausnahmen z. B. für Geräte mit großer Heizleistung). 0,5 mA ist der Grenzwert für den Berührungsstrom an berührbaren leitfähigen Teilen, z. B. bei Schutzklasse II. Hinweis: DIN VDE 0701-0702 wurde inzwischen durch DIN EN 50678 (VDE 0701) und DIN EN 50699 (VDE 0702) abgelöst; diese Grenzwerte gelten dort weiter.",
       "tags": [
         "DIN VDE 0701-0702",
         "Schutzleiterstrom"
@@ -495,7 +495,7 @@
       "answer": "Die Messleitung muss von der Strombuchse (A/mA) in die Spannungsbuchse (V) umgesteckt und der Messbereich umgeschaltet werden, sonst entsteht über den niederohmigen Strompfad ein Kurzschluss.",
       "keywords": [
         "buchse",
-        "umstecken",
+        "steck",
         "kurzschluss"
       ],
       "explain": "Der Strompfad hat einen sehr kleinen Widerstand (Shunt). Parallel an eine Spannung gelegt, fließt ein Kurzschlussstrom – Sicherung, Messgerät oder im schlimmsten Fall der Anwender werden gefährdet.",
@@ -517,7 +517,7 @@
         "isolation",
         "funktion"
       ],
-      "explain": "Bei Schutzklasse II entfällt die Schutzleiterwiderstandsmessung; statt des Schutzleiterstroms wird der Berührungsstrom an berührbaren leitfähigen Teilen gemessen.",
+      "explain": "Bei Schutzklasse II entfällt die Schutzleiterwiderstandsmessung; statt des Schutzleiterstroms wird der Berührungsstrom an berührbaren leitfähigen Teilen gemessen. Hinweis: DIN VDE 0701-0702 wurde inzwischen durch DIN EN 50678 (VDE 0701) und DIN EN 50699 (VDE 0702) abgelöst; diese Grenzwerte gelten dort weiter.",
       "tags": [
         "DIN VDE 0701-0702"
       ]

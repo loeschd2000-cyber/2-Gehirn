@@ -5,7 +5,7 @@
     renderChat();
     await initStore();
     renderTiles();   // jetzt mit geladenen Daten (Tagebuch-Status usw.)
-    renderHello(); proactiveSync(); maybeShowNews();
+    renderHello(); proactiveSync(); maybeShowNews(); pcPing();
     renderAll();   // beim Öffnen immer mit einem neuen Gespräch starten, alte stehen rechts unter „Gespräche“
     await checkAi();
     warmUp();

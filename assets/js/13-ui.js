@@ -197,6 +197,8 @@
     ["🧠", "Gedächtnis", [["Merk dir, mein Ausbilder heißt Herr Müller"], ["Was weißt du über mich?", 1], ["Was hab ich über Lukas gesagt?"], ["Merk dir, Lukas hat am 12. März Geburtstag"]]],
     ["📔", "Tagebuch", [["Tagebuch", 1], ["Lies mir mein Tagebuch von gestern vor", 1], ["Erinner mich jeden Abend um 21:30 ans Tagebuch"]]],
     ["🗺", "Unterwegs", [["Navigier mich nach Hause"], ["Wie lange brauche ich nach Schweinfurt?"]]],
+    ["🖥", "PC steuern (über den PC-Server)", [["Mach am PC leiser"], ["Nächstes Lied am PC"], ["Öffne Spotify am PC"], ["Sperr den PC"], ["Fahr den PC in 30 Minuten herunter"]]],
+    ["💡", "Hilfe", [["Was kannst du?", 1]]],
     ["✨", "Einfach frei reden", [["Kannst du Brot auf die Liste setzen und mich um 7 wecken?"], ["Erklär mir, wie ein Schütz funktioniert", 1]]],
   ];
   function tryCommand(cmd, run) {

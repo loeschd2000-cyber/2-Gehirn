@@ -72,8 +72,11 @@ def llm_answer(body):
     return None
 
 TTS_HITS = []
+PC_HITS = []
 async def route(r):
     u = r.request.url
+    if u.endswith("/pc/do"):
+        PC_HITS.append(r.request.post_data); return await r.fulfill(json={"ok": True, "msg": ""}, headers=H)
     if u.startswith("file:"): return await r.continue_()
     if r.request.method == "OPTIONS": return await r.fulfill(status=204, headers=H)
     if "geocoding-api" in u: return await r.fulfill(json={"results": [{"latitude": 50.03, "longitude": 10.51, "name": "Haßfurt"}]}, headers=H)
@@ -156,6 +159,12 @@ CASES = [
     ("Kannst du bitte Käse und Brot bei den Einkäufen notieren und mir danach sagen was alles drauf ist", ["Käse und Brot", "Käse, Brot"]),
     ("Lass es morgen früh um 7 klingeln", ["alexa 7:0"]),
     ("Was kannst du?", ["alle Befehle"]),
+    ("js:pcCtl = true; PC_BASE = 'http://pc.test'", []),
+    ("Mach am PC leiser", ["PC: Leiser"]),
+    ("Öffne Spotify am PC", ["Ich öffne Spotify am PC"]),
+    ("Fahr den PC in 30 Minuten herunter", ["in 30 Minuten herunterfahren"]),
+    ("nein", ["mache ich nicht"]),
+    ("Mach leiser", [], ["PC:"]),
     ("Frag mich SPS ab", ["Lernmodus: SPS"]),
     ("Stopp", ["Lernmodus beendet"]),
 ]
@@ -177,6 +186,8 @@ async def main():
             forbid = case[2] if len(case) > 2 else []
             before_log = await pg.evaluate("document.getElementById('log').children.length")
             before_and = await pg.evaluate("window.__and.length")
+            if sentence.startswith("js:"):
+                await pg.evaluate(sentence[3:]); continue
             await pg.evaluate("q => { const i = document.getElementById('input'); i.value = q; document.getElementById('form').requestSubmit(); }", sentence)
             await pg.wait_for_timeout(250)
             try: await pg.wait_for_function("!busy", timeout=15000)

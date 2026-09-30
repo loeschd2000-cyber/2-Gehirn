@@ -11,6 +11,7 @@
     if (await handleExtras(text)) return true;
     if (await handleFinance(text)) return true;
     if (await handleWallet(text)) return true;
+    if (await handlePc(text)) return true;
     if (await handleWhatsApp(text)) return true;
     if (handleAlarm(text)) return true;
     if (handleMedia(text)) return true;
@@ -60,6 +61,7 @@
     if (p.type === "event") await finishEvent(p, ok, byClick);
     else if (p.type === "draft") await finishDraft(p, ok);
     else if (p.type === "whatsapp") await finishWhatsApp(p, ok);
+    else if (p.type === "pc") finishPc(p, ok);
     continueAgent();
   }
 
@@ -83,7 +85,8 @@ Schule: "Was hab ich morgen in der Schule?" · "Wann ist die nächste Arbeit?" �
 Geld: "Wie sieht's aus mit meinen Finanzen?" · "Was sind meine Fixkosten?" · "Zeig mir eine Statistik von meinem Konto" · "Wie steht mein Budget?" · "Setz mein Monatsbudget auf 600 Euro" · "Wie sieht's aus in meiner Phantom Wallet?" · "Sag mir Bescheid, wenn SOL unter 100 Dollar fällt"
 Navigation: "Navigier mich nach Hause" · "Wie lange brauche ich nach Schweinfurt?"
 Tagebuch: "Tagebuch" · "Lies mir mein Tagebuch von gestern vor"
-Suche: "Was hab ich über Lukas gesagt?" · "Wann hab ich über den Führerschein geredet?"`;
+Suche: "Was hab ich über Lukas gesagt?" · "Wann hab ich über den Führerschein geredet?"
+PC: "Mach am PC leiser" · "Öffne Spotify am PC" · "Sperr den PC" · "Fahr den PC in 30 Minuten herunter"`;
 
   let agentRest = [];      // Befehle, die nach einer Rückfrage (z. B. „Senden?“) noch dran sind
   let agentRunning = false;

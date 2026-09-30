@@ -483,3 +483,16 @@
   .card.links .lt { font-weight: 600; }
   .card.links .lrow .btn { align-self: flex-start; margin-top: 4px; }
   .card.links .body { margin: 0; }
+
+  /* Weitere Dienste */
+  .svc { border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; background: rgba(8, 24, 42, .5); }
+  .svc h3 { margin: 0; font-size: 15px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .svc-st { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); border: 1px solid var(--line-2); border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+  .svc-st.ok { color: #6ff0b0; border-color: rgba(111, 240, 176, .5); }
+  .svc-hint { margin: 0; font-size: 13px; color: var(--ink-2); line-height: 1.45; }
+  .svc-link { color: var(--accent, #4fd6ff); font-size: 14px; text-decoration: none; }
+  .svc input, .svc select { width: 100%; box-sizing: border-box; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line-2); background: rgba(0, 10, 20, .6); color: inherit; font: inherit; font-size: 15px; }
+  .svc .btn { align-self: flex-start; }
+  .svc-list { display: flex; flex-direction: column; gap: 6px; }
+  .svc-list .hcmd { text-align: left; }
+  .svc-form { display: flex; flex-direction: column; gap: 8px; }

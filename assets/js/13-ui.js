@@ -202,6 +202,16 @@
     ["🛒", "Amazon", [["Bestell Zahnpasta auf Amazon"], ["Leg Batterien in den Warenkorb"], ["Sag mir Bescheid, wenn die AirPods Pro unter 180 Euro fallen"], ["Welche Preis-Wächter habe ich?", 1]]],
     ["💸", "Geld verdienen & sparen", [["Verkauf meinen alten Controller"], ["Wo kann ich sparen?", 1], ["Such mir Programmier-Jobs", 1], ["Such mir Nebenjobs", 1], ["Schreib mir eine Bewerbung für Job 1"]]],
     ["🖥", "PC steuern (über den PC-Server)", [["Mach am PC leiser"], ["Nächstes Lied am PC"], ["Öffne Spotify am PC"], ["Sperr den PC"], ["Fahr den PC in 30 Minuten herunter"]]],
+    ["🏫", "Stundenplan (Untis) & Lernen", [["Fällt morgen was aus?", 1], ["Wann hab ich heute Schluss?", 1], ["Stundenplan diese Woche", 1], ["Mach mir einen Lernplan für die nächste Arbeit", 1], ["Was soll ich heute lernen?", 1]]],
+    ["📒", "Berichtsheft", [["Berichtsheft: heute habe ich "], ["Mach meinen Wochenbericht", 1], ["Was steht im Berichtsheft?", 1]]],
+    ["🗑", "Müll", [["Welcher Müll kommt morgen?", 1], ["Wann kommt die gelbe Tonne?", 1], ["Wann ist die nächste Abfuhr?", 1]]],
+    ["⛽", "Tanken", [["Wo ist Diesel am billigsten?", 1], ["Navigier mich zur günstigsten Tankstelle", 1], ["Sag mir Bescheid, wenn Diesel unter 1,60 kostet"]]],
+    ["📰", "Nachrichten", [["Was gibt es Neues in der Welt?", 1], ["Lies mir die Nachrichten vor", 1]]],
+    ["📱", "Handy", [["Taschenlampe an", 1], ["Taschenlampe aus", 1], ["Nicht stören an", 1], ["Mach das Handy lautlos", 1], ["Handy wieder laut", 1], ["Wie voll ist mein Akku?", 1]]],
+    ["❤️", "Gesundheit", [["Wie hab ich geschlafen?", 1], ["Wie viele Schritte hab ich heute?", 1]]],
+    ["📍", "Orts-Erinnerungen", [["Erinner mich beim Edeka an Milch"], ["Erinner mich zu Hause an den Müll"], ["Merk dir, hier ist mein Zuhause"], ["Welche Orts-Erinnerungen habe ich?", 1]]],
+    ["📦", "Pakete", [["Wo ist mein Paket?", 1], ["Verfolge Sendung "]]],
+    ["🏠", "Smart Home (SmartThings)", [["Schalte den Fernseher aus"], ["Licht im Wohnzimmer an"], ["Ist die Waschmaschine fertig?", 1], ["Welche Geräte hab ich?", 1]]],
     ["💡", "Hilfe", [["Was kannst du?", 1]]],
     ["✨", "Einfach frei reden", [["Kannst du Brot auf die Liste setzen und mich um 7 wecken?"], ["Erklär mir, wie ein Schütz funktioniert", 1]]],
   ];
@@ -239,10 +249,16 @@
     return true;
   }
 
-  const NEWS_V = "2.3";
+  const NEWS_V = "2.4";
   function openNews() {
     openSheet("Neu in Jarvis", body => {
       const items = [
+        ["🔌", "Weitere Dienste", "Neu im Menü unter „Weitere Dienste“: WebUntis, Müllkalender, Tankerkönig, DHL, SmartThings, Google Aufgaben, Samsung Health und Standort – jeweils mit Anleitung."],
+        ["🏫", "Stundenplan & Ausfälle", "„Fällt morgen was aus?“ – mit WebUntis. Änderungen für morgen kommen um 19 Uhr als Hinweis. Dazu: „Mach mir einen Lernplan für SPS“."],
+        ["📒", "Berichtsheft", "„Berichtsheft: heute habe ich …“ – am Freitag „Mach meinen Wochenbericht“, fertig zum Kopieren."],
+        ["🗑", "Müll · ⛽ Tanken · 📰 News", "„Welcher Müll kommt morgen?“, „Wo ist Diesel am billigsten?“, „Was gibt es Neues in der Welt?“ – Nachrichten auch im Morgen-Briefing."],
+        ["📍", "Orts-Erinnerungen", "„Erinner mich beim Edeka an Milch“ – meldet sich, sobald du dort bist."],
+        ["📱", "Handy · ❤️ Gesundheit · 📦 Pakete · 🏠 Smart Home", "Taschenlampe, Nicht stören, lautlos, Akku · „Wie hab ich geschlafen?“ · „Wo ist mein Paket?“ · „Schalte den Fernseher aus“."],
         ["😎", "Jarvis sagt Boss", "Jarvis nennt dich jetzt „Boss“. Ändern: „Nenn mich …“."],
         ["🛒", "Amazon per Sprache", "„Bestell Zahnpasta auf Amazon“ – Jarvis sucht das Produkt, fragt nach und legt es in den Warenkorb. Gekauft wird nie etwas. Preis-Wächter: „Sag mir Bescheid, wenn die AirPods unter 180 Euro fallen“."],
         ["💸", "Geld verdienen & sparen", "„Verkauf meinen alten Controller“ (fertige Kleinanzeige), „Wo kann ich sparen?“ (Spar-Coach mit deinen Kontodaten), „Such mir Programmier-Jobs“ (echte Angebote + Bewerbung)."],
@@ -275,7 +291,7 @@
     const day = 864e5, t0 = new Date(now); t0.setHours(12, 0, 0, 0);
     for (const x of dataGet("exams", [])) {
       const d = Math.round((new Date(x.date + "T12:00") - t0) / day);
-      if (d >= 0 && d <= 3) out.push(["📝", `${x.kind || "Arbeit"}${x.subject ? " " + x.subject : ""} ${d === 0 ? "heute" : d === 1 ? "morgen" : "in " + d + " Tagen"}`, x.subject ? "Frag mich " + x.subject + " ab" : "Wann ist die nächste Arbeit?"]);
+      if (d >= 0 && d <= 7) out.push(["📝", `${x.kind || "Arbeit"}${x.subject ? " " + x.subject : ""} ${d === 0 ? "heute" : d === 1 ? "morgen" : "in " + d + " Tagen"}`, x.subject ? "Frag mich " + x.subject + " ab" : "Wann ist die nächste Arbeit?"]);
     }
     try {
       const bu = dataGet("budgets", { total: 0 });
@@ -286,6 +302,10 @@
     } catch {}
     try {
       if (AND && AND.reminderList) { const e0 = new Date(); e0.setHours(23, 59, 59); const r = JSON.parse(AND.reminderList() || "[]").filter(x => x.at <= +e0 && x.at > Date.now()).sort((a, b) => a.at - b.at)[0]; if (r) out.push(["⏰", `${new Date(r.at).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} ${r.text}`, "Welche Erinnerungen habe ich?"]); }
+    } catch {}
+    try {   // Müll: heute Abend rausstellen
+      const mu = dataGet("muell", null), tm = ymd(new Date(Date.now() + 864e5));
+      if (mu && mu.items && now.getHours() >= 15) { const b = mu.items.filter(x => x.d === tm).map(x => x.t); if (b.length) out.unshift(["🗑", "Morgen: " + b.join(", ") + " – rausstellen", "Welcher Müll kommt morgen?"]); }
     } catch {}
     if (now.getHours() >= 19 && !chats.some(c => c.id === diaryId(now))) out.push(["📔", "Tagebuch für heute fehlt noch", "Tagebuch"]);
     return out.slice(0, 3);
@@ -318,6 +338,12 @@
         const snap = { on: lsGet("zg_pro_on") !== "0", h: 7, m: 30,
           birthdays: dataGet("birthdays", []).map(b => ({ name: b.name, d: b.d, m: b.m })),
           exams: dataGet("exams", []).filter(x => new Date(x.date + "T23:59") >= new Date()).map(x => ({ date: x.date, kind: x.kind || "Arbeit", subject: x.subject || "" })) };
+        // Abends: Müll für morgen, Berichtsheft; morgens: Lernplan-Thema
+        const mu = dataGet("muell", null), t0 = ymd(new Date()), t40 = ymd(new Date(Date.now() + 40 * 864e5));
+        if (mu && mu.items) snap.muell = mu.items.filter(x => x.d >= t0 && x.d <= t40);
+        snap.bericht = { on: lsGet("zg_bericht_on") !== "0", days: [...new Set(dataGet("bericht", []).map(e => e.date))].filter(d => d >= ymd(new Date(Date.now() - 14 * 864e5))) };
+        snap.study = dataGet("exams", []).filter(x => x.plan && x.date >= t0).map(x => ({ subject: x.subject || x.kind || "Arbeit", date: x.date,
+          left: Math.round((new Date(x.date + "T12:00") - new Date(t0 + "T12:00")) / 864e5), plan: x.plan }));
         try { const d = JSON.parse((AND.bankCached && AND.bankCached()) || "null"); if (d && d.ok) snap.budget = { month: dayKey(new Date()).slice(0, 7), warns: budgetWarnings(finAnalyze(d)).filter(w => /Prozent|drüber/.test(w)) }; } catch {}
         AND.proactiveSync(JSON.stringify(snap));
       } catch {}

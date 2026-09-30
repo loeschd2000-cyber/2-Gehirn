@@ -6,6 +6,7 @@
     "https://www.googleapis.com/auth/contacts.readonly",
     "https://www.googleapis.com/auth/drive.file",
   ];
+  const gScopes = () => lsGet("zg_g_tasks") === "1" ? [...G_SCOPES, "https://www.googleapis.com/auth/tasks"] : G_SCOPES;   // Google Aufgaben nur, wenn eingeschaltet
   let gClientId = lsGet("zg_g_client") || lsGet("zg_cal_client") || (AND ? "android" : "");
   let gToken = null, gTokenExp = 0, tokenClient = null, contactsWarm = false;
   try { const t = JSON.parse(sessionStorage.getItem("zg_g_token") || "null"); if (t && t.exp > Date.now() + 60000) { gToken = t.token; gTokenExp = t.exp; } } catch {}
@@ -40,16 +41,16 @@
     if (AND) {   // in der Android-App meldet die App selbst bei Google an
       return new Promise((res, rej) => {
         window.__zgGoogle = { emit(ev) { if (ev.token) { tokenReceived(ev.token, 50 * 60); res(gToken); } else rej(new Error(ev.error || "Google-Anmeldung fehlgeschlagen")); } };
-        if (silent && AND.googleTokenSilent) AND.googleTokenSilent(G_SCOPES.join(" ")); else AND.googleToken(G_SCOPES.join(" "));
+        if (silent && AND.googleTokenSilent) AND.googleTokenSilent(gScopes().join(" ")); else AND.googleToken(gScopes().join(" "));
       });
     }
     if (!gClientId) throw new Error("Google ist noch nicht eingerichtet");
     await loadGis();
-    if (!tokenClient) tokenClient = google.accounts.oauth2.initTokenClient({ client_id: gClientId, scope: G_SCOPES.join(" "), callback: () => {} });
+    if (!tokenClient) tokenClient = google.accounts.oauth2.initTokenClient({ client_id: gClientId, scope: gScopes().join(" "), callback: () => {} });
     return new Promise((res, rej) => {
       tokenClient.callback = r => {
         if (r.error) return rej(new Error(r.error_description || r.error));
-        if (!google.accounts.oauth2.hasGrantedAllScopes(r, ...G_SCOPES)) note("Hinweis: Du hast nicht alle Google-Rechte erlaubt. Manche Funktionen gehen dann nicht.");
+        if (!google.accounts.oauth2.hasGrantedAllScopes(r, ...gScopes())) note("Hinweis: Du hast nicht alle Google-Rechte erlaubt. Manche Funktionen gehen dann nicht.");
         gToken = r.access_token; gTokenExp = Date.now() + (r.expires_in || 3600) * 1000;
         try { sessionStorage.setItem("zg_g_token", JSON.stringify({ token: gToken, exp: gTokenExp })); } catch {}
         updateGoogleUi(); res(gToken);

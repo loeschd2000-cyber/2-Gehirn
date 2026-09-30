@@ -175,7 +175,7 @@
   const listKey = w => /einkauf/i.test(w) ? "einkauf" : "todo";
   const listName = k => k === "einkauf" ? "Einkaufsliste" : "To-do-Liste";
   const splitItems = s => s.split(/\s*,\s*|\s+und\s+/i).map(x => x.replace(/^(?:noch\s+|ein(?:e|en)?\s+|etwas\s+)/i, "").trim()).filter(Boolean).map(cap);
-  function handleLists(text) {
+  async function handleLists(text) {
     const t = clean(text), tl = t.toLowerCase();
     if (!new RegExp(LIST_RE, "i").test(tl) && !/^erledigt\b|\bist\s+erledigt$/i.test(tl)) return false;
     const lists = dataGet("lists", { einkauf: [], todo: [] });
@@ -185,6 +185,7 @@
       const k = listKey(m[2]), items = splitItems(m[1]);
       lists[k] = [...(lists[k] || []), ...items.filter(i => !(lists[k] || []).some(x => x.toLowerCase() === i.toLowerCase()))];
       dataSet("lists", lists);
+      if (k === "todo" && gTasksOn()) gTasksAdd(items).catch(() => {});   // auch in Google Aufgaben
       assistantSay(`${items.join(" und ")} ${items.length > 1 ? "stehen" : "steht"} auf der ${listName(k)}.`);
       return true;
     }
@@ -197,12 +198,14 @@
       const what = (m[1] || m[2] || "").toLowerCase(), k = m[3] ? listKey(m[3]) : (lists.todo || []).some(x => x.toLowerCase().includes(what)) ? "todo" : "einkauf";
       const before = (lists[k] || []).length; lists[k] = (lists[k] || []).filter(x => !x.toLowerCase().includes(what) && !what.includes(x.toLowerCase()));
       if (lists[k].length === before) { assistantSay(`„${cap(what)}“ finde ich nicht auf der ${listName(k)}.`); return true; }
-      dataSet("lists", lists); assistantSay(`Abgehakt. Auf der ${listName(k)} ${lists[k].length === 1 ? "steht noch ein Punkt" : lists[k].length ? `stehen noch ${lists[k].length} Punkte` : "steht nichts mehr"}.`);
+      dataSet("lists", lists); if (k === "todo" && gTasksOn()) gTasksDone(what).catch(() => {}); assistantSay(`Abgehakt. Auf der ${listName(k)} ${lists[k].length === 1 ? "steht noch ein Punkt" : lists[k].length ? `stehen noch ${lists[k].length} Punkte` : "steht nichts mehr"}.`);
       return true;
     }
     // anzeigen / vorlesen – nur bei echten Listen-Wörtern, nicht bei „für den Einkauf ausgegeben“ oder „Aufgaben einer SPS“
     if ((m = /(einkaufsliste|einkaufszettel|to-?do-?liste|to-?dos?|todo-?liste|todos?|aufgabenliste|meine\s+aufgaben)/.exec(tl)) && !/(ausgegeben|ausgeben|euro|kosten|erklär|was\s+(?:ist|sind)\s+(?:die|eine?))/.test(tl)) {
-      const k = listKey(m[1]), items = lists[k] || [];
+      const k = listKey(m[1]);
+      if (k === "todo" && gTasksOn()) { try { await Promise.race([gTasksPull(), new Promise(r => setTimeout(r, 5000))]); Object.assign(lists, dataGet("lists", lists)); } catch {} }
+      const items = lists[k] || [];
       if (!items.length) { assistantSay(`Deine ${listName(k)} ist leer.`); return true; }
       extraCard((k === "einkauf" ? "🛒 " : "✅ ") + listName(k), items.map(x => "☐ " + x));
       assistantSay(`Auf deiner ${listName(k)}: ${items.join(", ")}.`);
@@ -474,6 +477,7 @@
   }
 
   // ---------- 1) Morgen-Briefing ----------
+  const briefHooks = [];   // weitere Teile (Untis, Müll, Schlaf, Lernplan, Nachrichten) – siehe 10-services.js
   const BRIEF_RE = /^(?:(?:hey\s+|hallo\s+)?jarvis\W*)?(?:guten\s+morgen|moin|morgen|briefing|morgen-?briefing|tagesüberblick|tagesbriefing|was\s+(?:geht|steht)\s+(?:heute\s+)?(?:so\s+)?an|wie\s+sieht\s+mein\s+tag\s+(?:heute\s+)?aus|was\s+gibt'?s\s+neues)\W*(?:jarvis)?\W*$/i;
   async function handleBriefing(text) {
     const t = clean(text).toLowerCase();
@@ -517,6 +521,7 @@
       if (AND && AND.bankCached) { const d = JSON.parse(AND.bankCached() || "null"); if (d && d.ok) { parts.push(`Auf dem Konto sind ${d.balance < 0 ? "minus " : ""}${eur(d.balance)}.`); lines.push(`🏦 ${d.balance < 0 ? "−" : ""}${eur(d.balance)}`); budgetWarnings(finAnalyze(d)).forEach(x => { parts.push(x); lines.push("⚠ " + x); }); } }
     } catch {}
     const w = wGet(); if (w.last) { lines.push(`◎ Wallet ${eur(w.last.total)}`); }
+    for (const h of briefHooks) { try { await withTimeout(Promise.resolve().then(() => h(parts, lines, n)), 8000); } catch {} }
     busy = false; refreshUi();
     lsSet("zg_brief_day", dayKey(n));
     extraCard((hour < 11 ? "☀️ Morgen-Briefing" : "📋 Tagesüberblick") + " · " + n.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }), lines);
@@ -531,7 +536,7 @@
     if (handleSchool(text)) return true;
     if (handleReminder(text)) return true;
     if (handleTimer(text)) return true;
-    if (handleLists(text)) return true;
+    if (await handleLists(text)) return true;
     if (handleBudget(text)) return true;
     if (await handlePriceAlert(text)) return true;
     if (await handleWeather(text)) return true;

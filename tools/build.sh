@@ -11,6 +11,7 @@ build_to() {   # $1 = Zielordner, $2 = Dateiname der Startseite
   cp web/assets/js/*.js "$1/assets/js/"
   [ -d web/assets/img ] && mkdir -p "$1/assets/img" && cp -r web/assets/img/. "$1/assets/img/" || true
   sed "s/__V__/$V/g" web/index.src.html > "$1/$2"
+  cp web/st.html "$1/st.html"   # Rückkehr-Seite für die SmartThings-Anmeldung
 }
 build_to . index.html
 build_to "$OUT/app" zweites-gehirn-pc.html

@@ -39,7 +39,13 @@ jobs:
       - name: APK bauen
         env:
           ZG_KEYSTORE_PASSWORD: ${{ secrets.ZG_KEYSTORE_PASSWORD }}
-        run: gradle -p android assembleDebug --no-daemon --stacktrace
+        run: |
+          set -o pipefail
+          gradle -p android assembleDebug --no-daemon --stacktrace 2>&1 | tee build.log || {
+            # Fehler als Hinweise anzeigen (sieht man dann direkt in der Übersicht)
+            grep -E "^e: |error:|What went wrong|Could not " build.log | head -20 | sed 's/^/::error::/'
+            exit 1
+          }
 
       - name: APK bereitlegen
         run: |

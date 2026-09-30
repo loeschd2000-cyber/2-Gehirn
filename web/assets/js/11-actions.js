@@ -7,6 +7,7 @@
     if (!diaryMode && !learn && handleHelp(text)) return true;
     if (!diaryMode && !learn && lockedBlock(text)) return true;
     if (!diaryMode && !learn && await handleSearch(text)) return true;
+    if (!diaryMode && !learn && await handleServices(text)) return true;   // Untis, Müll, Tanken, News, Handy, Gesundheit, Berichtsheft, Lernplan, Orte, Pakete, SmartThings
     if (!diaryMode && !learn && await handleShop(text)) return true;   // Amazon, Preis-Wächter, Verkaufen, Sparen, Jobs   // „Was hab ich über … gesagt?“
     if (await handleDiary(text)) return true;
     if (await handleExtras(text)) return true;
@@ -92,7 +93,18 @@ Tagebuch: "Tagebuch" · "Lies mir mein Tagebuch von gestern vor"
 Suche: "Was hab ich über Lukas gesagt?" · "Wann hab ich über den Führerschein geredet?"
 Amazon: "Bestell Zahnpasta auf Amazon" · "Leg zwei Packungen Batterien in den Warenkorb" · "Sag mir Bescheid, wenn die AirPods Pro unter 180 Euro fallen"
 Geld: "Verkauf meinen alten Xbox-Controller" · "Wo kann ich sparen?" · "Such mir Programmier-Jobs" · "Schreib mir eine Bewerbung für Job 2"
-PC: "Mach am PC leiser" · "Öffne Spotify am PC" · "Sperr den PC" · "Fahr den PC in 30 Minuten herunter"`;
+PC: "Mach am PC leiser" · "Öffne Spotify am PC" · "Sperr den PC" · "Fahr den PC in 30 Minuten herunter"
+Schule (Untis): "Fällt morgen was aus?" · "Was hab ich morgen in der Schule?" · "Wann hab ich heute Schluss?" · "Stundenplan diese Woche"
+Lernplan: "Mach mir einen Lernplan für SPS" · "Was soll ich heute lernen?"
+Berichtsheft: "Berichtsheft: heute habe ich einen Schaltschrank verdrahtet" · "Mach meinen Wochenbericht"
+Müll: "Wann kommt die gelbe Tonne?" · "Welcher Müll kommt morgen?"
+Tanken: "Wo ist Diesel am billigsten?" · "Navigier mich zur günstigsten Tankstelle" · "Sag mir Bescheid, wenn Diesel unter 1,60 kostet"
+Nachrichten: "Was gibt es Neues in der Welt?" · "Lies mir die Nachrichten vor"
+Handy: "Taschenlampe an" · "Nicht stören an" · "Mach das Handy lautlos" · "Wie voll ist mein Akku?"
+Gesundheit: "Wie hab ich geschlafen?" · "Wie viele Schritte hab ich heute?"
+Orte: "Erinner mich beim Edeka an Milch" · "Erinner mich zu Hause an den Müll" · "Merk dir, hier ist mein Zuhause"
+Pakete: "Wo ist mein Paket?" · "Verfolge Sendung 00340434161234567890"
+Smart Home: "Schalte den Fernseher aus" · "Licht im Wohnzimmer an" · "Ist die Waschmaschine fertig?" · "Welche Geräte hab ich?"`;
 
   let agentRest = [];      // Befehle, die nach einer Rückfrage (z. B. „Senden?“) noch dran sind
   let agentRunning = false;

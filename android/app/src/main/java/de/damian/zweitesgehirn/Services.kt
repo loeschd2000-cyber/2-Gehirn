@@ -36,7 +36,7 @@ import java.util.Calendar
  */
 object Net {
     private val ALLOW = listOf("webuntis.com", "tankerkoenig.de", "tagesschau.de", "cubefour.de", "dhl.com",
-        "smartthings.com", "overpass-api.de", "openstreetmap.de", "open-meteo.com")
+        "smartthings.com", "overpass-api.de", "openstreetmap.org", "open-meteo.com")
 
     fun allowed(url: String): Boolean {
         if (!url.startsWith("https://")) return false
@@ -221,7 +221,7 @@ object Health {
 }
 
 /** Handy-Funktionen: Taschenlampe, Nicht stören, Klingelton, Akku */
-object Phone {
+object Device {
     fun torch(ctx: Context, on: Boolean): String = try {
         val cm = ctx.getSystemService(CameraManager::class.java)
         val id = cm.cameraIdList.firstOrNull { cm.getCameraCharacteristics(it).get(CameraCharacteristics.FLASH_INFO_AVAILABLE) == true }

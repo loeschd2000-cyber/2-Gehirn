@@ -237,10 +237,11 @@
     return true;
   }
 
-  const NEWS_V = "2.0";
+  const NEWS_V = "2.1";
   function openNews() {
-    openSheet("Neu in Jarvis " + NEWS_V, body => {
+    openSheet("Neu in Jarvis", body => {
       const items = [
+        ["🚗", "Jarvis im Auto (Android Auto)", "Neu: Jarvis hat einen eigenen Bildschirm in Android Auto – „Sprechen“ tippen, Frage stellen, Antwort kommt über die Auto-Lautsprecher. Einrichtung: siehe „Android Auto einrichten.md“ (einmal „Unbekannte Quellen“ erlauben)."],
         ["✨", "Frei reden", "Jarvis versteht jetzt auch freie Sätze und mehrere Wünsche auf einmal: „Setz Brot auf die Liste und weck mich um 7.“"],
         ["🔎", "Gedächtnis-Suche", "„Was hab ich über Lukas gesagt?“ – Jarvis durchsucht alle Gespräche und dein Tagebuch. Im Gespräche-Menü gibt es jetzt auch ein Suchfeld."],
         ["🔔", "Morgen-Hinweise", "Um 7:30 Uhr meldet sich Jarvis von selbst: Geburtstage, bald anstehende Arbeiten, Budget-Warnungen."],

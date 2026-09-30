@@ -160,6 +160,46 @@
   .card .sub { color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
   .card .body { white-space: pre-wrap; font-size: 14px; border-left: 2px solid var(--line-hi); padding-left: 10px; margin-block: 4px; overflow-wrap: anywhere; }
   .card .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  /* ---------- Start-Sequenz (Boot) ---------- */
+  .boot { position: fixed; inset: 0; z-index: 100; background: radial-gradient(circle at 50% 42%, #06182c, #010409 70%); display: grid; place-items: center; transition: opacity .6s ease, visibility .6s; }
+  .boot.done { opacity: 0; visibility: hidden; pointer-events: none; }
+  .boot .ring { width: 150px; height: 150px; border-radius: 50%; position: relative; }
+  .boot .ring::before, .boot .ring::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid transparent; border-top-color: #3fd6ff; border-right-color: rgba(63,214,255,.35); animation: spin 1.1s linear infinite; box-shadow: 0 0 30px rgba(63,214,255,.25); }
+  .boot .ring::after { inset: 22px; border-top-color: rgba(63,214,255,.8); border-left-color: rgba(63,214,255,.3); animation-duration: .8s; animation-direction: reverse; }
+  .boot .core { position: absolute; inset: 58px; border-radius: 50%; background: radial-gradient(circle, #fff, #3fd6ff 45%, transparent 70%); animation: corePulse 1s ease-in-out infinite; }
+  @keyframes corePulse { 50% { transform: scale(1.25); opacity: .7; } }
+  .boot .txt { margin-top: 28px; font-family: var(--display); letter-spacing: .38em; color: #bff3ff; font-size: 15px; text-align: center; text-shadow: 0 0 14px rgba(63,214,255,.7); }
+  .boot .lines { margin-top: 12px; font: 12px/1.7 ui-monospace, monospace; color: var(--muted); min-height: 90px; text-align: left; width: 250px; }
+  .boot .lines div { opacity: 0; animation: lineIn .25s forwards; }
+  .boot .lines div b { color: var(--ok); font-weight: 600; }
+  @keyframes lineIn { to { opacity: 1; } }
+  .boot .bar { width: 250px; height: 3px; background: rgba(63,214,255,.12); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+  .boot .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #1a95bd, #bff3ff); box-shadow: 0 0 10px #3fd6ff; transition: width .25s; }
+
+  /* ---------- Schwebende Partikel im Hintergrund ---------- */
+  .motes { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .motes i { position: absolute; bottom: -10px; width: 3px; height: 3px; border-radius: 50%; background: rgba(var(--acc), .8); box-shadow: 0 0 8px rgba(var(--acc), .9); animation: rise-up linear infinite; opacity: 0; }
+  @keyframes rise-up { 0% { transform: translateY(0) translateX(0); opacity: 0; } 10% { opacity: .8; } 90% { opacity: .5; } 100% { transform: translateY(-110vh) translateX(30px); opacity: 0; } }
+
+  /* ---------- Info-Kacheln auf dem Startbildschirm ---------- */
+  .tiles { display: flex; gap: 10px; overflow-x: auto; padding: 6px 2px 10px; scrollbar-width: none; flex: none; scroll-snap-type: x mandatory; }
+  .tiles::-webkit-scrollbar { display: none; }
+  .tiles:empty { display: none; }
+  .tile { flex: none; min-width: 124px; scroll-snap-align: start; text-align: left; font: inherit; color: var(--ink); cursor: pointer; padding: 9px 13px; border-radius: 16px; position: relative; overflow: hidden;
+    background: linear-gradient(145deg, rgba(20, 52, 86, .55), rgba(6, 18, 32, .75)); border: 1px solid var(--line-2); box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 8px 22px rgba(0,0,0,.35); animation: rise .5s both; }
+  .tile::after { content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.07), transparent); animation: shine 6s ease-in-out infinite; }
+  @keyframes shine { 0%, 70% { left: -60%; } 100% { left: 130%; } }
+  .tile small { display: flex; align-items: center; gap: 6px; font-family: var(--display); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+  .tile small::before { content: attr(data-ic); font-size: 13px; letter-spacing: 0; filter: saturate(.8); }
+  .tile b { display: block; font-family: var(--display); font-size: 18px; white-space: nowrap; font-weight: 600; margin-top: 2px; letter-spacing: .02em; text-shadow: 0 0 16px rgba(var(--acc), .35); }
+  .tile em { display: block; font-style: normal; font-size: 12px; color: var(--ink-2); }
+  .tile em.up { color: var(--ok); } .tile em.down { color: #ff8a8a; }
+  .core.chatting .tiles { display: none; }
+
+  /* Antworten „fahren“ ein */
+  .msg.ai { animation: rise .35s cubic-bezier(.2,.8,.2,1), glowIn 1.2s ease-out; }
+  @keyframes glowIn { from { box-shadow: 0 0 0 1px rgba(var(--acc), .5), 0 0 26px rgba(var(--acc), .35); } }
+
   /* Statistik-Karte */
   .card.stats-card { max-width: min(680px, 100%); width: 100%; gap: 10px; }
   .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -312,6 +352,15 @@
   body.mini .mini-full { display: block; position: absolute; bottom: 12px; left: 14px; z-index: 2; font: inherit; font-size: 12px; color: var(--ink-2); background: var(--glass); border: 1px solid var(--line-2); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
 </style>
 
+<div class="boot" id="boot" aria-hidden="true">
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div class="ring"><div class="core"></div></div>
+    <div class="txt">J.A.R.V.I.S</div>
+    <div class="bar"><i id="bootBar"></i></div>
+    <div class="lines" id="bootLines"></div>
+  </div>
+</div>
+<div class="motes" id="motes" aria-hidden="true"></div>
 <div class="app kb-hidden" id="app">
   <header class="top">
     <div class="top-left">
@@ -397,6 +446,7 @@
         </div>
         <div class="state" id="state">Bereit</div>
         <div class="log" id="log" aria-live="polite"></div>
+        <div class="tiles" id="tiles"></div>
         <div class="chips" id="chips">
           <button class="chip" type="button">Was steht heute an?</button>
           <button class="chip" type="button">Hab ich neue Mails?</button>
@@ -769,6 +819,8 @@
     if (loopOn && lastViaVoice && !busy && !speaking && !listening && ollamaOk) setTimeout(() => { if (!busy && !speaking && !listening) listen(); }, 350);
   }
 
+  const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch {} };
+  micBtn.addEventListener("pointerdown", () => buzz(12));
   micBtn.onclick = () => {
     if (wakeRec) { stopWake(); listen(); return; }
     if (busy) { if (ctl) ctl.abort(); hush(); return; }
@@ -1720,6 +1772,7 @@ Nachricht: "${text}"`;
     busy = true; refreshUi();
     try {
       const r = await walletReport(w.addr);
+      wSet({ ...wGet(), last: { total: r.total, change: r.change, ts: Date.now() } });
       busy = false; refreshUi();
       if (!r.rows.length) { assistantSay("In deiner Wallet finde ich gerade nichts mit einem Wert."); return true; }
       let say = `Deine Phantom Wallet ist gerade etwa ${euro(r.total)} wert. Seit gestern ${signed(r.change)}`;
@@ -2312,6 +2365,76 @@ Nachricht: "${text}"`;
   });
   if (!MINI) $("orbwrap").addEventListener("click", () => micBtn.click());
 
+
+  /* ================= Start-Sequenz, Partikel, Info-Kacheln ================= */
+  function bootSequence() {
+    const boot = $("boot");
+    if (MINI || reduce || sessionStorage.getItem("zg_booted")) { boot.classList.add("done"); return; }
+    try { sessionStorage.setItem("zg_booted", "1"); } catch {}
+    const steps = ["Kern wird gestartet", "Sprachmodul", "Gedächtnis", "Verbindungen", "Alle Systeme"];
+    let i = 0;
+    const tick = () => {
+      if (i < steps.length) {
+        const d = document.createElement("div"); d.innerHTML = `› ${steps[i]} … <b>${i === steps.length - 1 ? "ONLINE" : "OK"}</b>`;
+        $("bootLines").append(d); $("bootBar").style.width = ((i + 1) / steps.length * 100) + "%";
+        i++; setTimeout(tick, 230);
+      } else setTimeout(() => boot.classList.add("done"), 350);
+    };
+    setTimeout(tick, 250);
+  }
+  function spawnMotes() {
+    if (MINI || reduce) return;
+    const box = $("motes"), n = IS_ANDROID ? 14 : 22;
+    for (let i = 0; i < n; i++) {
+      const m = document.createElement("i");
+      m.style.left = Math.random() * 100 + "%";
+      m.style.animationDuration = (12 + Math.random() * 16) + "s";
+      m.style.animationDelay = (-Math.random() * 20) + "s";
+      const sz = 1.5 + Math.random() * 2.5; m.style.width = m.style.height = sz + "px";
+      box.append(m);
+    }
+  }
+  function renderTiles() {
+    const box = $("tiles"); if (!box) return;
+    box.textContent = "";
+    const add = (ic, label, value, sub, cls, ask) => {
+      const b = document.createElement("button"); b.type = "button"; b.className = "tile";
+      b.innerHTML = "<small></small><b></b>" + (sub ? "<em></em>" : "");
+      b.children[0].textContent = label; b.children[0].dataset.ic = ic; b.children[1].textContent = value;
+      if (sub) { b.children[2].textContent = sub; if (cls) b.children[2].className = cls; }
+      b.style.animationDelay = (box.children.length * 70) + "ms";
+      b.onclick = () => { buzz(10); if (!busy) { input.value = ask; $("form").requestSubmit(); } };
+      box.append(b);
+    };
+    const n = new Date();
+    add("🗓", n.toLocaleDateString("de-DE", { weekday: "long" }), n.toLocaleDateString("de-DE", { day: "numeric", month: "long" }), "Was steht an?", "", "Was steht heute an?");
+    // Konto (letzter Stand)
+    try {
+      if (AND && AND.bankCached) {
+        const d = JSON.parse(AND.bankCached() || "null");
+        if (d && d.ok) {
+          const age = Math.round((Date.now() - d.fetched) / 3600000);
+          add("🏦", "Konto", (d.balance < 0 ? "−" : "") + eur(d.balance).replace(" Euro", " €"), age < 1 ? "gerade eben" : `vor ${age} Std.`, "", "Zeig mir eine Statistik von meinem Konto");
+        }
+      }
+    } catch {}
+    // Wallet (letzter Stand)
+    const w = wGet();
+    if (w.addr && w.last) {
+      const ch = w.last.change || 0;
+      add("◎", "Phantom", eur(w.last.total).replace(" Euro", " €"), (ch >= 0 ? "▲ " : "▼ ") + eur(Math.abs(ch)).replace(" Euro", " €") + " / 24 h", ch >= 0 ? "up" : "down", "Wie sieht's aus in meiner Phantom Wallet?");
+    } else if (w.addr) add("◎", "Phantom", "abrufen", "tippen", "", "Wie sieht's aus in meiner Phantom Wallet?");
+    // Alexa-Wecker
+    try {
+      if (AND && AND.alexaAlarms) {
+        const al = JSON.parse(AND.alexaAlarms() || "[]").sort((a, b) => a.at - b.at)[0];
+        if (al) { const d = new Date(al.at); add("⏰", "Wecker", d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), d.toLocaleDateString("de-DE", { weekday: "short" }) + " · Alexa", "", "Welche Wecker sind gestellt?"); }
+      }
+    } catch {}
+    add("♫", "Musik", "Spotify", "Weiter / Pause", "", "Spiel die Musik weiter");
+  }
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) renderTiles(); });
+
   /* ================= Kern-Animation (Reaktor) ================= */
   const cv = $("orb"), cx = cv.getContext("2d");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2390,6 +2513,19 @@ Nachricht: "${text}"`;
     core.addColorStop(0, `rgba(255,255,255,${.75 + energy * .25})`); core.addColorStop(.35, rgba(col, .55 + energy * .3)); core.addColorStop(1, rgba(col, 0));
     cx.fillStyle = core; cx.beginPath(); cx.arc(ox, oy, R * .22, 0, 7); cx.fill();
 
+    // HUD-Beschriftung, die langsam um den Kern kreist
+    if (!MINI && R > 60) {
+      cx.save(); cx.translate(ox, oy); cx.rotate(-spinA * .25);
+      cx.font = `600 ${Math.max(9, R * .075)}px "Chakra Petch", sans-serif`; cx.fillStyle = rgba(col, .75); cx.textAlign = "center";
+      const labels = ["J.A.R.V.I.S", st === "listen" ? "AUDIO IN" : st === "think" ? "ANALYSE" : st === "speak" ? "AUDIO OUT" : "BEREIT", "KERN " + Math.round(60 + energy * 40) + "%"];
+      labels.forEach((txt, k) => {
+        cx.save(); cx.rotate(k * (Math.PI * 2 / 3) + .5);
+        cx.translate(0, -R * 1.13);
+        cx.fillText(txt, 0, 0);
+        cx.restore();
+      });
+      cx.restore();
+    }
     // kleine Markierungen oben/unten
     cx.fillStyle = rgba(col, .9);
     for (const s of [-1, 1]) { cx.beginPath(); cx.moveTo(ox - 5, oy + s * R * 1.04); cx.lineTo(ox + 5, oy + s * R * 1.04); cx.lineTo(ox, oy + s * R * .99); cx.closePath(); cx.fill(); }
@@ -2399,6 +2535,7 @@ Nachricht: "${text}"`;
 
   /* ================= Start ================= */
   (async () => {
+    bootSequence(); spawnMotes(); renderTiles();
     updateLoopUi(); updatePauseUi(); updateGoogleUi(); refreshUi();
     renderChat();
     await initStore();

@@ -160,6 +160,21 @@
   .card .sub { color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
   .card .body { white-space: pre-wrap; font-size: 14px; border-left: 2px solid var(--line-hi); padding-left: 10px; margin-block: 4px; overflow-wrap: anywhere; }
   .card .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  /* Statistik-Karte */
+  .card.stats-card { max-width: min(680px, 100%); width: 100%; gap: 10px; }
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .kpi { background: rgba(2, 10, 20, .45); border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; }
+  .kpi span { display: block; font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; font-family: var(--display); }
+  .kpi b { font-size: 18px; font-family: var(--display); color: var(--ink); letter-spacing: 0; }
+  .chart-h { font-size: 12px; color: var(--ink-2); letter-spacing: .14em; text-transform: uppercase; font-family: var(--display); margin-top: 4px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .chart-h i { display: inline-flex; align-items: center; gap: 6px; font-style: normal; letter-spacing: .04em; text-transform: none; color: var(--ink-2); font-family: var(--body); }
+  .chart-h i::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--c); }
+  .card svg.chart { width: 100%; height: auto; display: block; overflow: visible; }
+  .chart text { fill: var(--muted); font: 17px var(--body); }
+  .chart text.v { fill: var(--ink-2); }
+  .chart .bar { cursor: pointer; }
+  .chart .bar:hover, .chart .bar.on { filter: brightness(1.25); }
+  .chart-tip { min-height: 18px; font-size: 13px; color: var(--ink); }
   .btn { font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 999px; padding: 8px 16px; border: 1px solid var(--line-hi); background: var(--glass-2); color: var(--ink); text-decoration: none; }
   .btn.primary { background: var(--a); color: #021019; border-color: transparent; box-shadow: 0 0 18px var(--a-glow); }
 
@@ -1437,6 +1452,79 @@ Nachricht: "${text}"`;
     fixed.sort((a, b) => b.amount - a.amount); income.sort((a, b) => b.amount - a.amount);
     return { balance: d.balance, fetched: d.fetched, cur, prev, months, fixed, income, fixedSum: fixed.reduce((a, x) => a + x.amount, 0), incomeSum: income.reduce((a, x) => a + x.amount, 0), count: tx.length };
   }
+
+  /* ---------- Statistik (SVG-Diagramme im Chat) ---------- */
+  const C_IN = "#1a95bd", C_OUT = "#c97a1c";   // geprüft: farbenblind-sicher auf dunklem Grund
+  const svgEl = (tag, attrs, parent) => { const e = document.createElementNS("http://www.w3.org/2000/svg", tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.append(e); return e; };
+  const short = v => v >= 1000 ? (v / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 }) + "k" : Math.round(v).toString();
+  // Balken mit oben abgerundeten Ecken (4px), unten gerade auf der Grundlinie
+  function barPath(x, y, w, h) { const r = Math.min(4, w / 2, h); return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`; }
+  function finStatsCard(a) {
+    const card = document.createElement("div"); card.className = "card stats-card";
+    const t = document.createElement("b"); t.textContent = "Konto-Statistik"; card.append(t);
+    const keys = Object.keys(a.months).sort().slice(-6);
+    const full = keys.filter(k => k !== a.cur);
+    const avgOut = full.length ? full.reduce((s, k) => s + a.months[k].out, 0) / full.length : (a.months[a.cur] || { out: 0 }).out;
+    const avgIn = full.length ? full.reduce((s, k) => s + a.months[k].inc, 0) / full.length : (a.months[a.cur] || { inc: 0 }).inc;
+    const rate = avgIn > 0 ? Math.round((avgIn - avgOut) / avgIn * 100) : 0;
+    const kp = document.createElement("div"); kp.className = "kpis";
+    for (const [l, v] of [["Kontostand", (a.balance < 0 ? "−" : "") + eur(a.balance).replace(" Euro", " €")], ["Ø Ausgaben", eur(avgOut).replace(" Euro", " €")], ["Sparquote", rate + " %"]]) {
+      const d = document.createElement("div"); d.className = "kpi"; d.innerHTML = "<span></span><b></b>"; d.children[0].textContent = l; d.children[1].textContent = v; kp.append(d);
+    }
+    card.append(kp);
+    const tip = document.createElement("div"); tip.className = "chart-tip"; tip.textContent = "Tippe auf einen Balken für den genauen Betrag.";
+    const bindTip = (el, text) => { el.classList.add("bar"); el.addEventListener("pointerenter", () => { tip.textContent = text; }); el.addEventListener("click", () => { card.querySelectorAll(".bar.on").forEach(b => b.classList.remove("on")); el.classList.add("on"); tip.textContent = text; }); const ti = svgEl("title", {}, el); ti.textContent = text; };
+
+    // 1) Einnahmen vs. Ausgaben pro Monat
+    const h1 = document.createElement("div"); h1.className = "chart-h"; h1.innerHTML = `Monate <i style="--c:${C_IN}">Einnahmen</i><i style="--c:${C_OUT}">Ausgaben</i>`; card.append(h1);
+    const W = 600, H = 230, padL = 48, padB = 30, padT = 16;
+    const max = Math.max(1, ...keys.map(k => Math.max(a.months[k].inc, a.months[k].out)));
+    const nice = (() => { const p = Math.pow(10, Math.floor(Math.log10(max))); return Math.ceil(max / p) * p; })();
+    const sv = svgEl("svg", { class: "chart", viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Einnahmen und Ausgaben pro Monat" });
+    for (let i = 0; i <= 2; i++) {
+      const y = padT + (H - padT - padB) * (1 - i / 2);
+      svgEl("line", { x1: padL, x2: W, y1: y, y2: y, stroke: "rgba(120,170,210,.14)", "stroke-width": 1 }, sv);
+      const tx = svgEl("text", { x: padL - 6, y: y + 4, "text-anchor": "end" }, sv); tx.textContent = short(nice * i / 2);
+    }
+    const gw = (W - padL) / keys.length, bw = Math.min(28, gw / 3);
+    keys.forEach((k, i) => {
+      const m = a.months[k], cx = padL + gw * i + gw / 2;
+      [[m.inc, C_IN, -1, "Einnahmen"], [m.out, C_OUT, 1, "Ausgaben"]].forEach(([v, c, side, lbl]) => {
+        const h = (H - padT - padB) * v / nice, x = cx + (side < 0 ? -bw - 1 : 1);
+        const pth = svgEl("path", { d: barPath(x, H - padB - h, bw, Math.max(h, 0.5)), fill: c }, sv);
+        bindTip(pth, `${monthName(k)}: ${lbl} ${eur(v)}`);
+      });
+      const lb = svgEl("text", { x: cx, y: H - 6, "text-anchor": "middle" }, sv); lb.textContent = monthName(k).slice(0, 3) + (k === a.cur ? " (lfd.)" : "");
+    });
+    card.append(sv);
+
+    // 2) Ausgaben nach Kategorie (aktueller Monat, sonst Vormonat)
+    const mk = a.months[a.cur] && a.months[a.cur].out > 0 ? a.cur : a.prev;
+    const cats = Object.entries((a.months[mk] || { cats: {} }).cats).sort((x, y) => y[1] - x[1]).slice(0, 7);
+    if (cats.length) {
+      const h2 = document.createElement("div"); h2.className = "chart-h"; h2.textContent = "Ausgaben nach Kategorie · " + monthName(mk); card.append(h2);
+      const rowH = 32, W2 = 600, lab = 200, H2 = cats.length * rowH + 4, cmax = cats[0][1];
+      const s2 = svgEl("svg", { class: "chart", viewBox: `0 0 ${W2} ${H2}`, role: "img", "aria-label": "Ausgaben nach Kategorie" });
+      cats.forEach(([c, v], i) => {
+        const y = i * rowH + 4, w = Math.max(2, (W2 - lab - 80) * v / cmax);
+        const l = svgEl("text", { x: 0, y: y + 17 }, s2); l.textContent = c;
+        const r = Math.min(4, w / 2);
+        const pth = svgEl("path", { d: `M${lab},${y}H${lab + w - r}Q${lab + w},${y} ${lab + w},${y + r}V${y + 22 - r}Q${lab + w},${y + 22} ${lab + w - r},${y + 22}H${lab}Z`, fill: C_IN }, s2);
+        bindTip(pth, `${c}: ${eur(v)}`);
+        const vt = svgEl("text", { x: lab + w + 6, y: y + 17, class: "v" }, s2); vt.textContent = eur(v).replace(" Euro", " €");
+      });
+      card.append(s2);
+    }
+    // 3) Fixkosten
+    if (a.fixed.length) {
+      const h3 = document.createElement("div"); h3.className = "chart-h"; h3.textContent = `Fixkosten · ${eur(a.fixedSum)} im Monat`; card.append(h3);
+      const bd = document.createElement("div"); bd.className = "body"; bd.textContent = a.fixed.slice(0, 8).map(x => `${x.name}: ${eur(x.amount)}`).join("\n"); card.append(bd);
+    }
+    card.append(tip);
+    log.append(card); log.scrollTop = log.scrollHeight;
+    return { avgIn, avgOut, rate, cats, mk };
+  }
+
   let finWait = null;
   window.__zgBank = { emit(r) { if (r.type === "data" && finWait) { const w = finWait; finWait = null; w(r.data); } } };
   async function finData(force) {
@@ -1454,7 +1542,7 @@ Nachricht: "${text}"`;
     const body = document.createElement("div"); body.className = "body"; body.textContent = lines.join("\n"); card.append(body);
     log.append(card); log.scrollTop = log.scrollHeight;
   }
-  const FIN_Q = /\b(finanz\w*|konto\w*|kontostand|guthaben|ausgaben|ausgegeben|einnahmen|eingegangen|eingang|reingekommen|rausgegangen|fixkosten|fixe kosten|abos?|abonnements?|gehalt|lohn|ausbildungsverg\w*|budget|sparkasse|übrig|ausgeben|verbraucht)\b|wie\s*viel\s+geld\s+hab/i;
+  const FIN_Q = /\b(finanz\w*|konto\w*|kontostand|guthaben|ausgaben|ausgegeben|einnahmen|eingegangen|eingang|reingekommen|rausgegangen|fixkosten|fixe kosten|abos?|abonnements?|gehalt|lohn|ausbildungsverg\w*|budget|sparkasse|übrig|ausgeben|verbraucht|statistik\w*|diagramm\w*|grafik\w*|auswertung)\b|wie\s*viel\s+geld\s+hab/i;
   async function handleFinance(text) {
     if (!FIN_Q.test(text)) return false;
     const t = text.toLowerCase();
@@ -1477,6 +1565,12 @@ Nachricht: "${text}"`;
     const which = /letzt\w* monat|vormonat|vorigen monat/.test(t) ? a.prev : a.cur;
     const m = a.months[which] || { inc: 0, out: 0, cats: {} };
     const mName = which === a.cur ? "diesen Monat" : "im " + monthName(which);
+    // Statistik mit Diagrammen
+    if (/statistik|diagramm|grafik|chart|auswertung|zeig.*(überblick|übersicht)/.test(t)) {
+      const s2 = finStatsCard(a);
+      assistantSay(`Hier ist deine Statistik. Im Schnitt nimmst du ${eur(s2.avgIn)} im Monat ein und gibst ${eur(s2.avgOut)} aus, damit sparst du etwa ${s2.rate} Prozent.` + (s2.cats.length ? ` Größter Ausgabenposten im ${monthName(s2.mk)}: ${s2.cats[0][0]} mit ${eur(s2.cats[0][1])}.` : ""));
+      return true;
+    }
     // Fixkosten / Abos
     if (/fixkosten|fixe kosten|abos?\b|abonnements?|laufende kosten|monatlich/.test(t)) {
       const list = /abos?\b|abonnements?/.test(t) ? a.fixed.filter(x => x.cat === "Abos & Streaming" || x.cat === "Handy & Internet") : a.fixed;

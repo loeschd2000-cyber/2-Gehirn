@@ -122,7 +122,9 @@ class WakeService : Service() {
             while (!stopFlag) {
                 // Pause, solange die App selbst zuhört/spricht oder du telefonierst
                 val inCall = audio.mode == AudioManager.MODE_IN_CALL || audio.mode == AudioManager.MODE_IN_COMMUNICATION || audio.mode == AudioManager.MODE_RINGTONE
-                val interrupt = speaking && bargeIn
+                // Echo-Unterdrückung auch, wenn Musik läuft – sonst übertönt die Musik „Hey Jarvis“
+                val musicOn = try { audio.isMusicActive } catch (_: Throwable) { false }
+                val interrupt = (speaking && bargeIn) || (musicOn && !speaking)
                 val paused = micBusy || (speaking && !bargeIn) || inCall || System.currentTimeMillis() - lastTrigger < 3000
                 if (paused) {
                     rec?.let { try { it.stop() } catch (_: Throwable) {}; it.release() }
@@ -158,7 +160,7 @@ class WakeService : Service() {
                 if (n < chunk.size) { rec.release(); rec = null; releaseAec(); Thread.sleep(300); continue }
                 val score = detector.process(chunk)
                 lastScore = score
-                if (score >= (if (recEcho) THRESHOLD_SPEAKING else THRESHOLD) && !micBusy && (!speaking || recEcho)) {
+                if (score >= (if (recEcho && speaking) THRESHOLD_SPEAKING else THRESHOLD) && !micBusy && (!speaking || recEcho)) {
                     lastTrigger = System.currentTimeMillis()
                     rec.stop(); rec.release(); rec = null; wasPaused = true; releaseAec()
                     main.post { onWake() }

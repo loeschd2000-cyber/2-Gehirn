@@ -181,7 +181,10 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
     fun onWakeStopped() { main.post { web.evaluateJavascript("window.__zgWakeState && __zgWakeState(false)", null) } }
     fun isListening(): Boolean = !srEnded || recorder.active
 
-    private val recorder by lazy { VoiceRecorder { type, sid, extra -> emit("__zgRec", JSONObject().put("type", type).put("sid", sid).put("info", extra ?: "")) } }
+    private val recorder by lazy { VoiceRecorder { type, sid, extra ->
+        emit("__zgRec", JSONObject().put("type", type).put("sid", sid).put("info", extra ?: ""))
+        if (type == "end" || type == "error") main.postDelayed({ if (srEnded && !recorder.active && tts?.isSpeaking != true) releaseFocus() }, 500)
+    } }
     @Volatile private var ttsReady = false
     private var ttsFallbackTried = false
     private var ttsInit: TextToSpeech.OnInitListener? = null
@@ -189,7 +192,7 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
     @Volatile private var destroyed = false
     fun destroy() {
         destroyed = true
-        if (car) releaseFocus()
+        releaseFocus()
         try { recorder.abortAll() } catch (_: Throwable) {}
         srEnded = true
         main.removeCallbacksAndMessages(null)
@@ -204,7 +207,7 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
         if (!srEnded) {
             srEnded = true
             emit("__zgSR", JSONObject().put("type", "end").put("sid", srActiveSid))
-            main.postDelayed({ if (srEnded && !recorder.active) WakeService.setMicBusy(false) }, 400)
+            main.postDelayed({ if (srEnded && !recorder.active) { WakeService.setMicBusy(false); if (tts?.isSpeaking != true) releaseFocus() } }, 400)
         }
     }
 
@@ -217,7 +220,7 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
 
     private fun ttsFinished(id: String, type: String) {
         emit("__zgTTS", JSONObject().put("type", type).put("id", id))
-        main.postDelayed({ if (tts?.isSpeaking != true) { WakeService.setSpeaking(false); if (car) releaseFocus() } }, 400)
+        main.postDelayed({ if (tts?.isSpeaking != true) { WakeService.setSpeaking(false); if (srEnded) releaseFocus() } }, 400)
     }
 
     // Im Auto: Musik leiser machen, solange Jarvis spricht
@@ -243,6 +246,7 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
     // ---------- Spracherkennung ----------
     private fun startRecognition(sid: Int, lang: String, interim: Boolean) {
         WakeService.setMicBusy(true)
+        takeFocus()   // Musik leiser, damit Jarvis dich versteht
         endActive()
         try { speech?.destroy() } catch (_: Throwable) {}
         srActiveSid = sid
@@ -251,7 +255,7 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
             if (srActiveSid != sid || srEnded) return
             srEnded = true
             emit("__zgSR", JSONObject().put("type", "end").put("sid", sid))
-            main.postDelayed({ if (srEnded && !recorder.active) WakeService.setMicBusy(false) }, 400)
+            main.postDelayed({ if (srEnded && !recorder.active) { WakeService.setMicBusy(false); if (tts?.isSpeaking != true) releaseFocus() } }, 400)
         }
         if (!SpeechRecognizer.isRecognitionAvailable(act)) {
             emit("__zgSR", JSONObject().put("type", "error").put("sid", sid).put("error", "service-not-allowed"))
@@ -408,7 +412,7 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
                 emit("__zgSR", JSONObject().put("type", "error").put("sid", sid).put("error", "aborted"))
                 srEnded = true
                 emit("__zgSR", JSONObject().put("type", "end").put("sid", sid))
-                main.postDelayed({ if (srEnded && !recorder.active) WakeService.setMicBusy(false) }, 400)
+                main.postDelayed({ if (srEnded && !recorder.active) { WakeService.setMicBusy(false); if (tts?.isSpeaking != true) releaseFocus() } }, 400)
             }
         }
 
@@ -424,7 +428,7 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
                             (v ?: bestVoice())?.let { if (t.voice?.name != it.name) t.setVoice(it) }
                         } catch (_: Throwable) {}
                         t.setSpeechRate(rate)
-                        if (car) { try { t.setAudioAttributes(speechAttrs) } catch (_: Throwable) {}; takeFocus() }
+                        try { t.setAudioAttributes(speechAttrs) } catch (_: Throwable) {}; takeFocus()   // Musik leiser, solange Jarvis spricht
                         WakeService.setSpeaking(true)
                         val r = t.speak(text, TextToSpeech.QUEUE_ADD, null, id)
                         if (r != TextToSpeech.SUCCESS) { WakeService.setSpeaking(false); emit("__zgTTS", JSONObject().put("type", "error").put("id", id)) }
@@ -438,7 +442,7 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
             }
         }
         @JavascriptInterface fun ttsEngine(): String = try { tts?.defaultEngine ?: "" } catch (_: Throwable) { "" }
-        @JavascriptInterface fun ttsCancel() { main.post { tts?.stop(); main.postDelayed({ WakeService.setSpeaking(false); if (car) releaseFocus() }, 300) } }
+        @JavascriptInterface fun ttsCancel() { main.post { tts?.stop(); main.postDelayed({ WakeService.setSpeaking(false); if (srEnded) releaseFocus() }, 300) } }
         @JavascriptInterface fun ttsVoices(): String {
             val arr = JSONArray()
             try {
@@ -464,7 +468,7 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
         @JavascriptInterface fun wakeOn(): Boolean = Prefs.wake(act)
         // Genaue KI-Erkennung: Aufnahme bis zur Sprechpause, die Web-App schickt sie an Gemini
         @JavascriptInterface fun recStart(pauseMs: Int, maxMs: Int): Int {
-            main.post { if (!srEnded) { try { speech?.cancel() } catch (_: Throwable) {}; endActive() } }
+            main.post { if (!srEnded) { try { speech?.cancel() } catch (_: Throwable) {}; endActive() }; takeFocus() }
             return recorder.start(pauseMs, maxMs)
         }
         @JavascriptInterface fun recStop(sid: Int) { recorder.stop(sid) }

@@ -206,7 +206,12 @@
     let q = m[1].replace(/^(?:bitte\s+)?(?:etwas|was|musik|songs?|lieder|das\s+lied|den\s+song|die\s+playlist|ein\s+lied|einen\s+song)\s+/i, "").trim();
     let artist = "";
     const von = /^(?:(?:etwas|was|musik|songs?|lieder|ein\s+lied|einen\s+song)\s+)?von\s+(.+)$/i.exec(q);
-    if (von) { q = von[1].trim(); artist = q; }
+    if (von) { q = von[1].trim(); artist = q; }                 // „Musik von Gzuz“ → nur Künstler
+    else {
+      // „Blinding Lights von The Weeknd“ / „… vom Rapper Gzuz“ / „… by Drake“ → Lied + Künstler
+      const by = /^(.+?)\s+(?:von|vom|by)\s+(?:dem\s+|der\s+|den\s+)?(?:rapper\s+|sänger\s+|sängerin\s+|band\s+|künstler\s+)?(.+)$/i.exec(q);
+      if (by && by[1].length >= 2 && by[2].length >= 2) { q = by[1].replace(/^(?:das\s+lied|den\s+song|lied|song)\s+/i, "").trim(); artist = by[2].trim(); }
+    }
     // Nur Füllwörter übrig (z. B. „spiel die Musik“, „spiel wieder“)? Dann einfach weiterspielen.
     if (!q || q.length < 2 || /^(?:die|das|den|meine?)?\s*(?:musik|lied|song|was|etwas|wieder|weiter|fort|ab|an|spotify)?$/.test(q)) {
       if (!AND) return quiet("Musik steuern geht nur in der Android-App.");
@@ -216,5 +221,5 @@
     if (!AND) return quiet("Musik abspielen geht nur in der Android-App.");
     musicHold = Date.now() + 25000;          // kleinen Kreis offen lassen, bis Spotify spielt
     const ok = AND.spotifyPlay(q, artist);
-    return quiet(ok ? `Ich spiele ${q}.` : "Spotify ist nicht installiert, ich öffne es im Browser.");
+    return quiet(ok ? `Ich spiele ${q}${artist && artist !== q ? " von " + artist : ""}.` : "Spotify ist nicht installiert, ich öffne es im Browser.");
   }

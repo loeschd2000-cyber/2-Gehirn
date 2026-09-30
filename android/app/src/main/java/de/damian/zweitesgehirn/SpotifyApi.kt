@@ -92,37 +92,63 @@ object SpotifyApi {
      */
     fun play(ctx: Context, query: String, artistHint: String, log: (String) -> Unit): Pair<Boolean, String> {
         val tok = token(ctx) ?: return false to "Spotify ist nicht verbunden"
-        val q = URLEncoder.encode(query, "UTF-8")
-        // „market=from_token“ braucht seit 2026 eine extra Erlaubnis (sonst 403) → Land fest auf Deutschland
-        var (sc, sr) = http("GET", "https://api.spotify.com/v1/search?q=$q&type=artist,track&limit=5&market=DE", tok)
-        if (sc == 403 || sc == 400) {
-            log("Suche mit Land ging nicht ($sc) → ohne Land")
-            val r2 = http("GET", "https://api.spotify.com/v1/search?q=$q&type=artist,track&limit=5", tok); sc = r2.first; sr = r2.second
+        val nq = norm(query); val na = norm(artistHint)
+        val onlyArtist = na.isNotBlank() && na == nq                     // „Musik von Gzuz“
+        val trackBy = na.isNotBlank() && na != nq                        // „Blinding Lights von The Weeknd“
+        fun search(q: String, types: String): JSONObject? {
+            val url = "https://api.spotify.com/v1/search?q=" + URLEncoder.encode(q, "UTF-8") + "&type=$types&limit=10"
+            var (c, r) = http("GET", "$url&market=DE", tok)
+            if (c == 403 || c == 400) { val r2 = http("GET", url, tok); c = r2.first; r = r2.second }
+            if (c != 200) { log("Suche fehlgeschlagen ($c): ${errText(r)}"); return null }
+            return try { JSONObject(r) } catch (_: Throwable) { null }
         }
-        if (sc != 200) { log("Suche fehlgeschlagen ($sc): ${errText(sr)}"); return false to "Spotify-Suche ging nicht ($sc)" }
-        val js = JSONObject(sr)
-        val nq = norm(query)
-        val artists = js.optJSONObject("artists")?.optJSONArray("items")
-        val tracks = js.optJSONObject("tracks")?.optJSONArray("items")
         var body: JSONObject? = null; var label = ""
-        // Künstler, wenn der Name passt (oder „Musik von …“ gesagt wurde)
-        if (artists != null) for (i in 0 until artists.length()) {
-            val a = artists.optJSONObject(i) ?: continue
-            if (norm(a.optString("name")) == nq || (artistHint.isNotBlank() && i == 0)) {
-                body = JSONObject().put("context_uri", a.optString("uri")); label = a.optString("name") + " (Künstler)"; break
-            }
-        }
-        if (body == null && tracks != null && tracks.length() > 0) {
-            val t = tracks.getJSONObject(0)
+        fun useArtist(a: JSONObject) { body = JSONObject().put("context_uri", a.optString("uri")); label = a.optString("name") + " (Künstler)" }
+        fun useTrack(t: JSONObject) {
             val by = t.optJSONArray("artists")?.optJSONObject(0)?.optString("name") ?: ""
             body = JSONObject().put("uris", org.json.JSONArray().put(t.optString("uri"))); label = t.optString("name") + " – " + by
         }
-        if (body == null && artists != null && artists.length() > 0) {
-            val a = artists.getJSONObject(0)
-            body = JSONObject().put("context_uri", a.optString("uri")); label = a.optString("name") + " (Künstler)"
+        fun artistsOf(t: JSONObject): String { val a = t.optJSONArray("artists") ?: return ""; return (0 until a.length()).joinToString(" ") { norm(a.optJSONObject(it)?.optString("name") ?: "") } }
+
+        if (onlyArtist) {
+            val js = search(query, "artist") ?: return false to "Spotify-Suche ging nicht"
+            val arr = js.optJSONObject("artists")?.optJSONArray("items")
+            if (arr != null && arr.length() > 0) {
+                val exact = (0 until arr.length()).map { arr.getJSONObject(it) }.firstOrNull { norm(it.optString("name")) == nq }
+                useArtist(exact ?: arr.getJSONObject(0))
+            }
+        } else {
+            var js0 = if (trackBy) search("track:\"$query\" artist:\"$artistHint\"", "track") else null
+            if (js0 == null || (js0.optJSONObject("tracks")?.optJSONArray("items")?.length() ?: 0) == 0)
+                js0 = search(if (trackBy) "$query $artistHint" else query, "artist,track")
+            val js = js0 ?: return false to "Spotify-Suche ging nicht"
+            val tracks = js.optJSONObject("tracks")?.optJSONArray("items")
+            val artists = js.optJSONObject("artists")?.optJSONArray("items")
+            val tl = if (tracks == null) emptyList() else (0 until tracks.length()).mapNotNull { tracks.optJSONObject(it) }
+            log("Treffer: " + tl.take(3).joinToString(" | ") { it.optString("name") + " – " + (it.optJSONArray("artists")?.optJSONObject(0)?.optString("name") ?: "") }.ifBlank { "keine Lieder" })
+            // 1) Künstler heißt genau so → Künstler abspielen
+            val exactArtist = if (!trackBy && artists != null) (0 until artists.length()).map { artists.getJSONObject(it) }.firstOrNull { norm(it.optString("name")) == nq } else null
+            // 2) Lied, dessen Name genau passt (bei „von …“ auch der Künstler)
+            fun score(t: JSONObject): Int {
+                val n = norm(t.optString("name")).replace(Regex("\\s*(feat|ft|with)\\b.*$"), "").replace(Regex("\\s*(remaster(ed)?|live|version|edit).*$"), "").trim()
+                val a = artistsOf(t)
+                var sc = 0
+                if (n == nq) sc += 100 else if (n.startsWith(nq) || nq.startsWith(n)) sc += 60 else if (n.contains(nq) || nq.contains(n)) sc += 40
+                if (na.isNotBlank()) { if (a.contains(na) || na.split(" ").all { a.contains(it) }) sc += 50 else sc -= 40 }
+                else if (nq.split(" ").any { w -> w.length > 2 && a.contains(w) } && nq.split(" ").any { w -> w.length > 2 && n.contains(w) }) sc += 70   // „Lied Künstler“ zusammen gesagt
+                return sc
+            }
+            val best = tl.withIndex().maxByOrNull { (i, t) -> score(t) * 10 - i }?.value
+            when {
+                exactArtist != null && (best == null || score(best) < 100) -> useArtist(exactArtist)
+                best != null && score(best) > 0 -> useTrack(best)
+                exactArtist != null -> useArtist(exactArtist)
+                tl.isNotEmpty() -> useTrack(tl[0])
+                artists != null && artists.length() > 0 -> useArtist(artists.getJSONObject(0))
+            }
         }
-        if (body == null) { log("Nichts gefunden"); return false to "Auf Spotify nichts zu „$query“ gefunden" }
-        log("Gefunden: $label")
+        val playBody = body?.toString() ?: run { log("Nichts gefunden"); return false to "Auf Spotify nichts zu „$query“ gefunden" }
+        log("Gewählt: $label")
 
         // Gerät: dieses Handy. Läuft Spotify nicht, erst im Hintergrund wecken.
         var dev = pickDevice(tok, log)
@@ -133,7 +159,14 @@ object SpotifyApi {
         }
         if (dev == null) { log("Kein Spotify-Gerät gefunden"); return false to "Spotify läuft auf keinem Gerät" }
         log("Gerät: ${dev.second}")
-        val (pc, pr) = http("PUT", "https://api.spotify.com/v1/me/player/play?device_id=" + URLEncoder.encode(dev.first, "UTF-8"), tok, body.toString())
+        var (pc, pr) = http("PUT", "https://api.spotify.com/v1/me/player/play?device_id=" + URLEncoder.encode(dev.first, "UTF-8"), tok, playBody)
+        if (pc !in 200..299) {
+            // Wiedergabe erst auf dieses Handy holen, dann nochmal
+            log("Abspielen ging nicht ($pc) → hole Wiedergabe aufs Handy")
+            http("PUT", "https://api.spotify.com/v1/me/player", tok, JSONObject().put("device_ids", org.json.JSONArray().put(dev.first)).put("play", false).toString())
+            Thread.sleep(600)
+            val r2 = http("PUT", "https://api.spotify.com/v1/me/player/play?device_id=" + URLEncoder.encode(dev.first, "UTF-8"), tok, playBody); pc = r2.first; pr = r2.second
+        }
         if (pc in 200..299) { log("✓ Spielt: $label"); return true to label }
         log("Abspielen fehlgeschlagen ($pc): ${errText(pr)}")
         return false to "Spotify wollte nicht abspielen ($pc)"

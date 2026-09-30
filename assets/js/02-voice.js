@@ -102,7 +102,7 @@
       updateAiVoiceUi(); hush();
       if (aiVoiceName) {
         if (!ttsModelList().length) { toast("Gemini bietet für deinen Schlüssel gerade keine Stimme an", "⚠", 4000); return; }
-        speak(`Hallo Damian, ich bin ${aiVoiceName}. So klinge ich als KI-Stimme.`);
+        speak(`Hallo ${anrede()}, ich bin ${aiVoiceName}. So klinge ich als KI-Stimme.`);
       } else toast("KI-Stimme aus – normale Stimme", "🔊");
     };
     updateAiVoiceUi();

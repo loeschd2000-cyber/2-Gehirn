@@ -608,6 +608,20 @@ class NativeBridge(private val act: android.content.Context, val web: WebView, p
         }
         // Auto (Android Auto)
         @JavascriptInterface fun isCar(): Boolean = car
+        // Amazon (nur Warenkorb, nie kaufen), Zwischenablage, Links, Preis-Wächter
+        @JavascriptInterface fun amazonInstalled(): Boolean = Amazon.installed(act)
+        @JavascriptInterface fun amazonCart(asin: String, qty: Int) {
+            main.post { Amazon.addToCart(act, asin, qty) { ok, msg -> emit("__zgShop", JSONObject().put("type", "cart").put("ok", ok).put("msg", msg)) } }
+        }
+        @JavascriptInterface fun amazonSearch(q: String) { main.post { Amazon.search(act, q) } }
+        @JavascriptInterface fun amazonProduct(asin: String) { main.post { Amazon.product(act, asin) } }
+        @JavascriptInterface fun copyText(text: String) { main.post { Share.copy(act, "Jarvis", text) } }
+        @JavascriptInterface fun openLink(url: String, pkg: String) { main.post { Share.open(act, url, pkg) } }
+        @JavascriptInterface fun priceWatchAdd(asin: String, name: String, limit: String, now: String): Int =
+            limit.replace(',', '.').toDoubleOrNull()?.let { PriceWatch.add(act, asin, name, it, now.replace(',', '.').toDoubleOrNull() ?: 0.0) } ?: -1
+        @JavascriptInterface fun priceWatchList(): String = PriceWatch.list(act).toString()
+        @JavascriptInterface fun priceWatchCancel(id: Int) { PriceWatch.cancel(act, id) }
+        @JavascriptInterface fun priceWatchModel(model: String) { PriceWatch.setModel(act, model) }
         /** Aufnahme aus dem Auto-Mikrofon abholen (einmal) */
         @JavascriptInterface fun carTake(): String { val a = carAudio ?: ""; carAudio = null; return a }
         /** Nach einer Rückfrage (z. B. „Soll ich eintragen?“) gleich wieder zuhören */

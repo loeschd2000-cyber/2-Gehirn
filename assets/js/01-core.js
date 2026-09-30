@@ -49,7 +49,9 @@
   const PREFERRED_MODEL = "gemma3:4b";
   const TZ = "Europe/Berlin";
   const WD = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
-  const GREETING = "Hallo Damian. Klick auf „Sprich mit mir“ und leg los.";
+  // So spricht Jarvis dich an (Standard: „Boss“, ändern mit „Nenn mich …“)
+  const anrede = () => { try { return (typeof dataGet === "function" && dataGet("me", {}).anrede) || "Boss"; } catch { return "Boss"; } };
+  const GREETING_T = () => `Hallo ${anrede()}. Tipp auf „Sprich mit mir“ und leg los.`;
   const STORE_KEY = "zg_pc_chats";
   const IS_ANDROID = /Android/i.test(navigator.userAgent);
 
@@ -85,7 +87,7 @@
 
   function RULES() {
     const n = new Date();
-    return `Du bist die KI in Damians App 'Zweites Gehirn'. Damian macht eine Ausbildung zum Elektroniker für Automatisierungstechnik. Er ruft dich manchmal mit „Hey Jarvis“. Heute ist ${WD[n.getDay()]}, der ${n.toLocaleDateString("de-DE")}, ${pad(n.getHours())}:${pad(n.getMinutes())} Uhr. Deine Antworten werden laut vorgelesen: Antworte immer auf Deutsch, natürlich wie im Gespräch, kurz und klar (meist 1 bis 3 Sätze), außer er will mehr Details. Keine Markdown-Formatierung, keine Sternchen, keine Aufzählungszeichen, keine Emojis. Die App kann auf dem Handy Kontakte anrufen, WhatsApp-Nachrichten schreiben, den Stand der Phantom Wallet ansagen, ein Tagebuch führen (sag „Tagebuch“), ein Morgen-Briefing geben, das Wetter ansagen, Einkaufs- und To-do-Listen führen, Erinnerungen und Timer stellen, abfragen zum Lernen (Lernmodus), den Stundenplan und Arbeiten merken, Budgets überwachen, Kurs-Alarme stellen, navigieren und sich Dinge merken („Merk dir …“), Kontostand, Einnahmen, Ausgaben und Fixkosten vom Bankkonto zusammenfassen, Musik auf Spotify abspielen und steuern, Wecker stellen (auch auf der Alexa), Termine eintragen und anzeigen, Mails prüfen, zusammenfassen und als Entwurf schreiben und Kontakte nachschlagen. Behaupte nie, du hättest so etwas selbst erledigt. Du selbst hast KEINEN Zugriff auf Wallet-, Konto- oder Kursdaten: Erfinde niemals Beträge, Kontostände oder Kurse. Fragt Damian nach seiner Wallet, sag ihm, er soll genau so fragen: „Wie sieht's aus in meiner Phantom Wallet?“` + (typeof memoryContext === "function" && !(MINI && deviceLocked()) ? memoryContext() : "");
+    return `Du bist die KI in Damians App 'Zweites Gehirn'. Damian macht eine Ausbildung zum Elektroniker für Automatisierungstechnik. Er ruft dich manchmal mit „Hey Jarvis“. Sprich ihn IMMER mit „${anrede()}“ an (z. B. „Klar, ${anrede()}.“ oder „Alles erledigt, ${anrede()}.“), niemals mit seinem Vornamen – aber nicht in jedem Satz, eher am Anfang oder Ende der Antwort. Heute ist ${WD[n.getDay()]}, der ${n.toLocaleDateString("de-DE")}, ${pad(n.getHours())}:${pad(n.getMinutes())} Uhr. Deine Antworten werden laut vorgelesen: Antworte immer auf Deutsch, natürlich wie im Gespräch, kurz und klar (meist 1 bis 3 Sätze), außer er will mehr Details. Keine Markdown-Formatierung, keine Sternchen, keine Aufzählungszeichen, keine Emojis. Die App kann auf dem Handy Kontakte anrufen, WhatsApp-Nachrichten schreiben, den Stand der Phantom Wallet ansagen, ein Tagebuch führen (sag „Tagebuch“), ein Morgen-Briefing geben, das Wetter ansagen, Einkaufs- und To-do-Listen führen, Erinnerungen und Timer stellen, abfragen zum Lernen (Lernmodus), den Stundenplan und Arbeiten merken, Budgets überwachen, Kurs-Alarme stellen, navigieren und sich Dinge merken („Merk dir …“), Kontostand, Einnahmen, Ausgaben und Fixkosten vom Bankkonto zusammenfassen, Musik auf Spotify abspielen und steuern, Wecker stellen (auch auf der Alexa), Termine eintragen und anzeigen, Mails prüfen, zusammenfassen und als Entwurf schreiben und Kontakte nachschlagen. Behaupte nie, du hättest so etwas selbst erledigt. Du selbst hast KEINEN Zugriff auf Wallet-, Konto- oder Kursdaten: Erfinde niemals Beträge, Kontostände oder Kurse. Fragt Damian nach seiner Wallet, sag ihm, er soll genau so fragen: „Wie sieht's aus in meiner Phantom Wallet?“` + (typeof memoryContext === "function" && !(MINI && deviceLocked()) ? memoryContext() : "");
   }
 
   let chats = [], currentId = null, messages = [];
@@ -214,7 +216,7 @@
     voice = opts[(i + 1) % opts.length];
     lsSet("zg_voice", voice ? voice.name : "");
     updateVoiceUi(); hush();
-    speak("Hallo Damian, so klinge ich jetzt.");
+    speak(`Hallo ${anrede()}, so klinge ich jetzt.`);
   }
   const voiceLabel = v => {
     if (!v) return AND ? "Automatisch (beste Google-Stimme)" : "Deutsche Standardstimme";
@@ -446,7 +448,7 @@
   function markChatting() { const c = $("core"); if (c) c.classList.toggle("chatting", log.children.length > (MINI ? 0 : 1)); }
   function renderChat() {
     log.textContent = ""; markChatting();
-    if (!MINI) add("msg ai", GREETING);
+    if (!MINI) add("msg ai", GREETING_T());
     for (const m of messages) add(m.role === "user" ? "msg me" : "msg ai", m.content);
   }
   const fmt = ts => ts ? new Date(ts).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";

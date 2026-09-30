@@ -6,7 +6,8 @@
     }
     if (!diaryMode && !learn && handleHelp(text)) return true;
     if (!diaryMode && !learn && lockedBlock(text)) return true;
-    if (!diaryMode && !learn && await handleSearch(text)) return true;   // „Was hab ich über … gesagt?“
+    if (!diaryMode && !learn && await handleSearch(text)) return true;
+    if (!diaryMode && !learn && await handleShop(text)) return true;   // Amazon, Preis-Wächter, Verkaufen, Sparen, Jobs   // „Was hab ich über … gesagt?“
     if (await handleDiary(text)) return true;
     if (await handleExtras(text)) return true;
     if (await handleFinance(text)) return true;
@@ -62,6 +63,9 @@
     else if (p.type === "draft") await finishDraft(p, ok);
     else if (p.type === "whatsapp") await finishWhatsApp(p, ok);
     else if (p.type === "pc") finishPc(p, ok);
+    else if (p.type === "amazon") finishAmazon(p, ok);
+    else if (p.type === "sell") finishSell(p, ok);
+    else if (p.type === "copy") finishCopy(p, ok);
     continueAgent();
   }
 
@@ -86,6 +90,8 @@ Geld: "Wie sieht's aus mit meinen Finanzen?" · "Was sind meine Fixkosten?" · "
 Navigation: "Navigier mich nach Hause" · "Wie lange brauche ich nach Schweinfurt?"
 Tagebuch: "Tagebuch" · "Lies mir mein Tagebuch von gestern vor"
 Suche: "Was hab ich über Lukas gesagt?" · "Wann hab ich über den Führerschein geredet?"
+Amazon: "Bestell Zahnpasta auf Amazon" · "Leg zwei Packungen Batterien in den Warenkorb" · "Sag mir Bescheid, wenn die AirPods Pro unter 180 Euro fallen"
+Geld: "Verkauf meinen alten Xbox-Controller" · "Wo kann ich sparen?" · "Such mir Programmier-Jobs" · "Schreib mir eine Bewerbung für Job 2"
 PC: "Mach am PC leiser" · "Öffne Spotify am PC" · "Sperr den PC" · "Fahr den PC in 30 Minuten herunter"`;
 
   let agentRest = [];      // Befehle, die nach einer Rückfrage (z. B. „Senden?“) noch dran sind
@@ -168,7 +174,7 @@ Nachricht: "${text.replace(/"/g, "'")}"`;
 
   /* Sperrbildschirm: Finanzen, Wallet, Tagebuch lesen, Mails, Nachrichten, Anrufe, Suche und „Was weißt du über mich“
      erst nach dem Entsperren (sonst könnte jeder am gesperrten Handy fragen) */
-  const PRIVATE_RE = /\b(finanz\w*|konto\w*|kontostand|guthaben|ausgaben|ausgegeben|einnahmen|fixkosten|abos?|budget\w*|sparkasse|statistik\w*|gehalt|lohn|geld|wallet|phantom|krypto\w*|mails?|e-mails?|posteingang|postfach|whatsapp|sms|nachricht\w*|ruf\w*|anruf\w*|telefonnummer|nummer|adresse|termine?|kalender)\b|was\s+weißt\s+du\s+über\s+mich|was\s+(?:hab|habe)\s+ich\s+.*\s(?:gesagt|geredet|erzählt|geschrieben)|\bsuch\w*\s+in\b|\btagebuch\b.*\b(lies|lese|vor|zeig\w*|was)\b|\b(lies|zeig\w*)\b.*\btagebuch\b/i;
+  const PRIVATE_RE = /\b(finanz\w*|konto\w*|kontostand|guthaben|ausgaben|ausgegeben|einnahmen|fixkosten|abos?|budget\w*|sparkasse|statistik\w*|gehalt|lohn|geld|wallet|phantom|krypto\w*|mails?|e-mails?|posteingang|postfach|whatsapp|sms|nachricht\w*|ruf\w*|anruf\w*|telefonnummer|nummer|adresse|termine?|kalender|sparen|spar-?coach|abos?)\b|was\s+weißt\s+du\s+über\s+mich|was\s+(?:hab|habe)\s+ich\s+.*\s(?:gesagt|geredet|erzählt|geschrieben)|\bsuch\w*\s+in\b|\btagebuch\b.*\b(lies|lese|vor|zeig\w*|was)\b|\b(lies|zeig\w*)\b.*\btagebuch\b/i;
   function lockedBlock(text) {
     if (!MINI || !deviceLocked()) return false;
     let isSearch = false; try { isSearch = SEARCH_RE.some(re => re.test(text)); } catch {}

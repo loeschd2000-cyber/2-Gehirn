@@ -56,6 +56,14 @@
   }
   function handleMemory(text) {
     const t = clean(text), tl = t.toLowerCase();
+    // Anrede: „Nenn mich Boss“, „Sag Chef zu mir“
+    let an = /^(?:nenn|nenne|nennst)\s+(?:du\s+)?mich\s+(?:ab\s+(?:jetzt|sofort)\s+|in\s+zukunft\s+|bitte\s+|einfach\s+)*(.{2,30}?)$|^sag\s+(?:ab\s+(?:jetzt|sofort)\s+)?(.{2,30}?)\s+zu\s+mir$/i.exec(t);
+    if (an) {
+      const name = cap((an[1] || an[2]).replace(/^(?:einfach|nur)\s+/i, "").trim());
+      const me = dataGet("me", {}); me.anrede = name; dataSet("me", me);
+      assistantSay(`Alles klar, ${name}. So nenne ich dich ab jetzt.`);
+      return true;
+    }
     // Adressen für die Navigation
     let m = /^(?:merk\s+dir\s*[,:]?\s*)?(?:meine?\s+)?(adresse|zuhause|zu\s+hause|wohnung|berufsschule|schule|arbeit|betrieb|firma|ausbildungsbetrieb)\s+(?:ist|liegt|lautet)\s+(?:in\s+(?:der\s+)?|im\s+|bei\s+|am\s+)?(.+)$/i.exec(t);
     if (m && /merk|meine?/i.test(t)) {
@@ -473,7 +481,7 @@
     busy = true; refreshUi();
     const n = new Date(), parts = [], lines = [];
     const hour = n.getHours();
-    parts.push((hour < 11 ? "Guten Morgen" : hour < 18 ? "Hallo" : "Guten Abend") + ", Damian. Heute ist " + n.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }) + ".");
+    parts.push((hour < 11 ? "Guten Morgen" : hour < 18 ? "Hallo" : "Guten Abend") + ", " + anrede() + ". Heute ist " + n.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }) + ".");
     const withTimeout = (p, ms = 6000) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms))]);
     // Wetter
     try { const w = await withTimeout(weatherFor(null)); if (w) { const a = weatherSentence(w, 0); parts.push(a.s.replace(/^Gerade/, "Es sind gerade")); lines.push(a.card); } } catch {}

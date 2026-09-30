@@ -475,3 +475,11 @@
     .core:not(.chatting) .orbwrap { height: clamp(170px, 30vh, 330px); }
     .hello > b { font-size: 18px; }
   }
+
+  /* Karten mit Links (Job-Finder) */
+  .card.links { width: 100%; max-width: min(640px, 100%); gap: 10px; }
+  .card.links .lrow { display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-top: 1px dashed rgba(110, 220, 255, .15); }
+  .card.links .lrow:first-of-type { border-top: 0; }
+  .card.links .lt { font-weight: 600; }
+  .card.links .lrow .btn { align-self: flex-start; margin-top: 4px; }
+  .card.links .body { margin: 0; }

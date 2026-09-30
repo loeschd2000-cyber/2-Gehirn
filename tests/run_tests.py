@@ -51,6 +51,9 @@ window.ZGAndroid = {
   timer: (s, l) => L('timer ' + s), maps: (d, m, s) => L('maps ' + d + ' ' + s),
   priceAlertAdd: (c, s, b, p) => { L('price ' + c + ' ' + b + ' ' + p); return 1; }, priceAlertList: () => '[]', priceAlertCancel: () => {},
   diaryReminder: (h, m) => L('diaryReminder ' + h + ':' + m), musicAccess: () => true,
+  amazonInstalled: () => true, amazonCart: (a, q) => { L('amazonCart ' + a + ' ' + q); setTimeout(() => __zgShop.emit({ type: 'cart', ok: true, msg: 'im Warenkorb' }), 20); },
+  amazonSearch: q => L('amazonSearch ' + q), copyText: t => L('copy ' + t.slice(0, 30)), openLink: (u, p) => L('open ' + u),
+  priceWatchAdd: (a, n, l, now) => { L('pricewatch ' + a + ' ' + l); return 1; }, priceWatchList: () => '[]', priceWatchCancel: () => {}, priceWatchModel: () => {},
 };
 localStorage.setItem('zg_gemini_key', 'AIzaTESTKEY1234567890abcdef'); localStorage.setItem('zg_ai_mode', 'gemini');
 localStorage.setItem('zg_wallet', JSON.stringify({ addr: '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU', invested: 400 }));
@@ -62,6 +65,14 @@ def llm_answer(body):
     if "Bewerte fair" in body: return {"richtig": True, "erklaerung": "Genau."}
     if "Tagebuch erzählt" in body: return {"titel": "Guter Tag", "text": "Heute war ein guter Tag.", "stimmung": "😊 gut"}
     if "WhatsApp schreiben" in body: return {"nachricht": "Ich komme später."}
+    if "google_search" in body:
+        if "Suche auf amazon.de" in body:
+            if "AirPods" in body: return "__TEXT__ASIN: B0D1XD1ZV3\nNAME: Apple AirPods Pro 2\nPREIS: 229,00"
+            return "__TEXT__ASIN: B08N5WRWNW\nNAME: Oral-B Zahnpasta Pro-Expert\nPREIS: 3,99"
+        if "Kleinanzeigen" in body: return "__TEXT__" + json.dumps({"titel": "Xbox Controller schwarz", "preis": 25, "preis_spanne": "20–30 €", "beschreibung": "Verkaufe meinen Xbox Controller. [Zustand ergänzen]. Privatverkauf, keine Garantie.", "tipp": "Gute Fotos machen."})
+        if "echten Angeboten" in body: return "__TEXT__" + json.dumps({"jobs": [{"titel": "Python-Skript für Excel-Auswertung", "wo": "Fiverr · online", "verdienst": "50 €", "warum": "passt zu deinen Programmierkenntnissen", "link": "https://www.fiverr.com/"}]})
+    if "ehrlicher Spar-Coach" in body: return {"tipps": [{"titel": "Spotify auf Studententarif", "euro_pro_monat": 5, "wie": "Tarif wechseln"}, {"titel": "Weniger Fast Food", "euro_pro_monat": 10, "wie": "zweimal weniger im Monat"}]}
+    if "freundliche Bewerbung" in body: return {"betreff": "Anfrage zu Ihrem Auftrag", "text": "Hallo, ich bin Damian und habe Interesse. [Beispiele ergänzen]"}
     if "wortwörtlich" in body: return "__TEXT__Was steht auf der Einkaufsliste?"
     if "Fundstellen aus seinen alten" in body: return {"antwort": "Du hast gesagt, dass Lukas am 12. März Geburtstag hat."}
     if "Befehls-Übersetzer" in body:
@@ -159,6 +170,21 @@ CASES = [
     ("Kannst du bitte Käse und Brot bei den Einkäufen notieren und mir danach sagen was alles drauf ist", ["Käse und Brot", "Käse, Brot"]),
     ("Lass es morgen früh um 7 klingeln", ["alexa 7:0"]),
     ("Was kannst du?", ["alle Befehle"]),
+    # --- Anrede „Boss“, Amazon, Geld ---
+    ("Guten Morgen", ["Boss"]),
+    ("Nenn mich Chef", ["Alles klar, Chef"]),
+    ("Nenn mich Boss", ["Alles klar, Boss"]),
+    ("Bestell Zahnpasta auf Amazon", ["Oral-B", "Warenkorb"]),
+    ("ja", ["amazonCart B08N5WRWNW 1", "Liegt im Warenkorb"]),
+    ("Leg zwei Packungen Batterien in den Warenkorb", ["Warenkorb", "2 Stück"]),
+    ("nein", ["nicht in den Warenkorb"], ["amazonCart"]),
+    ("Sag mir Bescheid, wenn die AirPods Pro unter 180 Euro fallen", ["pricewatch B0D1XD1ZV3 180"]),
+    ("Verkauf meinen alten Xbox Controller", ["Kleinanzeige", "25 € VB"]),
+    ("ja", ["copy Xbox Controller", "open https://www.kleinanzeigen.de"]),
+    ("Wo kann ich sparen?", ["Spar-Coach", "15"]),
+    ("Such mir Programmier-Jobs", ["Job-Finder", "Python-Skript"]),
+    ("Schreib mir eine Bewerbung für Job 1", ["Bewerbung"]),
+    ("ja", ["copy Anfrage", "open https://www.fiverr.com"]),
     ("js:pcCtl = true; PC_BASE = 'http://pc.test'", []),
     ("Mach am PC leiser", ["PC: Leiser"]),
     ("Öffne Spotify am PC", ["Ich öffne Spotify am PC"]),

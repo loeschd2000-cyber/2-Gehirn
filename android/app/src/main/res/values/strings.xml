@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="wa_desc">Drückt in WhatsApp auf „Senden“ – aber nur direkt nachdem du Jarvis gesagt hast, dass er jemandem schreiben soll, und du „Ja“ gesagt hast. Liest sonst nichts mit.</string>
-    <string name="wa_label">Zweites Gehirn – WhatsApp senden</string>
+    <string name="wa_desc">Drückt in WhatsApp auf „Senden“ und in der Amazon-App auf „In den Einkaufswagen“ – aber nur direkt nachdem du Jarvis darum gebeten und „Ja“ gesagt hast. Kauft nie etwas und liest sonst nichts mit.</string>
+    <string name="wa_label">Zweites Gehirn – WhatsApp senden &amp; Amazon-Warenkorb</string>
     <string name="widget_desc">Jarvis mit einem Tipp zuhören lassen, Briefing oder Tagebuch starten</string>
     <string name="tile_label">Jarvis</string>
 </resources>

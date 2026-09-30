@@ -77,12 +77,16 @@ class WaService : AccessibilityService() {
     companion object {
         @Volatile var pendingUntil = 0L
         @Volatile var backToApp = false
+        /** Amazon: bis wann Jarvis auf „In den Einkaufswagen“ tippen darf */
+        @Volatile var amazonUntil = 0L
     }
     private val main = Handler(Looper.getMainLooper())
 
     override fun onAccessibilityEvent(e: AccessibilityEvent?) {
+        val pkg0 = e?.packageName?.toString() ?: return
+        if (pkg0 == Amazon.PKG) { onAmazon(); return }
         if (pendingUntil == 0L || System.currentTimeMillis() > pendingUntil) return
-        val pkg = e?.packageName?.toString() ?: return
+        val pkg = pkg0
         if (!pkg.startsWith("com.whatsapp")) return
         val root = rootInActiveWindow ?: return
         val btn = findSend(root, pkg) ?: return
@@ -97,6 +101,19 @@ class WaService : AccessibilityService() {
             } else performGlobalAction(GLOBAL_ACTION_HOME)
             cb?.invoke(ok, if (ok) "gesendet" else "Senden hat nicht geklappt")
         }, 700)
+    }
+
+    /** Amazon: nur direkt nach deinem „Ja“ – tippt „In den Einkaufswagen“, niemals „Kaufen“ */
+    private fun onAmazon() {
+        if (amazonUntil == 0L || System.currentTimeMillis() > amazonUntil) return
+        val root = rootInActiveWindow ?: return
+        val btn = Amazon.findCartButton(root) ?: return
+        amazonUntil = 0
+        var n: AccessibilityNodeInfo? = btn
+        while (n != null && !n.isClickable) n = n.parent
+        val ok = (n ?: btn).performAction(AccessibilityNodeInfo.ACTION_CLICK)
+        val cb = Amazon.onResult; Amazon.onResult = null
+        main.postDelayed({ cb?.invoke(ok, if (ok) "im Warenkorb" else "manuell") }, 1200)
     }
 
     private fun findSend(root: AccessibilityNodeInfo, pkg: String): AccessibilityNodeInfo? {

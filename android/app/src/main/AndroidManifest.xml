@@ -22,6 +22,8 @@
     <queries>
         <package android:name="com.spotify.music" />
         <package android:name="com.whatsapp" />
+        <package android:name="com.amazon.mShop.android.shopping" />
+        <package android:name="com.ebay.kleinanzeigen" />
         <package android:name="com.google.android.apps.maps" />
         <intent>
             <action android:name="android.intent.action.SET_TIMER" />
@@ -130,6 +132,13 @@
             </intent-filter>
             <meta-data android:name="android.service.quicksettings.ACTIVE_TILE" android:value="false" />
         </service>
+
+        <receiver android:name=".PriceWatchReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
 
         <receiver android:name=".ProactiveReceiver" android:exported="false">
             <intent-filter>
